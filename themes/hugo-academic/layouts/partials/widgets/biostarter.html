@@ -1,0 +1,130 @@
+{{ $ := .root }}
+{{ $page := .page }}
+
+<!-- Projects widget -->
+<div class="row" itemprop="author" itemscope itemtype="http://schema.org/Person" itemref="{{ if $.Site.Params.email }}person-email{{ end }}{{ if $.Site.Params.phone }} person-telephone{{ end }}{{ if $.Site.Params.address}} person-address{{ end }}">
+  <div class="col-xs-12 col-md-4">
+    <div id="profile">
+
+      {{ if $.Site.Params.gravatar }}
+      <div class="portrait" style="background-image: url('https://s.gravatar.com/avatar/{{ md5 $.Site.Params.email }}?s=200');"></div>
+      <meta itemprop="image" content="https://s.gravatar.com/avatar/{{ md5 $.Site.Params.email }}?s=200">
+      {{ else if $.Site.Params.avatar }}
+      <div class="portrait" style="background-image: url('{{ $.Site.BaseURL }}img/{{ $.Site.Params.avatar }}');"></div>
+      <meta itemprop="image" content="{{ $.Site.BaseURL }}img/{{ $.Site.Params.avatar }}">
+      {{ end }}
+
+      <div class="portrait-title">
+        <h2 itemprop="name">{{ $.Site.Params.name }}</h2>
+        {{ with $.Site.Params.role }}<h3 itemprop="jobTitle">{{ . }}</h3>{{ end }}
+
+        {{/* Support legacy `organization` option. */}}
+        {{ if $.Site.Params.organization }}
+        <h3 itemprop="worksFor" itemscope itemtype="http://schema.org/Organization">
+          {{ with $.Site.Params.organization_url }}<a href="{{ . }}" target="_blank" itemprop="url" rel="noopener">{{ end }}
+            <span itemprop="name">{{ $.Site.Params.organization }}</span>
+          {{ if $.Site.Params.organization_url }}</a>{{ end }}
+        </h3>
+        {{ end }}
+
+        {{ range $.Site.Params.organizations }}
+        <h3 itemprop="worksFor" itemscope itemtype="http://schema.org/Organization">
+          {{ with .url }}<a href="{{ . }}" target="_blank" itemprop="url" rel="noopener">{{ end }}
+          <span itemprop="name">{{ .name }}</span>
+          {{ if .url }}</a>{{ end }}
+        </h3>
+        {{ end }}
+      </div>
+
+      <link itemprop="url" href="{{ $.Site.BaseURL }}">
+
+      <ul class="network-icon" aria-hidden="true">
+        {{ range $.Site.Params.social }}
+        {{ $pack := or .icon_pack "fa" }}
+        <li>
+          <a itemprop="sameAs" href="{{ .link | safeURL }}" target="_blank" rel="noopener">
+            <i class="{{ $pack }} {{ $pack }}-{{ .icon }} big-icon"></i>
+          </a>
+        </li>
+        {{ end }}
+      </ul>
+
+    </div>
+  </div>
+  <div class="col-xs-12 col-md-8">
+    {{ with $page.Content }}<p>{{ . | markdownify }}</p>{{ end }}
+
+    {{ $filter_default := default (int $page.Params.filter_default) 0 }}
+    {{ with $page.Params.filter }}
+    <span class="hidden default-project-filter">{{ (index $page.Params.filter ($filter_default)).tag }}</span>
+    {{ end }}
+
+    {{ if isset $page.Params "filter" }}
+    {{ if gt (len $page.Params.filter) 1 }}
+    <div class="project-toolbar">
+      <div class="project-filters">
+        <div class="btn-toolbar">
+          <div class="btn-group">
+            {{ range $idx, $item := $page.Params.filter }}
+              <a href="#" data-filter="{{ .tag }}" class="btn btn-primary btn-large{{ if eq $idx $filter_default }} active{{ end }}">{{ .name }}</a>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+    </div>
+    {{ end }}
+    {{ end }}
+
+    {{ if eq $page.Params.view 0 }}
+
+    <div class="row isotope projects-container js-layout-row">
+        {{ range where $.Site.RegularPages "Type" ($page.Params.folder | default "project") }}
+        <div class="col-md-12 project-item isotope-item {{ delimit .Params.tags " " }}" itemscope itemtype="http://schema.org/CreativeWork">
+          <i class="fa fa-files-o pub-icon" aria-hidden="true"></i>
+
+          <span class="project-title">
+          {{ if .Content }}
+          <a href="{{ .Permalink }}">
+          {{ else }}
+            {{ with .Params.external_link }}<a href="{{ . }}" target="_blank" rel="noopener">{{ end }}
+          {{ end }}
+          {{ .Title }}
+          {{ if .Content }}</a>{{ else }}{{ with .Params.external_link }}</a>{{ end }}{{ end }}
+          </span>
+          {{ with .Params.summary }}<p class="project-summary">{{ . | markdownify }}</p>{{ end }}
+        </div>
+        {{ end }}
+    </div>
+
+    {{ else }}
+
+    <div class="row isotope projects-container js-layout-masonry">
+
+      {{ range $project := where $.Site.RegularPages "Type" ($page.Params.folder | default "project") }}
+      {{ $.Scratch.Set "project_url" $project.Permalink }}
+      {{ $.Scratch.Set "target" "" }}
+      {{ if $project.Params.external_link }}
+      {{   $.Scratch.Set "project_url" $project.Params.external_link }}
+      {{   $.Scratch.Set "target" "target=\"_blank\"" }}
+      {{ end }}
+      <div class="col-xs-12 col-sm-6 col-md-4 col-lg-6 project-item isotope-item {{ delimit .Params.tags " " }}">
+        <div class="card">
+          {{ with $project.Params.image_preview }}
+          <a href="{{ $.Scratch.Get "project_url" }}" title="" class="card-image hover-overlay"
+             {{ $.Scratch.Get "target" | safeHTMLAttr }}>
+            <img src="{{ "/img/" | relURL }}{{ . }}" alt="" class="img-responsive">
+          </a>
+          {{ end }}
+          <div class="card-text">
+            <h4><a href="{{ $.Scratch.Get "project_url" }}" {{ $.Scratch.Get "target" | safeHTMLAttr }}>{{ .Title }}</a></h4>
+          </div>
+        </div>
+      </div>
+      {{ end }}
+
+    </div>
+
+    {{ end }}
+
+  </div>
+</div>

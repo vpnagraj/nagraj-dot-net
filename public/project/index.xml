@@ -7,27 +7,110 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018</copyright>
-    <lastBuildDate>Wed, 27 Apr 2016 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 02 Apr 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/project/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Deep Learning</title>
-      <link>/project/deep-learning/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
+      <title>Courses</title>
+      <link>/project/courses/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>/project/deep-learning/</guid>
+      <guid>/project/courses/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>LOLAweb</title>
+      <link>/project/lolaweb/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/lolaweb/</guid>
+      <description>LOLAweb is an interactive application that implements functions from the LOLA package in a web interface via the Shiny framework.
+The app is hosted and available for use at:
+http://lolaweb.databio.org
+To run the application locally, you&amp;rsquo;ll need to first clone this repository:
+git clone https://github.com/databio/LOLAweb.git  The app requires R to be installed, as well as several packages. From within R run the following to install the dependencies:
+install.packages(c(&amp;quot;ggplot2&amp;quot;, &amp;quot;shiny&amp;quot;, &amp;quot;DT&amp;quot;, &amp;quot;shinyWidgets&amp;quot;, &amp;quot;shinyjs&amp;quot;, &amp;quot;sodium&amp;quot;, &amp;quot;devtools&amp;quot;, &amp;quot;shinyBS&amp;quot;)) devtools::install_github(&amp;quot;databio/simpleCache&amp;quot;) devtools::install_github(&amp;quot;databio/GenomicDistributions&amp;quot;) source(&amp;quot;https://bioconductor.</description>
+    </item>
+    
+    <item>
+      <title>R Epidemics Consortium</title>
+      <link>/project/recon/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/recon/</guid>
       <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis posuere tellus ac convallis placerat. Proin tincidunt magna sed ex sollicitudin condimentum. Sed ac faucibus dolor, scelerisque sollicitudin nisi. Cras purus urna, suscipit quis sapien eu, pulvinar tempor diam. Quisque risus orci, mollis id ante sit amet, gravida egestas nisl. Sed ac tempus magna. Proin in dui enim. Donec condimentum, sem id dapibus fringilla, tellus enim condimentum arcu, nec volutpat est felis vel metus.</description>
     </item>
     
     <item>
-      <title>External Project</title>
-      <link>/project/example-external-project/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
+      <title>SOMRC</title>
+      <link>/project/somrc/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>/project/example-external-project/</guid>
+      <guid>/project/somrc/</guid>
       <description></description>
+    </item>
+    
+    <item>
+      <title>UVa R Users Group</title>
+      <link>/project/rug/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/rug/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Workshops</title>
+      <link>/project/workshops/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/workshops/</guid>
+      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis posuere tellus ac convallis placerat. Proin tincidunt magna sed ex sollicitudin condimentum. Sed ac faucibus dolor, scelerisque sollicitudin nisi. Cras purus urna, suscipit quis sapien eu, pulvinar tempor diam. Quisque risus orci, mollis id ante sit amet, gravida egestas nisl. Sed ac tempus magna. Proin in dui enim. Donec condimentum, sem id dapibus fringilla, tellus enim condimentum arcu, nec volutpat est felis vel metus.</description>
+    </item>
+    
+    <item>
+      <title>epicontacts</title>
+      <link>/project/epicontacts/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/epicontacts/</guid>
+      <description>Installing the package To install the current stable, CRAN version of the package, type:
+install.packages(&amp;quot;epicontacts&amp;quot;)  To benefit from the latest features and bug fixes, install the development, github version of the package using:
+devtools::install_github(&amp;quot;reconhub/epicontacts&amp;quot;)  Note that this requires the package devtools installed.
+What does it do? The main features of the package include:
+ epicontacts: a new S3 class for storing linelists and contacts data</description>
+    </item>
+    
+    <item>
+      <title>hei</title>
+      <link>/project/hei/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/hei/</guid>
+      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis posuere tellus ac convallis placerat. Proin tincidunt magna sed ex sollicitudin condimentum. Sed ac faucibus dolor, scelerisque sollicitudin nisi. Cras purus urna, suscipit quis sapien eu, pulvinar tempor diam. Quisque risus orci, mollis id ante sit amet, gravida egestas nisl. Sed ac tempus magna. Proin in dui enim. Donec condimentum, sem id dapibus fringilla, tellus enim condimentum arcu, nec volutpat est felis vel metus.</description>
+    </item>
+    
+    <item>
+      <title>rrefine</title>
+      <link>/project/rrefine/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/rrefine/</guid>
+      <description>Introduction OpenRefine (formerly Google Refine) is a popular, open source data cleaning software. rrefine enables users to programmatically trigger data transfer between R and OpenRefine. Using the functions available in this package, you can import, export or delete a project in OpenRefine directly from R. There are several client libraries for automating OpenRefine tasks via Python, nodeJS and Ruby. rrefine extends this functionality to R users.
+Installation The latest version of rrefine is availabe on Github and can be installed via devtools:</description>
+    </item>
+    
+    <item>
+      <title>simpleCache</title>
+      <link>/project/simplecache/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/simplecache/</guid>
+      <description>simpleCache is an R package providing functions for caching R objects. Its purpose is to encourage writing reusable, restartable, and reproducible analysis pipelines for projects with massive data and computational requirements.
+Like its name indicates, simpleCache is intended to be simple. You choose a location to store your caches, and then provide the function with nothing more than a cache name and instructions (R code) for how to produce the R object.</description>
     </item>
     
   </channel>

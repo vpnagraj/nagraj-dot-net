@@ -10,9 +10,6 @@
     <div class="pub-title">
       <h1 itemprop="name">{{ .Title }}</h1>
       <span class="pub-authors" itemprop="author">&nbsp;</span>
-      <span class="pull-right">
-        {{ partial "share.html" . }}
-      </span>
     </div>
 
     {{ with .Params.external_link }}
@@ -20,6 +17,11 @@
     {{ end }}
 
     <div class="article-style" itemprop="articleBody">
+
+      <blockquote>
+      {{ .Params.summary }}
+      </blockquote>
+
       {{ .Content }}
     </div>
 

@@ -51,11 +51,11 @@ defaultContentLanguageInSubdir = false
 
   # Your details.
   name = "VP Nagraj"
-  role = "Research Computing Associate"
+  role = ""
 
   # Organizations/Affiliations.
   #   Separate multiple entries with a comma, using the form: `[ {name="Org1", url=""}, {name="Org2", url=""} ]`.
-  organizations = [ { name = "University of Virginia", url = ""}, {name = "School of Medicine Research Computing", url = "https://somrc.virginia.edu"} ]
+  # organizations = [ { name = "University of Virginia", url = ""}, {name = "School of Medicine", url = ""}, {name = "Research Computing", url = ""} ]
 
   gravatar = false  # Get your avatar from Gravatar.com? (true/false)
   avatar = "portrait.jpg"  # Specify an avatar image (in `static/img/` folder) or delete value to disable avatar.
@@ -244,24 +244,19 @@ defaultContentLanguageInSubdir = false
   weight = 1
 
 [[menu.main]]
-  name = "Notes"
-  url = "#notes"
+  name = "About"
+  url = "about/bio"
   weight = 2
   
 [[menu.main]]
-  name = "Projects"
-  url = "#projects"
-  weight = 3  
+  name = "Notes"
+  url = "post"
+  weight = 3
   
 [[menu.main]]
   name = "Publications"
-  url = "#publications_selected"
+  url = "publication"
   weight = 4
-
-[[menu.main]]
-  name = "Teaching"
-  url = "#teaching"
-  weight = 5
 
 # Taxonomies.
 [taxonomies]

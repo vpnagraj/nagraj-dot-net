@@ -7,25 +7,88 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018</copyright>
-    <lastBuildDate>Sun, 15 Oct 2017 00:00:00 -0400</lastBuildDate>
+    <lastBuildDate>Wed, 20 Apr 2016 00:00:00 +0000</lastBuildDate>
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>Example Talk</title>
-      <link>/talk/example-talk/</link>
-      <pubDate>Sun, 01 Jan 2017 00:00:00 -0500</pubDate>
+      <title>Courses</title>
+      <link>/project/courses/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>/talk/example-talk/</guid>
-      <description>&lt;p&gt;Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/academic/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;shortcodes&lt;/a&gt;. Further details can easily be added using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+      <guid>/project/courses/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>LOLAweb</title>
+      <link>/project/lolaweb/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/lolaweb/</guid>
+      <description>&lt;p&gt;&lt;code&gt;LOLAweb&lt;/code&gt; is an interactive application that implements functions from the LOLA package in a web interface via the &lt;a href=&#34;https://shiny.rstudio.com/&#34; target=&#34;_blank&#34;&gt;Shiny&lt;/a&gt; framework.&lt;/p&gt;
+
+&lt;p&gt;The app is hosted and available for use at:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://lolaweb.databio.org&#34; target=&#34;_blank&#34;&gt;http://lolaweb.databio.org&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;To run the application locally, you&amp;rsquo;ll need to first clone this repository:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git clone https://github.com/databio/LOLAweb.git
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The app requires R to be installed, as well as several packages. From within R run the following to install the dependencies:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;install.packages(c(&amp;quot;ggplot2&amp;quot;, &amp;quot;shiny&amp;quot;, &amp;quot;DT&amp;quot;, &amp;quot;shinyWidgets&amp;quot;, &amp;quot;shinyjs&amp;quot;, &amp;quot;sodium&amp;quot;, &amp;quot;devtools&amp;quot;, &amp;quot;shinyBS&amp;quot;))
+devtools::install_github(&amp;quot;databio/simpleCache&amp;quot;)
+devtools::install_github(&amp;quot;databio/GenomicDistributions&amp;quot;)
+
+source(&amp;quot;https://bioconductor.org/biocLite.R&amp;quot;)
+biocLite(c(&amp;quot;LOLA&amp;quot;, &amp;quot;GenomicRanges&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You&amp;rsquo;ll also need underlying data that is not available in this repository in order to establish the universes, example user sets and reference genome directories. Run the following from within the root of this folder to download the data and create the &lt;code&gt;universes/&lt;/code&gt;, &lt;code&gt;userSets/&lt;/code&gt;, &lt;code&gt;reference/&lt;/code&gt; and &lt;code&gt;cache/&lt;/code&gt; directories respectively:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# create universes dir
+mkdir universes
+mkdir userSets
+
+# example universe and user set
+curl http://cloud.databio.org.s3.amazonaws.com/vignettes/lola_vignette_data_150505.tgz | tar xvz
+
+mv lola_vignette_data/activeDHS_universe.bed universes/.
+mv lola_vignette_data/setB_100.bed userSets/.
+
+rm -rf lola_vignette_data
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;# create reference dir
+mkdir reference
+
+# core
+curl http://cloud.databio.org.s3.amazonaws.com/regiondb/LOLACoreCaches_170206.tgz | tar xvz
+mv scratch/ns5bc/resources/regions/LOLACore reference/Core
+rm -rf scratch
+
+# extended
+curl http://cloud.databio.org.s3.amazonaws.com/regiondb/LOLAExtCaches_170206.tgz | tar xvz
+mv scratch/ns5bc/resources/regions/LOLAExt reference/Extended
+rm -rf scratch
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;# create cache dir
+mkdir cache
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With all of the above installed you can now launch the app with &lt;code&gt;shiny::runApp()&lt;/code&gt; from within R at the root of this directory.&lt;/p&gt;
 </description>
     </item>
     
     <item>
-      <title>Deep Learning</title>
-      <link>/project/deep-learning/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
+      <title>R Epidemics Consortium</title>
+      <link>/project/recon/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>/project/deep-learning/</guid>
+      <guid>/project/recon/</guid>
       <description>&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis posuere tellus ac convallis placerat. Proin tincidunt magna sed ex sollicitudin condimentum. Sed ac faucibus dolor, scelerisque sollicitudin nisi. Cras purus urna, suscipit quis sapien eu, pulvinar tempor diam. Quisque risus orci, mollis id ante sit amet, gravida egestas nisl. Sed ac tempus magna. Proin in dui enim. Donec condimentum, sem id dapibus fringilla, tellus enim condimentum arcu, nec volutpat est felis vel metus. Vestibulum sit amet erat at nulla eleifend gravida.&lt;/p&gt;
 
 &lt;p&gt;Nullam vel molestie justo. Curabitur vitae efficitur leo. In hac habitasse platea dictumst. Sed pulvinar mauris dui, eget varius purus congue ac. Nulla euismod, lorem vel elementum dapibus, nunc justo porta mi, sed tempus est est vel tellus. Nam et enim eleifend, laoreet sem sit amet, elementum sem. Morbi ut leo congue, maximus velit ut, finibus arcu. In et libero cursus, rutrum risus non, molestie leo. Nullam congue quam et volutpat malesuada. Sed risus tortor, pulvinar et dictum nec, sodales non mi. Phasellus lacinia commodo laoreet. Nam mollis, erat in feugiat consectetur, purus eros egestas tellus, in auctor urna odio at nibh. Mauris imperdiet nisi ac magna convallis, at rhoncus ligula cursus.&lt;/p&gt;
@@ -39,12 +102,547 @@
     </item>
     
     <item>
-      <title>External Project</title>
-      <link>/project/example-external-project/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
+      <title>SOMRC</title>
+      <link>/project/somrc/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>/project/example-external-project/</guid>
+      <guid>/project/somrc/</guid>
       <description></description>
+    </item>
+    
+    <item>
+      <title>UVa R Users Group</title>
+      <link>/project/rug/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/rug/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Workshops</title>
+      <link>/project/workshops/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/workshops/</guid>
+      <description>&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis posuere tellus ac convallis placerat. Proin tincidunt magna sed ex sollicitudin condimentum. Sed ac faucibus dolor, scelerisque sollicitudin nisi. Cras purus urna, suscipit quis sapien eu, pulvinar tempor diam. Quisque risus orci, mollis id ante sit amet, gravida egestas nisl. Sed ac tempus magna. Proin in dui enim. Donec condimentum, sem id dapibus fringilla, tellus enim condimentum arcu, nec volutpat est felis vel metus. Vestibulum sit amet erat at nulla eleifend gravida.&lt;/p&gt;
+
+&lt;p&gt;Nullam vel molestie justo. Curabitur vitae efficitur leo. In hac habitasse platea dictumst. Sed pulvinar mauris dui, eget varius purus congue ac. Nulla euismod, lorem vel elementum dapibus, nunc justo porta mi, sed tempus est est vel tellus. Nam et enim eleifend, laoreet sem sit amet, elementum sem. Morbi ut leo congue, maximus velit ut, finibus arcu. In et libero cursus, rutrum risus non, molestie leo. Nullam congue quam et volutpat malesuada. Sed risus tortor, pulvinar et dictum nec, sodales non mi. Phasellus lacinia commodo laoreet. Nam mollis, erat in feugiat consectetur, purus eros egestas tellus, in auctor urna odio at nibh. Mauris imperdiet nisi ac magna convallis, at rhoncus ligula cursus.&lt;/p&gt;
+
+&lt;p&gt;Cras aliquam rhoncus ipsum, in hendrerit nunc mattis vitae. Duis vitae efficitur metus, ac tempus leo. Cras nec fringilla lacus. Quisque sit amet risus at ipsum pharetra commodo. Sed aliquam mauris at consequat eleifend. Praesent porta, augue sed viverra bibendum, neque ante euismod ante, in vehicula justo lorem ac eros. Suspendisse augue libero, venenatis eget tincidunt ut, malesuada at lorem. Donec vitae bibendum arcu. Aenean maximus nulla non pretium iaculis. Quisque imperdiet, nulla in pulvinar aliquet, velit quam ultrices quam, sit amet fringilla leo sem vel nunc. Mauris in lacinia lacus.&lt;/p&gt;
+
+&lt;p&gt;Suspendisse a tincidunt lacus. Curabitur at urna sagittis, dictum ante sit amet, euismod magna. Sed rutrum massa id tortor commodo, vitae elementum turpis tempus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean purus turpis, venenatis a ullamcorper nec, tincidunt et massa. Integer posuere quam rutrum arcu vehicula imperdiet. Mauris ullamcorper quam vitae purus congue, quis euismod magna eleifend. Vestibulum semper vel augue eget tincidunt. Fusce eget justo sodales, dapibus odio eu, ultrices lorem. Duis condimentum lorem id eros commodo, in facilisis mauris scelerisque. Morbi sed auctor leo. Nullam volutpat a lacus quis pharetra. Nulla congue rutrum magna a ornare.&lt;/p&gt;
+
+&lt;p&gt;Aliquam in turpis accumsan, malesuada nibh ut, hendrerit justo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Quisque sed erat nec justo posuere suscipit. Donec ut efficitur arcu, in malesuada neque. Nunc dignissim nisl massa, id vulputate nunc pretium nec. Quisque eget urna in risus suscipit ultricies. Pellentesque odio odio, tincidunt in eleifend sed, posuere a diam. Nam gravida nisl convallis semper elementum. Morbi vitae felis faucibus, vulputate orci placerat, aliquet nisi. Aliquam erat volutpat. Maecenas sagittis pulvinar purus, sed porta quam laoreet at.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>epicontacts</title>
+      <link>/project/epicontacts/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/epicontacts/</guid>
+      <description>
+
+&lt;p&gt;&lt;a href=&#34;https://travis-ci.org/reconhub/epicontacts&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://travis-ci.org/reconhub/epicontacts.svg?branch=master&#34; alt=&#34;Travis-CI Build Status&#34; /&gt;&lt;/a&gt;
+&lt;a href=&#34;https://ci.appveyor.com/project/thibautjombart/epicontacts/branch/master&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://ci.appveyor.com/api/projects/status/7fj30xjlesja0vbr/branch/master?svg=true&#34; alt=&#34;Build status&#34; /&gt;&lt;/a&gt;
+&lt;a href=&#34;https://codecov.io/github/reconhub/epicontacts?branch=master&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://codecov.io/github/reconhub/epicontacts/coverage.svg?branch=master&#34; alt=&#34;Coverage Status&#34; /&gt;&lt;/a&gt;
+&lt;a href=&#34;https://cran.r-project.org/package=epicontacts&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;http://www.r-pkg.org/badges/version/epicontacts&#34; alt=&#34;CRAN_Status_Badge&#34; /&gt;&lt;/a&gt;
+&lt;a href=&#34;https://cran.r-project.org/package=epicontacts&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cranlogs.r-pkg.org/badges/epicontacts&#34; alt=&#34;CRAN Downloads&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;installing-the-package&#34;&gt;Installing the package&lt;/h2&gt;
+
+&lt;p&gt;To install the current stable, CRAN version of the package, type:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;install.packages(&amp;quot;epicontacts&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To benefit from the latest features and bug fixes, install the development, &lt;em&gt;github&lt;/em&gt; version of the package using:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;devtools::install_github(&amp;quot;reconhub/epicontacts&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Note that this requires the package &lt;em&gt;devtools&lt;/em&gt; installed.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-does-it-do&#34;&gt;What does it do?&lt;/h2&gt;
+
+&lt;p&gt;The main features of the package include:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;epicontacts&lt;/code&gt;:&lt;/strong&gt; a new S3 class for storing linelists and contacts data&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;make_epicontacts&lt;/code&gt;:&lt;/strong&gt; a constructor for the new &lt;code&gt;epicontacts&lt;/code&gt; class&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;get_id&lt;/code&gt;:&lt;/strong&gt; access unique IDs in an &lt;code&gt;epicontacts&lt;/code&gt; with various options&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;get_pairwise&lt;/code&gt;&lt;/strong&gt;: extract attributes of record(s) in contacts database using
+information provided in the linelist data of an &lt;code&gt;epicontacts&lt;/code&gt; object.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;get_degree&lt;/code&gt;:&lt;/strong&gt; access degree of cases in &lt;code&gt;epicontacts&lt;/code&gt; with various options&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;x[i,j,contacts]&lt;/code&gt;:&lt;/strong&gt; subset an &lt;code&gt;epicontacts&lt;/code&gt; object by retaining specified
+cases&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;thin&lt;/code&gt;:&lt;/strong&gt; retains matching cases in linelist / contacts&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;summary&lt;/code&gt;:&lt;/strong&gt; summary for &lt;code&gt;epicontacts&lt;/code&gt; objects&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;plot&lt;/code&gt;:&lt;/strong&gt; plot for &lt;code&gt;epicontacts&lt;/code&gt; objects; various types of plot are
+available; default to &lt;code&gt;vis_epicontacts&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;vis_epicontacts&lt;/code&gt;:&lt;/strong&gt; plot an &lt;code&gt;epicontacts&lt;/code&gt; object using &lt;code&gt;visNetwork&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;as.igraph.epicontacts&lt;/code&gt;:&lt;/strong&gt; create an &lt;code&gt;igraph&lt;/code&gt; object from an epicontacts object&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;get_clusters&lt;/code&gt;:&lt;/strong&gt; assign clusters and corresponding cluster sizes to
+linelist of an epicontacts object (clusters being groups of connected
+individuals/nodes).&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;subset_clusters_by_id&lt;/code&gt;&lt;/strong&gt;: subset an &lt;code&gt;epicontacts&lt;/code&gt; object based on a IDs of
+cases of interest.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;subset_clusters_by_size&lt;/code&gt;&lt;/strong&gt;: subset an &lt;code&gt;epicontacts&lt;/code&gt; object based on size(s)
+of clusters (clusters being groups of connected individuals/nodes).&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;graph3D&lt;/code&gt;&lt;/strong&gt;: 3D graph from an &lt;code&gt;epicontacts&lt;/code&gt; object.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;resources&#34;&gt;Resources&lt;/h2&gt;
+
+&lt;h3 id=&#34;vignettes&#34;&gt;Vignettes&lt;/h3&gt;
+
+&lt;p&gt;An overview of &lt;em&gt;epicontacts&lt;/em&gt; is provided below in the worked example below.
+More detailed tutorials are distributed as vignettes with the package:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;vignette(&amp;quot;overview&amp;quot;, package=&amp;quot;epicontacts&amp;quot;)
+vignette(&amp;quot;customize_plot&amp;quot;, package=&amp;quot;epicontacts&amp;quot;)
+vignette(&amp;quot;epicontacts_class&amp;quot;, package=&amp;quot;epicontacts&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;websites&#34;&gt;Websites&lt;/h3&gt;
+
+&lt;p&gt;The following websites are available:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;The official &lt;em&gt;epicontacts&lt;/em&gt; website, providing an overview of the package&amp;rsquo;s functionalities, up-to-date tutorials and documentation: &lt;br&gt;
+&lt;a href=&#34;http://www.repidemicsconsortium.org/epicontacts/&#34; target=&#34;_blank&#34;&gt;http://www.repidemicsconsortium.org/epicontacts/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;The &lt;em&gt;epicontacts&lt;/em&gt; project on &lt;em&gt;github&lt;/em&gt;, useful for developers, contributors, and users wanting to post issues, bug reports and feature requests: &lt;br&gt;
+&lt;a href=&#34;http://github.com/reconhub/epicontacts&#34; target=&#34;_blank&#34;&gt;http://github.com/reconhub/epicontacts&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;The &lt;em&gt;epicontacts&lt;/em&gt; page on CRAN: &lt;br&gt;
+&lt;a href=&#34;https://CRAN.R-project.org/package=epicontacts&#34; target=&#34;_blank&#34;&gt;https://CRAN.R-project.org/package=epicontacts&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;getting-help-online&#34;&gt;Getting help online&lt;/h3&gt;
+
+&lt;p&gt;Bug reports and feature requests should be posted on &lt;em&gt;github&lt;/em&gt; using the &lt;a href=&#34;http://github.com/reconhub/epicontacts/issues&#34; target=&#34;_blank&#34;&gt;&lt;em&gt;issue&lt;/em&gt;&lt;/a&gt; system. All other questions should be posted on the &lt;strong&gt;RECON forum&lt;/strong&gt;: &lt;br&gt;
+&lt;a href=&#34;http://www.repidemicsconsortium.org/forum/&#34; target=&#34;_blank&#34;&gt;http://www.repidemicsconsortium.org/forum/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;a-quick-overview&#34;&gt;A quick overview&lt;/h2&gt;
+
+&lt;p&gt;The following worked example provides a brief overview of the package&amp;rsquo;s
+functionalities. See the &lt;a href=&#34;#vignettes&#34;&gt;&lt;em&gt;vignettes section&lt;/em&gt;&lt;/a&gt; for more detailed
+tutorials.&lt;/p&gt;
+
+&lt;h3 id=&#34;obtaining-an-epicontacts-object&#34;&gt;Obtaining an &lt;em&gt;epicontacts&lt;/em&gt; object&lt;/h3&gt;
+
+&lt;p&gt;&lt;em&gt;epicontacts&lt;/em&gt; need two types of data:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;a &lt;strong&gt;linelist&lt;/strong&gt;, i.e. a spreadsheet documenting cases where columns are
+variables and rows correspond to unique cases&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;a &lt;strong&gt;list of edges&lt;/strong&gt;, defining connections between cases, identified by their
+unique identifier&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;There does not need to be an one-to-one correspondance between cases documented
+in the linelist and those appearing in the contacts. However, links will be made
+between the two sources of data whenever unique identifiers match. This will be
+especially handy when subsetting data, or when characterising contacts in terms
+of &amp;lsquo;node&amp;rsquo; (case) properties.&lt;/p&gt;
+
+&lt;p&gt;We illustrate the construction of an &lt;em&gt;epicontacts&lt;/em&gt; using contact data from a
+Middle East Respiratory Syndrom coronavirus (MERS CoV) from South Korea in 2015,
+available as the dataset &lt;code&gt;mers_korea_2015&lt;/code&gt; in the package &lt;em&gt;outbreaks&lt;/em&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;
+library(outbreaks)
+library(epicontacts)
+
+names(mers_korea_2015)
+#&amp;gt; [1] &amp;quot;linelist&amp;quot; &amp;quot;contacts&amp;quot;
+dim(mers_korea_2015$linelist) 
+#&amp;gt; [1] 162  15
+dim(mers_korea_2015$contacts) 
+#&amp;gt; [1] 98  4
+
+x &amp;lt;- make_epicontacts(linelist = mers_korea_2015$linelist,
+                      contacts = mers_korea_2015$contacts, 
+                      directed = TRUE)
+x
+#&amp;gt; 
+#&amp;gt; /// Epidemiological Contacts //
+#&amp;gt; 
+#&amp;gt;   // class: epicontacts
+#&amp;gt;   // 162 cases in linelist; 98 contacts;  directed 
+#&amp;gt; 
+#&amp;gt;   // linelist
+#&amp;gt; 
+#&amp;gt; # A tibble: 162 × 15
+#&amp;gt;       id   age age_class    sex        place_infect reporting_ctry
+#&amp;gt;    &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt;     &amp;lt;chr&amp;gt; &amp;lt;fctr&amp;gt;              &amp;lt;fctr&amp;gt;         &amp;lt;fctr&amp;gt;
+#&amp;gt; 1   SK_1    68     60-69      M         Middle East    South Korea
+#&amp;gt; 2   SK_2    63     60-69      F Outside Middle East    South Korea
+#&amp;gt; 3   SK_3    76     70-79      M Outside Middle East    South Korea
+#&amp;gt; 4   SK_4    46     40-49      F Outside Middle East    South Korea
+#&amp;gt; 5   SK_5    50     50-59      M Outside Middle East    South Korea
+#&amp;gt; 6   SK_6    71     70-79      M Outside Middle East    South Korea
+#&amp;gt; 7   SK_7    28     20-29      F Outside Middle East    South Korea
+#&amp;gt; 8   SK_8    46     40-49      F Outside Middle East    South Korea
+#&amp;gt; 9   SK_9    56     50-59      M Outside Middle East    South Korea
+#&amp;gt; 10 SK_10    44     40-49      M Outside Middle East          China
+#&amp;gt; # ... with 152 more rows, and 9 more variables: loc_hosp &amp;lt;fctr&amp;gt;,
+#&amp;gt; #   dt_onset &amp;lt;date&amp;gt;, dt_report &amp;lt;date&amp;gt;, week_report &amp;lt;fctr&amp;gt;,
+#&amp;gt; #   dt_start_exp &amp;lt;date&amp;gt;, dt_end_exp &amp;lt;date&amp;gt;, dt_diag &amp;lt;date&amp;gt;,
+#&amp;gt; #   outcome &amp;lt;fctr&amp;gt;, dt_death &amp;lt;date&amp;gt;
+#&amp;gt; 
+#&amp;gt;   // contacts
+#&amp;gt; 
+#&amp;gt; # A tibble: 98 × 4
+#&amp;gt;     from     to       exposure diff_dt_onset
+#&amp;gt;    &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;         &amp;lt;fctr&amp;gt;         &amp;lt;int&amp;gt;
+#&amp;gt; 1  SK_14 SK_113 Emergency room            10
+#&amp;gt; 2  SK_14 SK_116 Emergency room            13
+#&amp;gt; 3  SK_14  SK_41 Emergency room            14
+#&amp;gt; 4  SK_14 SK_112 Emergency room            14
+#&amp;gt; 5  SK_14 SK_100 Emergency room            15
+#&amp;gt; 6  SK_14 SK_114 Emergency room            15
+#&amp;gt; 7  SK_14 SK_136 Emergency room            15
+#&amp;gt; 8  SK_14  SK_47 Emergency room            16
+#&amp;gt; 9  SK_14 SK_110 Emergency room            16
+#&amp;gt; 10 SK_14 SK_122 Emergency room            16
+#&amp;gt; # ... with 88 more rows
+class(x)
+#&amp;gt; [1] &amp;quot;epicontacts&amp;quot;
+summary(x)
+#&amp;gt; 
+#&amp;gt; /// Overview //
+#&amp;gt;   // number of unique IDs in linelist: 162
+#&amp;gt;   // number of unique IDs in contacts: 97
+#&amp;gt;   // number of unique IDs in both: 97
+#&amp;gt;   // number of contacts: 98
+#&amp;gt;   // contacts with both cases in linelist: 100 %
+#&amp;gt; 
+#&amp;gt; /// Degrees of the network //
+#&amp;gt;   // in-degree summary:
+#&amp;gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&amp;gt;    0.00    1.00    1.00    1.01    1.00    3.00 
+#&amp;gt; 
+#&amp;gt;   // out-degree summary:
+#&amp;gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&amp;gt;    0.00    0.00    0.00    1.01    0.00   38.00 
+#&amp;gt; 
+#&amp;gt;   // in and out degree summary:
+#&amp;gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&amp;gt;   1.000   1.000   1.000   2.021   1.000  39.000 
+#&amp;gt; 
+#&amp;gt; /// Attributes //
+#&amp;gt;   // attributes in linelist:
+#&amp;gt;  age age_class sex place_infect reporting_ctry loc_hosp dt_onset dt_report week_report dt_start_exp dt_end_exp dt_diag outcome dt_death
+#&amp;gt; 
+#&amp;gt;   // attributes in contacts:
+#&amp;gt;  exposure diff_dt_onset
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In practice, the linelist and contacts will usually be imported from a text file
+(e.g. .txt, .csv) or a spreadsheet (e.g. .ods, .xls) using usual import
+functions (e.g. &lt;code&gt;read.table&lt;/code&gt;, &lt;code&gt;read.csv&lt;/code&gt;, &lt;code&gt;gdata::read.xls&lt;/code&gt;).&lt;/p&gt;
+
+&lt;h3 id=&#34;simple-analyses&#34;&gt;Simple analyses&lt;/h3&gt;
+
+&lt;p&gt;First, we plot the &lt;em&gt;epicontacts&lt;/em&gt; object:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;
+plot(x, selector = FALSE)
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://github.com/reconhub/epicontacts/raw/master/figs/plot_x.png&#34; width=&#34;600px&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;This is a screenshot of the actual plot. For interactive graphs, see the &lt;a href=&#34;http://www.repidemicsconsortium.org/epicontacts/articles/epicontacts.html&#34; target=&#34;_blank&#34;&gt;introductory vignette&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;We can look for patterns of contacts between genders:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;
+plot(x, &amp;quot;sex&amp;quot;, col_pal = spectral)
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://github.com/reconhub/epicontacts/raw/master/figs/plot_x_gender.png&#34; width=&#34;600px&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;There is no obvious signs of non-random mixing patterns, but this is worth
+testing. The function &lt;code&gt;get_pairwise&lt;/code&gt; is particularly useful for this. In its
+basic form, it reports nodes of attributes for all contacts. For instance:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;
+get_pairwise(x, attribute = &amp;quot;sex&amp;quot;)
+#&amp;gt;  [1] &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot;
+#&amp;gt;  [8] &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot;
+#&amp;gt; [15] &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot;
+#&amp;gt; [22] &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot;
+#&amp;gt; [29] &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;F -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot;
+#&amp;gt; [36] &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;F -&amp;gt; M&amp;quot;
+#&amp;gt; [43] &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot;
+#&amp;gt; [50] &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;F -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot;
+#&amp;gt; [57] &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot;
+#&amp;gt; [64] &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;F -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot;
+#&amp;gt; [71] &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot;
+#&amp;gt; [78] &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;F -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot;
+#&amp;gt; [85] &amp;quot;F -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot;
+#&amp;gt; [92] &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; F&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot; &amp;quot;M -&amp;gt; M&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;However, one can specify the function to be used to compare the attributes of
+connected nodes; for instance:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;
+sex_tab &amp;lt;- get_pairwise(x, attribute = &amp;quot;sex&amp;quot;, f = table)
+sex_tab
+#&amp;gt;            values.to
+#&amp;gt; values.from  F  M
+#&amp;gt;           F  2  4
+#&amp;gt;           M 38 54
+fisher.test(sex_tab)
+#&amp;gt; 
+#&amp;gt; 	Fisher&#39;s Exact Test for Count Data
+#&amp;gt; 
+#&amp;gt; data:  sex_tab
+#&amp;gt; p-value = 1
+#&amp;gt; alternative hypothesis: true odds ratio is not equal to 1
+#&amp;gt; 95 percent confidence interval:
+#&amp;gt;  0.06158088 5.26628732
+#&amp;gt; sample estimates:
+#&amp;gt; odds ratio 
+#&amp;gt;   0.712926
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Indeed, there are no patterns of association between genders.  We can also use
+this function to compute delays between dates. For instance, to get the
+distribution of the serial interval (delay between primary and secondary onset):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;
+si &amp;lt;- get_pairwise(x, attribute = &amp;quot;dt_onset&amp;quot;)
+si
+#&amp;gt;  [1] 10 13 14 14 15 15 15 16 16 16 17 18 18 18 18 19 19 19 20 20 20 21 21
+#&amp;gt; [24] 22 22 22 24 24 24 25 17 15  2  7  9 10 14 15 14 22 15  5  9 27 10 12
+#&amp;gt; [47] 14 17  9 14 14  6  6  9  9  9 10 12 13 21  5 14 16 20 21 13  3 11 11
+#&amp;gt; [70] 12 12 12 12 13 13 14 15 15 16 18 21 22 12 11  9  3 10 10 10 10 11 12
+#&amp;gt; [93] 12 13 14 16 17 18
+summary(si)
+#&amp;gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&amp;gt;    2.00   11.00   14.00   14.47   18.00   27.00
+hist(si, col = &amp;quot;grey&amp;quot;, border = &amp;quot;white&amp;quot;, nclass = 30, 
+     xlab = &amp;quot;Time to secondary onset (days)&amp;quot;, 
+     main = &amp;quot;Distribution of the serial interval&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;figs/si-1.png&#34; alt=&#34;plot of chunk si&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;contributors-by-alphabetic-order&#34;&gt;Contributors (by alphabetic order):&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/finlaycampbell&#34; target=&#34;_blank&#34;&gt;Finlay Campbell&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/tc13&#34; target=&#34;_blank&#34;&gt;Thomas Crellen&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/thibautjombart&#34; target=&#34;_blank&#34;&gt;Thibaut Jombart&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/nistara&#34; target=&#34;_blank&#34;&gt;Nistara Randhawa&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Bertrand Sudre&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;See details of contributions on: &lt;br&gt;
+&lt;a href=&#34;https://github.com/reconhub/epicontacts/graphs/contributors&#34; target=&#34;_blank&#34;&gt;https://github.com/reconhub/epicontacts/graphs/contributors&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Contributions are welcome via &lt;strong&gt;pull requests&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Please note that this project is released with a &lt;a href=&#34;CONDUCT.md&#34; target=&#34;_blank&#34;&gt;Contributor Code of Conduct&lt;/a&gt;. By participating in this project you agree to abide by its terms.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Maintainer:&lt;/strong&gt; VP Nagraj (vpnagraj@virginia.edu)&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>hei</title>
+      <link>/project/hei/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/hei/</guid>
+      <description>&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis posuere tellus ac convallis placerat. Proin tincidunt magna sed ex sollicitudin condimentum. Sed ac faucibus dolor, scelerisque sollicitudin nisi. Cras purus urna, suscipit quis sapien eu, pulvinar tempor diam. Quisque risus orci, mollis id ante sit amet, gravida egestas nisl. Sed ac tempus magna. Proin in dui enim. Donec condimentum, sem id dapibus fringilla, tellus enim condimentum arcu, nec volutpat est felis vel metus. Vestibulum sit amet erat at nulla eleifend gravida.&lt;/p&gt;
+
+&lt;p&gt;Nullam vel molestie justo. Curabitur vitae efficitur leo. In hac habitasse platea dictumst. Sed pulvinar mauris dui, eget varius purus congue ac. Nulla euismod, lorem vel elementum dapibus, nunc justo porta mi, sed tempus est est vel tellus. Nam et enim eleifend, laoreet sem sit amet, elementum sem. Morbi ut leo congue, maximus velit ut, finibus arcu. In et libero cursus, rutrum risus non, molestie leo. Nullam congue quam et volutpat malesuada. Sed risus tortor, pulvinar et dictum nec, sodales non mi. Phasellus lacinia commodo laoreet. Nam mollis, erat in feugiat consectetur, purus eros egestas tellus, in auctor urna odio at nibh. Mauris imperdiet nisi ac magna convallis, at rhoncus ligula cursus.&lt;/p&gt;
+
+&lt;p&gt;Cras aliquam rhoncus ipsum, in hendrerit nunc mattis vitae. Duis vitae efficitur metus, ac tempus leo. Cras nec fringilla lacus. Quisque sit amet risus at ipsum pharetra commodo. Sed aliquam mauris at consequat eleifend. Praesent porta, augue sed viverra bibendum, neque ante euismod ante, in vehicula justo lorem ac eros. Suspendisse augue libero, venenatis eget tincidunt ut, malesuada at lorem. Donec vitae bibendum arcu. Aenean maximus nulla non pretium iaculis. Quisque imperdiet, nulla in pulvinar aliquet, velit quam ultrices quam, sit amet fringilla leo sem vel nunc. Mauris in lacinia lacus.&lt;/p&gt;
+
+&lt;p&gt;Suspendisse a tincidunt lacus. Curabitur at urna sagittis, dictum ante sit amet, euismod magna. Sed rutrum massa id tortor commodo, vitae elementum turpis tempus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean purus turpis, venenatis a ullamcorper nec, tincidunt et massa. Integer posuere quam rutrum arcu vehicula imperdiet. Mauris ullamcorper quam vitae purus congue, quis euismod magna eleifend. Vestibulum semper vel augue eget tincidunt. Fusce eget justo sodales, dapibus odio eu, ultrices lorem. Duis condimentum lorem id eros commodo, in facilisis mauris scelerisque. Morbi sed auctor leo. Nullam volutpat a lacus quis pharetra. Nulla congue rutrum magna a ornare.&lt;/p&gt;
+
+&lt;p&gt;Aliquam in turpis accumsan, malesuada nibh ut, hendrerit justo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Quisque sed erat nec justo posuere suscipit. Donec ut efficitur arcu, in malesuada neque. Nunc dignissim nisl massa, id vulputate nunc pretium nec. Quisque eget urna in risus suscipit ultricies. Pellentesque odio odio, tincidunt in eleifend sed, posuere a diam. Nam gravida nisl convallis semper elementum. Morbi vitae felis faucibus, vulputate orci placerat, aliquet nisi. Aliquam erat volutpat. Maecenas sagittis pulvinar purus, sed porta quam laoreet at.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>rrefine</title>
+      <link>/project/rrefine/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/rrefine/</guid>
+      <description>
+
+&lt;p&gt;&lt;a href=&#34;https://travis-ci.org/vpnagraj/rrefine&#34;&gt;
+&lt;img src=&#34;https://travis-ci.org/vpnagraj/rrefine.svg?branch=master&#34; alt=&#34;Travis CI Status&#34;&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href=&#34;https://cran.r-project.org/packages=rrefine&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;http://www.r-pkg.org/badges/version/rrefine&#34; alt=&#34;CRAN Release&#34; /&gt;&lt;/a&gt; &lt;img src=&#34;http://cranlogs.r-pkg.org/badges/rrefine&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://openrefine.org/&#34; target=&#34;_blank&#34;&gt;&lt;em&gt;OpenRefine&lt;/em&gt;&lt;/a&gt; (formerly &lt;em&gt;Google Refine&lt;/em&gt;) is a popular, open source data cleaning software. &lt;strong&gt;rrefine&lt;/strong&gt; enables users to programmatically trigger data transfer between R and &lt;em&gt;OpenRefine&lt;/em&gt;. Using the functions available in this package, you can import, export or delete a project in &lt;em&gt;OpenRefine&lt;/em&gt; directly from R. There are &lt;a href=&#34;https://github.com/OpenRefine/OpenRefine/wiki/Documentation-For-Developers#known-client-libraries-for-refine&#34; target=&#34;_blank&#34;&gt;several client libraries for automating &lt;em&gt;OpenRefine&lt;/em&gt; tasks via Python, nodeJS and Ruby&lt;/a&gt;. &lt;strong&gt;rrefine&lt;/strong&gt; extends this functionality to R users.&lt;/p&gt;
+
+&lt;h2 id=&#34;installation&#34;&gt;Installation&lt;/h2&gt;
+
+&lt;p&gt;The latest version of &lt;strong&gt;rrefine&lt;/strong&gt; is availabe on &lt;a href=&#34;https://github.com/vpnagraj/rrefine&#34; target=&#34;_blank&#34;&gt;Github&lt;/a&gt; and can be installed via &lt;strong&gt;devtools&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# install.packages(&amp;quot;devtools&amp;quot;)
+devtools::install_github(&amp;quot;vpnagraj/rrefine&amp;quot;)
+library(rrefine)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;rrefine&lt;/strong&gt; is also available on &lt;a href=&#34;https://cran.r-project.org/web/packages/rrefine/index.html&#34; target=&#34;_blank&#34;&gt;CRAN&lt;/a&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;install.packages(&amp;quot;rrefine&amp;quot;)
+library(rrefine)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;functions&#34;&gt;Functions&lt;/h2&gt;
+
+&lt;p&gt;The package includes the following functionality:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;refine_upload()&lt;/code&gt; (upload data to &lt;em&gt;OpenRefine&lt;/em&gt; from R)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;refine_export()&lt;/code&gt; (export data to R from &lt;em&gt;OpenRefine&lt;/em&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;refine_delete()&lt;/code&gt; (delete &lt;em&gt;OpenRefine&lt;/em&gt; project)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Descriptions and examples of usage are available in the package &lt;a href=&#34;https://cran.r-project.org/web/packages/rrefine/rrefine.pdf&#34; target=&#34;_blank&#34;&gt;manual&lt;/a&gt; and &lt;a href=&#34;https://cran.r-project.org/web/packages/rrefine/vignettes/rrefine-vignette.html&#34; target=&#34;_blank&#34;&gt;vignette&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;issues&#34;&gt;Issues&lt;/h2&gt;
+
+&lt;p&gt;Feature requests, bug reports or other questions should be directed to the &lt;a href=&#34;https://github.com/vpnagraj/rrefine/issues&#34; target=&#34;_blank&#34;&gt;issue queue&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>simpleCache</title>
+      <link>/project/simplecache/</link>
+      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/simplecache/</guid>
+      <description>
+
+&lt;p&gt;&lt;a href=&#34;https://travis-ci.org/databio/simpleCache&#34;&gt;&lt;img src=&#34;https://travis-ci.org/databio/simpleCache.svg?branch=master&#34; alt=&#34;Travis CI status&#34;&gt;&lt;/img&gt;&lt;/a&gt;&lt;a href=&#34;https://cran.r-project.org/package=simpleCache&#34;&gt;&lt;img src=&#34;https://www.r-pkg.org/badges/version/simpleCache&#34;&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;simpleCache&lt;/code&gt; is an R package providing functions for caching R objects. Its
+purpose is to encourage writing reusable, restartable, and reproducible analysis
+pipelines for projects with massive data and computational requirements.&lt;/p&gt;
+
+&lt;p&gt;Like its name indicates, &lt;code&gt;simpleCache&lt;/code&gt; is intended to be simple. You choose a
+location to store your caches, and then provide the function with nothing more
+than a cache name and instructions (R code) for how to produce the R object.
+While simple, &lt;code&gt;simpleCache&lt;/code&gt; also provides some advanced options like environment
+assignments, recreating caches, reloading caches, and even cluster compute
+bindings (using the &lt;code&gt;batchtools&lt;/code&gt; package) making it flexible enough for use in
+large-scale data analysis projects.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&#34;installing-simplecache&#34;&gt;Installing simpleCache&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;simpleCache&lt;/code&gt; is on
+&lt;a href=&#34;https://cran.r-project.org/package=simpleCache&#34; target=&#34;_blank&#34;&gt;CRAN&lt;/a&gt; and can
+be installed as usual:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;install.packages(&amp;quot;simpleCache&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&#34;running-simplecache&#34;&gt;Running simpleCache&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;simpleCache&lt;/code&gt; comes with a single primary function (&lt;code&gt;simpleCache()&lt;/code&gt;) that will do almost
+everything you need. In short, you run it with a few lines like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;library(simpleCache) 
+setCacheDir(tempdir())
+simpleCache(&amp;quot;normSample&amp;quot;, { rnorm(1e7, 0,1) }, recreate=TRUE)
+simpleCache(&amp;quot;normSample&amp;quot;, { rnorm(1e7, 0,1) })
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;simpleCache&lt;/code&gt; also interfaces with the &lt;code&gt;batchtools&lt;/code&gt; package to let you build
+caches on any cluster resource manager.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&#34;highlights-of-exported-functions&#34;&gt;Highlights of exported functions&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;simpleCache()&lt;/code&gt;: Creates and caches or reloads cached results of provided R instruction code&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;listCaches()&lt;/code&gt;: Lists all of the caches available in the &lt;code&gt;cacheDir&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;deleteCaches()&lt;/code&gt;: Deletes cache(s) from the &lt;code&gt;cacheDir&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;setCacheDir()&lt;/code&gt;: Sets a global option for a cache directory so you don&amp;rsquo;t have to specify one in each &lt;code&gt;simpleCache&lt;/code&gt; call&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;simpleCacheOptions()&lt;/code&gt;: Views all of the &lt;code&gt;simpleCache&lt;/code&gt; global options that have been set&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;simplecache-philosophy&#34;&gt;simpleCache Philosophy&lt;/h3&gt;
+
+&lt;p&gt;The use case I had in mind for &lt;code&gt;simpleCache&lt;/code&gt; is that you find yourself
+constantly recalculating the same R object in several different scripts, or
+repeatedly in the same script, every time you open it and want to continue that
+project. SimpleCache is well-suited for interactive analysis, allowing you to
+pick up right where you left off in a new R session, without having to
+recalculate everything. It is equally useful in automatic pipelines, where
+separate scripts may benefit from loading, instead of recalculating, the same R
+objects produced by other scripts.&lt;/p&gt;
+
+&lt;p&gt;R provides some base functions (&lt;code&gt;save&lt;/code&gt;, &lt;code&gt;serialize&lt;/code&gt;, and &lt;code&gt;load&lt;/code&gt;) to let you save
+and reload such objects, but these low-level functions are a bit cumbersome.
+&lt;code&gt;simpleCache&lt;/code&gt; simply provides a convenient, user-friendly interface to these
+functions, streamlining the process. For example, a single &lt;code&gt;simpleCache&lt;/code&gt; call
+will check for a cache and load it if it exists, or create it if it does not.
+With the base R &lt;code&gt;save&lt;/code&gt; and &lt;code&gt;load&lt;/code&gt; functions, you can&amp;rsquo;t just write a single
+function call and then run the same thing every time you start the script &amp;ndash;
+even this simple use case requires additional logic to check for an existing
+cache. &lt;code&gt;simpleCache&lt;/code&gt; just does all this for you.&lt;/p&gt;
+
+&lt;p&gt;The thing to keep in mind with &lt;code&gt;simpleCache&lt;/code&gt; is that &lt;strong&gt;the cache name is
+paramount&lt;/strong&gt;. &lt;code&gt;simpleCache&lt;/code&gt; assumes that your name for an object is a perfect
+identifier for that object; in other words, don&amp;rsquo;t cache things that you plan to
+change.&lt;/p&gt;
+
+&lt;h3 id=&#34;contributing&#34;&gt;Contributing&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;simpleCache&lt;/code&gt; is licensed under the &lt;a href=&#34;https://opensource.org/licenses/BSD-2-Clause&#34; target=&#34;_blank&#34;&gt;2-Clause BSD License&lt;/a&gt;. Questions, feature requests and bug reports are welcome via the &lt;a href=&#34;https://github.com/databio/simpleCache/issues&#34; target=&#34;_blank&#34;&gt;issue queue&lt;/a&gt;. The maintainer will review pull requests and incorporate contributions at his discretion.&lt;/p&gt;
+
+&lt;p&gt;For more information refer to the contributing document and pull request / issue templates in the &lt;a href=&#34;https://github.com/databio/simpleCache/tree/master/.github&#34; target=&#34;_blank&#34;&gt;.github folder&lt;/a&gt; of this repository.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Example Talk</title>
+      <link>/talk/example-talk/</link>
+      <pubDate>Sun, 01 Jan 2017 00:00:00 -0500</pubDate>
+      
+      <guid>/talk/example-talk/</guid>
+      <description>&lt;p&gt;Embed your slides or video here using &lt;a href=&#34;https://sourcethemes.com/academic/post/writing-markdown-latex/&#34; target=&#34;_blank&#34;&gt;shortcodes&lt;/a&gt;. Further details can easily be added using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -236,6 +834,140 @@ git submodule update --init --recursive
     </item>
     
     <item>
+      <title></title>
+      <link>/about/bio/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>/about/bio/</guid>
+      <description>&lt;section id=&#34;about&#34; class=&#34;home-section&#34;&gt;
+    &lt;div class=&#34;container&#34;&gt;
+      
+
+
+
+&lt;div class=&#34;row&#34; itemprop=&#34;author&#34; itemscope itemtype=&#34;http://schema.org/Person&#34; itemref=&#34;&#34;&gt;
+  &lt;div class=&#34;col-xs-12 col-md-4&#34;&gt;
+    &lt;div id=&#34;profile&#34;&gt;
+
+      
+      &lt;div class=&#34;portrait&#34; style=&#34;background-image: url(&#39;/img/portrait.jpg&#39;);&#34;&gt;&lt;/div&gt;
+      &lt;meta itemprop=&#34;image&#34; content=&#34;/img/portrait.jpg&#34;&gt;
+      
+
+      &lt;div class=&#34;portrait-title&#34;&gt;
+        &lt;h2 itemprop=&#34;name&#34;&gt;VP Nagraj&lt;/h2&gt;
+        
+
+        
+        
+
+        
+        &lt;h3 itemprop=&#34;worksFor&#34; itemscope=&#34;&#34; itemtype=&#34;http://schema.org/Organization&#34;&gt;
+          
+          &lt;span itemprop=&#34;name&#34;&gt;University of Virginia&lt;/span&gt;
+          
+        &lt;/h3&gt;
+        
+        &lt;h3 itemprop=&#34;worksFor&#34; itemscope=&#34;&#34; itemtype=&#34;http://schema.org/Organization&#34;&gt;
+          
+          &lt;span itemprop=&#34;name&#34;&gt;School of Medicine&lt;/span&gt;
+          
+        &lt;/h3&gt;
+        
+        &lt;h3 itemprop=&#34;worksFor&#34; itemscope=&#34;&#34; itemtype=&#34;http://schema.org/Organization&#34;&gt;
+          
+          &lt;span itemprop=&#34;name&#34;&gt;Research Computing&lt;/span&gt;
+          
+        &lt;/h3&gt;
+        
+      &lt;/div&gt;
+
+      &lt;link itemprop=&#34;url&#34; href=&#34;/&#34;&gt;
+
+      &lt;ul class=&#34;network-icon&#34; aria-hidden=&#34;true&#34;&gt;
+        
+        
+        &lt;li&gt;
+          &lt;a itemprop=&#34;sameAs&#34; href=&#34;mailto:vpnagraj@virginia.edu&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;
+            &lt;i class=&#34;fa fa-envelope big-icon&#34;&gt;&lt;/i&gt;
+          &lt;/a&gt;
+        &lt;/li&gt;
+        
+        
+        &lt;li&gt;
+          &lt;a itemprop=&#34;sameAs&#34; href=&#34;//twitter.com/vpnagraj&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;
+            &lt;i class=&#34;fa fa-twitter big-icon&#34;&gt;&lt;/i&gt;
+          &lt;/a&gt;
+        &lt;/li&gt;
+        
+        
+        &lt;li&gt;
+          &lt;a itemprop=&#34;sameAs&#34; href=&#34;//github.com/vpnagraj&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;
+            &lt;i class=&#34;fa fa-github big-icon&#34;&gt;&lt;/i&gt;
+          &lt;/a&gt;
+        &lt;/li&gt;
+        
+      &lt;/ul&gt;
+
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&#34;col-xs-12 col-md-8&#34; itemprop=&#34;description&#34;&gt;
+
+    &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proin eget egestas augue. Praesent ut sem nec arcu pellentesque aliquet. Duis dapibus diam vel metus tempus vulputate.&lt;/p&gt;
+
+
+    &lt;div class=&#34;row&#34;&gt;
+
+      
+      &lt;div class=&#34;col-sm-5&#34;&gt;
+        &lt;h3&gt;Interests&lt;/h3&gt;
+        &lt;ul class=&#34;ul-interests&#34;&gt;
+          
+          &lt;li&gt;R programming&lt;/li&gt;
+          
+          &lt;li&gt;Data analysis&lt;/li&gt;
+          
+          &lt;li&gt;Epidemiology&lt;/li&gt;
+          
+        &lt;/ul&gt;
+      &lt;/div&gt;
+      
+
+      
+      &lt;div class=&#34;col-sm-7&#34;&gt;
+        &lt;h3&gt;Education&lt;/h3&gt;
+        &lt;ul class=&#34;ul-edu fa-ul&#34;&gt;
+          
+          &lt;li&gt;
+            &lt;i class=&#34;fa-li fa fa-graduation-cap&#34;&gt;&lt;/i&gt;
+            &lt;div class=&#34;description&#34;&gt;
+              &lt;p class=&#34;course&#34;&gt;MS Epidemiology, 2019&lt;/p&gt;
+              &lt;p class=&#34;institution&#34;&gt;Columbia University&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/li&gt;
+          
+          &lt;li&gt;
+            &lt;i class=&#34;fa-li fa fa-graduation-cap&#34;&gt;&lt;/i&gt;
+            &lt;div class=&#34;description&#34;&gt;
+              &lt;p class=&#34;course&#34;&gt;BA English, 2009&lt;/p&gt;
+              &lt;p class=&#34;institution&#34;&gt;University of Virginia&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/li&gt;
+          
+        &lt;/ul&gt;
+      &lt;/div&gt;
+      
+
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+    &lt;/div&gt;
+  &lt;/section&gt;
+</description>
+    </item>
+    
+    <item>
       <title>A Person Re-Identification System For Mobile Devices</title>
       <link>/publication/person-re-identification/</link>
       <pubDate>Tue, 01 Sep 2015 00:00:00 +0000</pubDate>
@@ -290,16 +1022,6 @@ Figure 1: A fancy pie chart.
 &lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Mobile visual clothing search</title>
-      <link>/publication/clothing-search/</link>
-      <pubDate>Mon, 01 Jul 2013 00:00:00 +0000</pubDate>
-      
-      <guid>/publication/clothing-search/</guid>
-      <description>&lt;p&gt;More detail can easily be written here using &lt;em&gt;Markdown&lt;/em&gt; and $\rm \LaTeX$ math code.&lt;/p&gt;
 </description>
     </item>
     

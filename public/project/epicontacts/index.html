@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37.1" />
+  <meta name="author" content="VP Nagraj">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="Installing the package To install the current stable, CRAN version of the package, type:
+install.packages(&quot;epicontacts&quot;)  To benefit from the latest features and bug fixes, install the development, github version of the package using:
+devtools::install_github(&quot;reconhub/epicontacts&quot;)  Note that this requires the package devtools installed.
+What does it do? The main features of the package include:
+ epicontacts: a new S3 class for storing linelists and contacts data">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/project/epicontacts/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#0095eb">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.1/css/academicons.min.css" integrity="sha512-NThgw3XKQ1absAahW6to7Ey42uycrVvfNfyjqcFNgCmOCQ5AR4AO0SiXrN+8ZtYeappp56lk1WtvjVmEa+VR6A==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="VP Nagraj">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="VP Nagraj">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/project/epicontacts/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@vpnagraj">
+  <meta property="twitter:creator" content="@vpnagraj">
+  
+  <meta property="og:site_name" content="VP Nagraj">
+  <meta property="og:url" content="/project/epicontacts/">
+  <meta property="og:title" content="epicontacts | VP Nagraj">
+  <meta property="og:description" content="Installing the package To install the current stable, CRAN version of the package, type:
+install.packages(&quot;epicontacts&quot;)  To benefit from the latest features and bug fixes, install the development, github version of the package using:
+devtools::install_github(&quot;reconhub/epicontacts&quot;)  Note that this requires the package devtools installed.
+What does it do? The main features of the package include:
+ epicontacts: a new S3 class for storing linelists and contacts data"><meta property="og:image" content="/img/headers/bubbles-wide.jpg">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2018-04-02T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2018-04-02T00:00:00&#43;00:00">
+  
+
+  
+
+  <title>epicontacts | VP Nagraj</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">VP Nagraj</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/about/bio">
+            
+            <span>About</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/post">
+            
+            <span>Notes</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/publication">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article article-project" itemscope itemtype="http://schema.org/Article">
+
+  
+<div class="article-header">
+  
+  
+    <img src="/img/headers/bubbles-wide.jpg" class="article-banner" itemprop="image">
+  
+
+  <span class="article-header-caption">My caption 😄</span>
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="pub-title">
+      <h1 itemprop="name">epicontacts</h1>
+      <span class="pub-authors" itemprop="author">&nbsp;</span>
+    </div>
+
+    
+
+    <div class="article-style" itemprop="articleBody">
+
+      <blockquote>
+      A collection of tools for representing epidemiological contact data, composed of case line lists and contacts between cases. Also contains procedures for data handling, interactive graphics, and statistics.
+      </blockquote>
+
+      
+
+<p><a href="https://travis-ci.org/reconhub/epicontacts" target="_blank"><img src="https://travis-ci.org/reconhub/epicontacts.svg?branch=master" alt="Travis-CI Build Status" /></a>
+<a href="https://ci.appveyor.com/project/thibautjombart/epicontacts/branch/master" target="_blank"><img src="https://ci.appveyor.com/api/projects/status/7fj30xjlesja0vbr/branch/master?svg=true" alt="Build status" /></a>
+<a href="https://codecov.io/github/reconhub/epicontacts?branch=master" target="_blank"><img src="https://codecov.io/github/reconhub/epicontacts/coverage.svg?branch=master" alt="Coverage Status" /></a>
+<a href="https://cran.r-project.org/package=epicontacts" target="_blank"><img src="http://www.r-pkg.org/badges/version/epicontacts" alt="CRAN_Status_Badge" /></a>
+<a href="https://cran.r-project.org/package=epicontacts" target="_blank"><img src="https://cranlogs.r-pkg.org/badges/epicontacts" alt="CRAN Downloads" /></a></p>
+
+<p><br></p>
+
+<h2 id="installing-the-package">Installing the package</h2>
+
+<p>To install the current stable, CRAN version of the package, type:</p>
+
+<pre><code class="language-r">install.packages(&quot;epicontacts&quot;)
+</code></pre>
+
+<p>To benefit from the latest features and bug fixes, install the development, <em>github</em> version of the package using:</p>
+
+<pre><code class="language-r">devtools::install_github(&quot;reconhub/epicontacts&quot;)
+</code></pre>
+
+<p>Note that this requires the package <em>devtools</em> installed.</p>
+
+<h2 id="what-does-it-do">What does it do?</h2>
+
+<p>The main features of the package include:</p>
+
+<ul>
+<li><p><strong><code>epicontacts</code>:</strong> a new S3 class for storing linelists and contacts data</p></li>
+
+<li><p><strong><code>make_epicontacts</code>:</strong> a constructor for the new <code>epicontacts</code> class</p></li>
+
+<li><p><strong><code>get_id</code>:</strong> access unique IDs in an <code>epicontacts</code> with various options</p></li>
+
+<li><p><strong><code>get_pairwise</code></strong>: extract attributes of record(s) in contacts database using
+information provided in the linelist data of an <code>epicontacts</code> object.</p></li>
+
+<li><p><strong><code>get_degree</code>:</strong> access degree of cases in <code>epicontacts</code> with various options</p></li>
+
+<li><p><strong><code>x[i,j,contacts]</code>:</strong> subset an <code>epicontacts</code> object by retaining specified
+cases</p></li>
+
+<li><p><strong><code>thin</code>:</strong> retains matching cases in linelist / contacts</p></li>
+
+<li><p><strong><code>summary</code>:</strong> summary for <code>epicontacts</code> objects</p></li>
+
+<li><p><strong><code>plot</code>:</strong> plot for <code>epicontacts</code> objects; various types of plot are
+available; default to <code>vis_epicontacts</code></p></li>
+
+<li><p><strong><code>vis_epicontacts</code>:</strong> plot an <code>epicontacts</code> object using <code>visNetwork</code></p></li>
+
+<li><p><strong><code>as.igraph.epicontacts</code>:</strong> create an <code>igraph</code> object from an epicontacts object</p></li>
+
+<li><p><strong><code>get_clusters</code>:</strong> assign clusters and corresponding cluster sizes to
+linelist of an epicontacts object (clusters being groups of connected
+individuals/nodes).</p></li>
+
+<li><p><strong><code>subset_clusters_by_id</code></strong>: subset an <code>epicontacts</code> object based on a IDs of
+cases of interest.</p></li>
+
+<li><p><strong><code>subset_clusters_by_size</code></strong>: subset an <code>epicontacts</code> object based on size(s)
+of clusters (clusters being groups of connected individuals/nodes).</p></li>
+
+<li><p><strong><code>graph3D</code></strong>: 3D graph from an <code>epicontacts</code> object.</p></li>
+</ul>
+
+<h2 id="resources">Resources</h2>
+
+<h3 id="vignettes">Vignettes</h3>
+
+<p>An overview of <em>epicontacts</em> is provided below in the worked example below.
+More detailed tutorials are distributed as vignettes with the package:</p>
+
+<pre><code class="language-r">vignette(&quot;overview&quot;, package=&quot;epicontacts&quot;)
+vignette(&quot;customize_plot&quot;, package=&quot;epicontacts&quot;)
+vignette(&quot;epicontacts_class&quot;, package=&quot;epicontacts&quot;)
+</code></pre>
+
+<h3 id="websites">Websites</h3>
+
+<p>The following websites are available:</p>
+
+<ul>
+<li><p>The official <em>epicontacts</em> website, providing an overview of the package&rsquo;s functionalities, up-to-date tutorials and documentation: <br>
+<a href="http://www.repidemicsconsortium.org/epicontacts/" target="_blank">http://www.repidemicsconsortium.org/epicontacts/</a></p></li>
+
+<li><p>The <em>epicontacts</em> project on <em>github</em>, useful for developers, contributors, and users wanting to post issues, bug reports and feature requests: <br>
+<a href="http://github.com/reconhub/epicontacts" target="_blank">http://github.com/reconhub/epicontacts</a></p></li>
+
+<li><p>The <em>epicontacts</em> page on CRAN: <br>
+<a href="https://CRAN.R-project.org/package=epicontacts" target="_blank">https://CRAN.R-project.org/package=epicontacts</a></p></li>
+</ul>
+
+<h3 id="getting-help-online">Getting help online</h3>
+
+<p>Bug reports and feature requests should be posted on <em>github</em> using the <a href="http://github.com/reconhub/epicontacts/issues" target="_blank"><em>issue</em></a> system. All other questions should be posted on the <strong>RECON forum</strong>: <br>
+<a href="http://www.repidemicsconsortium.org/forum/" target="_blank">http://www.repidemicsconsortium.org/forum/</a></p>
+
+<h2 id="a-quick-overview">A quick overview</h2>
+
+<p>The following worked example provides a brief overview of the package&rsquo;s
+functionalities. See the <a href="#vignettes"><em>vignettes section</em></a> for more detailed
+tutorials.</p>
+
+<h3 id="obtaining-an-epicontacts-object">Obtaining an <em>epicontacts</em> object</h3>
+
+<p><em>epicontacts</em> need two types of data:</p>
+
+<ul>
+<li><p>a <strong>linelist</strong>, i.e. a spreadsheet documenting cases where columns are
+variables and rows correspond to unique cases</p></li>
+
+<li><p>a <strong>list of edges</strong>, defining connections between cases, identified by their
+unique identifier</p></li>
+</ul>
+
+<p>There does not need to be an one-to-one correspondance between cases documented
+in the linelist and those appearing in the contacts. However, links will be made
+between the two sources of data whenever unique identifiers match. This will be
+especially handy when subsetting data, or when characterising contacts in terms
+of &lsquo;node&rsquo; (case) properties.</p>
+
+<p>We illustrate the construction of an <em>epicontacts</em> using contact data from a
+Middle East Respiratory Syndrom coronavirus (MERS CoV) from South Korea in 2015,
+available as the dataset <code>mers_korea_2015</code> in the package <em>outbreaks</em>.</p>
+
+<pre><code class="language-r">
+library(outbreaks)
+library(epicontacts)
+
+names(mers_korea_2015)
+#&gt; [1] &quot;linelist&quot; &quot;contacts&quot;
+dim(mers_korea_2015$linelist) 
+#&gt; [1] 162  15
+dim(mers_korea_2015$contacts) 
+#&gt; [1] 98  4
+
+x &lt;- make_epicontacts(linelist = mers_korea_2015$linelist,
+                      contacts = mers_korea_2015$contacts, 
+                      directed = TRUE)
+x
+#&gt; 
+#&gt; /// Epidemiological Contacts //
+#&gt; 
+#&gt;   // class: epicontacts
+#&gt;   // 162 cases in linelist; 98 contacts;  directed 
+#&gt; 
+#&gt;   // linelist
+#&gt; 
+#&gt; # A tibble: 162 × 15
+#&gt;       id   age age_class    sex        place_infect reporting_ctry
+#&gt;    &lt;chr&gt; &lt;int&gt;     &lt;chr&gt; &lt;fctr&gt;              &lt;fctr&gt;         &lt;fctr&gt;
+#&gt; 1   SK_1    68     60-69      M         Middle East    South Korea
+#&gt; 2   SK_2    63     60-69      F Outside Middle East    South Korea
+#&gt; 3   SK_3    76     70-79      M Outside Middle East    South Korea
+#&gt; 4   SK_4    46     40-49      F Outside Middle East    South Korea
+#&gt; 5   SK_5    50     50-59      M Outside Middle East    South Korea
+#&gt; 6   SK_6    71     70-79      M Outside Middle East    South Korea
+#&gt; 7   SK_7    28     20-29      F Outside Middle East    South Korea
+#&gt; 8   SK_8    46     40-49      F Outside Middle East    South Korea
+#&gt; 9   SK_9    56     50-59      M Outside Middle East    South Korea
+#&gt; 10 SK_10    44     40-49      M Outside Middle East          China
+#&gt; # ... with 152 more rows, and 9 more variables: loc_hosp &lt;fctr&gt;,
+#&gt; #   dt_onset &lt;date&gt;, dt_report &lt;date&gt;, week_report &lt;fctr&gt;,
+#&gt; #   dt_start_exp &lt;date&gt;, dt_end_exp &lt;date&gt;, dt_diag &lt;date&gt;,
+#&gt; #   outcome &lt;fctr&gt;, dt_death &lt;date&gt;
+#&gt; 
+#&gt;   // contacts
+#&gt; 
+#&gt; # A tibble: 98 × 4
+#&gt;     from     to       exposure diff_dt_onset
+#&gt;    &lt;chr&gt;  &lt;chr&gt;         &lt;fctr&gt;         &lt;int&gt;
+#&gt; 1  SK_14 SK_113 Emergency room            10
+#&gt; 2  SK_14 SK_116 Emergency room            13
+#&gt; 3  SK_14  SK_41 Emergency room            14
+#&gt; 4  SK_14 SK_112 Emergency room            14
+#&gt; 5  SK_14 SK_100 Emergency room            15
+#&gt; 6  SK_14 SK_114 Emergency room            15
+#&gt; 7  SK_14 SK_136 Emergency room            15
+#&gt; 8  SK_14  SK_47 Emergency room            16
+#&gt; 9  SK_14 SK_110 Emergency room            16
+#&gt; 10 SK_14 SK_122 Emergency room            16
+#&gt; # ... with 88 more rows
+class(x)
+#&gt; [1] &quot;epicontacts&quot;
+summary(x)
+#&gt; 
+#&gt; /// Overview //
+#&gt;   // number of unique IDs in linelist: 162
+#&gt;   // number of unique IDs in contacts: 97
+#&gt;   // number of unique IDs in both: 97
+#&gt;   // number of contacts: 98
+#&gt;   // contacts with both cases in linelist: 100 %
+#&gt; 
+#&gt; /// Degrees of the network //
+#&gt;   // in-degree summary:
+#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&gt;    0.00    1.00    1.00    1.01    1.00    3.00 
+#&gt; 
+#&gt;   // out-degree summary:
+#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&gt;    0.00    0.00    0.00    1.01    0.00   38.00 
+#&gt; 
+#&gt;   // in and out degree summary:
+#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&gt;   1.000   1.000   1.000   2.021   1.000  39.000 
+#&gt; 
+#&gt; /// Attributes //
+#&gt;   // attributes in linelist:
+#&gt;  age age_class sex place_infect reporting_ctry loc_hosp dt_onset dt_report week_report dt_start_exp dt_end_exp dt_diag outcome dt_death
+#&gt; 
+#&gt;   // attributes in contacts:
+#&gt;  exposure diff_dt_onset
+</code></pre>
+
+<p>In practice, the linelist and contacts will usually be imported from a text file
+(e.g. .txt, .csv) or a spreadsheet (e.g. .ods, .xls) using usual import
+functions (e.g. <code>read.table</code>, <code>read.csv</code>, <code>gdata::read.xls</code>).</p>
+
+<h3 id="simple-analyses">Simple analyses</h3>
+
+<p>First, we plot the <em>epicontacts</em> object:</p>
+
+<pre><code class="language-r">
+plot(x, selector = FALSE)
+
+</code></pre>
+
+<p><img src="https://github.com/reconhub/epicontacts/raw/master/figs/plot_x.png" width="600px"></p>
+
+<p>This is a screenshot of the actual plot. For interactive graphs, see the <a href="http://www.repidemicsconsortium.org/epicontacts/articles/epicontacts.html" target="_blank">introductory vignette</a>.</p>
+
+<p>We can look for patterns of contacts between genders:</p>
+
+<pre><code class="language-r">
+plot(x, &quot;sex&quot;, col_pal = spectral)
+
+</code></pre>
+
+<p><img src="https://github.com/reconhub/epicontacts/raw/master/figs/plot_x_gender.png" width="600px"></p>
+
+<p>There is no obvious signs of non-random mixing patterns, but this is worth
+testing. The function <code>get_pairwise</code> is particularly useful for this. In its
+basic form, it reports nodes of attributes for all contacts. For instance:</p>
+
+<pre><code class="language-r">
+get_pairwise(x, attribute = &quot;sex&quot;)
+#&gt;  [1] &quot;M -&gt; M&quot; &quot;M -&gt; F&quot; &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot;
+#&gt;  [8] &quot;M -&gt; F&quot; &quot;M -&gt; F&quot; &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; F&quot; &quot;M -&gt; F&quot;
+#&gt; [15] &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot;
+#&gt; [22] &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot;
+#&gt; [29] &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;F -&gt; F&quot; &quot;M -&gt; F&quot; &quot;M -&gt; F&quot;
+#&gt; [36] &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; F&quot; &quot;F -&gt; M&quot;
+#&gt; [43] &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; F&quot; &quot;M -&gt; F&quot; &quot;M -&gt; F&quot; &quot;M -&gt; M&quot;
+#&gt; [50] &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;F -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; F&quot;
+#&gt; [57] &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot;
+#&gt; [64] &quot;M -&gt; F&quot; &quot;M -&gt; F&quot; &quot;F -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot;
+#&gt; [71] &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; F&quot; &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; F&quot;
+#&gt; [78] &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; F&quot; &quot;F -&gt; M&quot; &quot;M -&gt; F&quot;
+#&gt; [85] &quot;F -&gt; F&quot; &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot;
+#&gt; [92] &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot; &quot;M -&gt; F&quot; &quot;M -&gt; F&quot; &quot;M -&gt; M&quot; &quot;M -&gt; M&quot;
+</code></pre>
+
+<p>However, one can specify the function to be used to compare the attributes of
+connected nodes; for instance:</p>
+
+<pre><code class="language-r">
+sex_tab &lt;- get_pairwise(x, attribute = &quot;sex&quot;, f = table)
+sex_tab
+#&gt;            values.to
+#&gt; values.from  F  M
+#&gt;           F  2  4
+#&gt;           M 38 54
+fisher.test(sex_tab)
+#&gt; 
+#&gt; 	Fisher's Exact Test for Count Data
+#&gt; 
+#&gt; data:  sex_tab
+#&gt; p-value = 1
+#&gt; alternative hypothesis: true odds ratio is not equal to 1
+#&gt; 95 percent confidence interval:
+#&gt;  0.06158088 5.26628732
+#&gt; sample estimates:
+#&gt; odds ratio 
+#&gt;   0.712926
+</code></pre>
+
+<p>Indeed, there are no patterns of association between genders.  We can also use
+this function to compute delays between dates. For instance, to get the
+distribution of the serial interval (delay between primary and secondary onset):</p>
+
+<pre><code class="language-r">
+si &lt;- get_pairwise(x, attribute = &quot;dt_onset&quot;)
+si
+#&gt;  [1] 10 13 14 14 15 15 15 16 16 16 17 18 18 18 18 19 19 19 20 20 20 21 21
+#&gt; [24] 22 22 22 24 24 24 25 17 15  2  7  9 10 14 15 14 22 15  5  9 27 10 12
+#&gt; [47] 14 17  9 14 14  6  6  9  9  9 10 12 13 21  5 14 16 20 21 13  3 11 11
+#&gt; [70] 12 12 12 12 13 13 14 15 15 16 18 21 22 12 11  9  3 10 10 10 10 11 12
+#&gt; [93] 12 13 14 16 17 18
+summary(si)
+#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&gt;    2.00   11.00   14.00   14.47   18.00   27.00
+hist(si, col = &quot;grey&quot;, border = &quot;white&quot;, nclass = 30, 
+     xlab = &quot;Time to secondary onset (days)&quot;, 
+     main = &quot;Distribution of the serial interval&quot;)
+</code></pre>
+
+<p><img src="figs/si-1.png" alt="plot of chunk si" /></p>
+
+<h2 id="contributors-by-alphabetic-order">Contributors (by alphabetic order):</h2>
+
+<ul>
+<li><a href="https://github.com/finlaycampbell" target="_blank">Finlay Campbell</a></li>
+<li><a href="https://github.com/tc13" target="_blank">Thomas Crellen</a></li>
+<li><a href="https://github.com/thibautjombart" target="_blank">Thibaut Jombart</a></li>
+<li><a href="https://github.com/nistara" target="_blank">Nistara Randhawa</a></li>
+<li>Bertrand Sudre</li>
+</ul>
+
+<p>See details of contributions on: <br>
+<a href="https://github.com/reconhub/epicontacts/graphs/contributors" target="_blank">https://github.com/reconhub/epicontacts/graphs/contributors</a></p>
+
+<p>Contributions are welcome via <strong>pull requests</strong>.</p>
+
+<p>Please note that this project is released with a <a href="CONDUCT.md" target="_blank">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
+
+<p><strong>Maintainer:</strong> VP Nagraj (vpnagraj@virginia.edu)</p>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/r-packages">r-packages</a>
+  
+</div>
+
+
+
+
+    
+    
+    
+
+    
+      
+      
+      
+      
+
+      
+      
+      
+      
+    
+
+  </div>
+</article>
+
+
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+
+  </body>
+</html>
+
