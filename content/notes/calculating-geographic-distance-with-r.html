@@ -1,0 +1,129 @@
+---
+title: "Calculating Geographic Distance With R"
+date: 2015-12-08T15:27:43-05:00
+categories: ["notes"]
+tags: ["geocoding", "gis", "google", "r"]
+summary: "a brief discussion of two methods for computing map distance"
+---
+
+
+
+<p>I’ve been working on an analysis that requires distance measurements as data points. The original dataset only had place names (as strings) so I had to do some geocoding before I could perform my distance calculations. I’ve used the <em>ggmap</em> package (… an R interface to the <a href="https://developers.google.com/maps/documentation/geocoding/intro?csw=1">Google Maps API</a>) to do this kind of thing in the past, but I haven’t documented that work before now.</p>
+<p>The workflow is simple enough:</p>
+<ol style="list-style-type: decimal">
+<li>Calculate the latitude and longitude</li>
+<li>Pass those coordinates through distance calculation function</li>
+</ol>
+<p>There are a few ways to approach this.</p>
+<div id="mapdist" class="section level2">
+<h2><code>mapdist()</code></h2>
+<p>The <em>ggmap</em> package includes a function called <code>mapdist()</code> that computes the distance between two locations based on a “from” and a “to” argument. These parameters accept strings. What’s nice about this is that the two steps described above are combined in one. The names are geocoded and distances between the locations are computed via the <a href="https://developers.google.com/maps/documentation/distance-matrix/intro?hl=en">Google API Distance Matrix</a>. The <strong>mode</strong> can be set to “walking”, “bicycling” or “driving” and the <strong>output</strong> format configured to either “simple” (data frame) or “all” (list). But with its defaults, the function gives you easy access to the distance in miles (or meters or kilometers) and duration in minutes (or seconds or hours):</p>
+<pre class="r"><code># load ggmap
+library(ggmap)
+
+# calculate distance between two place names
+arena_dist &lt;- mapdist(from = &quot;Madison Square Garden New York, NY&quot;, to = &quot;The Palace of Auburn Hills Auburn Hills, MI&quot;)
+
+# output distance in miles
+arena_dist$miles
+
+# output &quot;distance&quot; in minutes
+arena_dist$minutes</code></pre>
+<p>The method above works well for measuring a single distance between two locations. But there are some cases (including the one that inspired this post) that require measurements across many combinations of places. The code below achieves this by passing <code>mapdist()</code> into <code>lapply()</code>:</p>
+<pre class="r"><code># load ggmap
+library(ggmap)
+
+# create vector of place names
+places_names &lt;- c(&quot;Museum of Modern Art New York, NY&quot;,
+                &quot;Smithsonian Museum of American Art Washington, DC&quot;,
+                &quot;Brooklyn Museum Brooklyn, NY&quot;,
+                &quot;Walker Art Center Minneapolis, MN&quot;,
+                &quot;Fralin Museum of Art Charlottesville, VA&quot;)
+
+# apply distance calculation to all combinations of place names
+dist_list &lt;- lapply(places_names, 
+                    function(z) 
+                        sapply(z, 
+                               function(x) 
+                                   mapdist(from=places_names, to=x)$miles)
+                                   )
+
+# view results as list
+dist_list
+
+# unlist results and convert to a &quot;named&quot; matrix format
+dist_mat &lt;- sapply(dist_list, unlist)
+
+colnames(dist_mat) &lt;- places_names
+
+rownames(dist_mat) &lt;- places_names
+
+# view results as matrix
+dist_mat</code></pre>
+<p>This is great … <em>but</em> there’s another <em>but</em>. The <a href="https://developers.google.com/maps/documentation/business/articles/usage_limits">Google Maps API limits usage of its web services</a>) to 250 queries per day. So say you have a list of 100 locations, and you want to compute a matrix of distances between all of them:</p>
+<p><code>100 x 100 = 10000 &gt; 2500</code></p>
+<p>Bummer.</p>
+<p>This is where a combination of the <code>geocode()</code> function from the <em>ggmap</em> package and the <code>gdist()</code> function from the <em>Imap</em> package is helpful.</p>
+</div>
+<div id="geocode-gdist" class="section level2">
+<h2><code>geocode()</code> + <code>gdist()</code></h2>
+<p>There’s an easy workaround to the Google Maps API query limit: use the Google Maps API … just make fewer queries.</p>
+<p><code>geocode()</code> calculates the latitude and longitude of an input location name (as a string) via the <a href="https://developers.google.com/maps/documentation/geocoding/intro?csw=1">Google Maps Geocoding API</a>. Because it’s calculating the distance once for each individual location, the resulting query count for a list of 100 institutions is 100. And with latitude and longitude available, you can rely on other packages to calculate distance. <code>gdist()</code> from the <em>Imap</em> package computes the <a href="https://en.wikipedia.org/wiki/Geographical_distance">geodesic distance</a> based on the latitude and longitude of the first location, and latitude and longitude of the second location. Because <code>gdist()</code> takes <strong>lon.1</strong>, <strong>lat.1</strong>, <strong>lon.2</strong> and <strong>lat.2</strong> the code can be a little bit messier. The example below geocodes the same place names as above, then computes all of the distances between them:</p>
+<pre class="r"><code># create vector of place names
+places_names &lt;- c(&quot;Museum of Modern Art New York, NY&quot;,
+                &quot;Smithsonian Museum of American Art Washington, DC&quot;,
+                &quot;Brooklyn Museum Brooklyn, NY&quot;,
+                &quot;Walker Art Center Minneapolis, MN&quot;,
+                &quot;Fralin Museum of Art Charlottesville, VA&quot;)
+
+# geocode place names
+places_lat &lt;- geocode(places_names, source=&quot;google&quot;)$lat
+places_lon &lt;- geocode(places_names, source=&quot;google&quot;)$lon
+
+# create a data frame to store all variables
+places_df &lt;- data.frame(names = places_names,
+                        lat = places_lat,
+                        lon = places_lon)
+
+# calculate geodesic distance with gdist() from Imap package
+
+# load Imap
+library(Imap)
+
+# create an empty list
+dist_list &lt;- list()
+
+# iterate through data frame placing calculated distance next to place place names
+for (i in 1:nrow(places_df)) {
+    
+    dist_list[[i]] &lt;- gdist(lon.1 = places_df$lon[i], 
+                              lat.1 = places_df$lat[i], 
+                              lon.2 = places_df$lon, 
+                              lat.2 = places_df$lat, 
+                              units=&quot;miles&quot;)
+    
+}
+
+# view results as list
+dist_list
+
+# unlist results and convert to a &quot;named&quot; matrix format
+dist_mat &lt;- sapply(dist_list, unlist)
+
+colnames(dist_mat) &lt;- places_names
+
+rownames(dist_mat) &lt;- places_names
+
+# view results as matrix
+dist_mat</code></pre>
+<p><strong>NB</strong> As of writing this blog post the <em>ggmap</em> package had been recently updated to Version 2.5.2, which sets the default <strong>source</strong> for the <code>geocode()</code> function set to “dsk”. I tried that method and received inaccurate latitude and longitude results. I would recommend using “source=‘google’” if you plan on using <code>geocode()</code> + <code>gdist()</code></p>
+</div>
+<div id="alternative-solutions" class="section level2">
+<h2>Alternative Solutions</h2>
+<p>Below is a list of a few possible alternatives to calculating geographic distances:</p>
+<ol style="list-style-type: decimal">
+<li><p><a href="https://developers.google.com/maps/documentation/distance-matrix/usage-limits">Enable pay-as-you-go billing for the Google Maps Distance Matrix API to expand query limit</a></p></li>
+<li><p><a href="https://cran.r-project.org/web/packages/geosphere/geosphere.pdf">Use the <em>geosphere</em> package</a>(anybody else used this?)</p></li>
+<li><p><a href="http://www.r-bloggers.com/great-circle-distance-calculations-in-r/">Write your own great circle earth distance function</a></p></li>
+</ol>
+</div>

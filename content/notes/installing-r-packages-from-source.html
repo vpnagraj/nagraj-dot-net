@@ -1,0 +1,25 @@
+---
+title: "Installing R Packages From Source"
+date: 2016-03-23T12:11:02-04:00
+categories: ["notes"]
+tags: ["R", "packages"]
+summary: "using install.packages() to install package from source"
+--- 
+
+
+
+<p>I upgraded to R version 3.2.2 several months ago and have pretty much reloaded all my packages.</p>
+<p>But today I tried running a script that uses the <a href="https://cran.r-project.org/web/packages/caret/vignettes/caret.pdf">caret</a> package’s implementation of <code>glm()</code> for a logistic regression model. There was a problem … <strong>caret</strong> wasn’t installed. And when I ran <code>install.packages(&quot;caret&quot;)</code> I got this message:</p>
+<blockquote>
+<p>Error in loadNamespace(j &lt;- i[[1L]], c(lib.loc, .libPaths()), versionCheck = vI[[j]]) : there is no package called ‘pbkrtest’</p>
+</blockquote>
+<p>I knew this was a dependency issue, and it was likely I’m not the only person who has run into it. And sure enough:</p>
+<p><a href="http://stackoverflow.com/questions/34236629/unable-to-install-packagescaret-completely-in-r-version-3-2-3" class="uri">http://stackoverflow.com/questions/34236629/unable-to-install-packagescaret-completely-in-r-version-3-2-3</a></p>
+<p>OK. So how do I install a package “manually” (i.e. from source)?</p>
+<p>I’ve had to do deal with this several times before, and have even had a consult devoted to this issue. But the answer is pretty simple:</p>
+<p><a href="http://stackoverflow.com/questions/1474081/how-do-i-install-an-r-package-from-source" class="uri">http://stackoverflow.com/questions/1474081/how-do-i-install-an-r-package-from-source</a></p>
+<p>As the upvoted response above indicates, the <code>install.packages()</code> function takes several arguments, inculding “repos” and “type”.</p>
+<p>To install a package from source, go to the CRAN page of interest (in my case it’s <a href="https://cran.r-project.org/web/packages/pbkrtest/index.html" class="uri">https://cran.r-project.org/web/packages/pbkrtest/index.html</a>) and download the “Package source”, which should have a “tar.gz” extension. Then in your R console you can use the following:</p>
+<pre class="r"><code>install.packages(path_to_file, repos = NULL, type=&quot;source&quot;)</code></pre>
+<p>The <code>path_to_file</code> referred to above will depend on where you’ve downloaded the source, and whether or not you’re using a Windows or Unix/Mac operating system.</p>
+<p>I know all of this is detailed in the Stack Overflow post … but it’s something I’ve had to do several times now, so it’s not a terrible exercise to duplicate here.</p>

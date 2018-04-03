@@ -240,7 +240,7 @@ defaultContentLanguageInSubdir = false
 
 [[menu.main]]
   name = "Home"
-  url = "#about"
+  url = "/"
   weight = 1
 
 [[menu.main]]
@@ -250,7 +250,7 @@ defaultContentLanguageInSubdir = false
   
 [[menu.main]]
   name = "Notes"
-  url = "post"
+  url = "notes"
   weight = 3
   
 [[menu.main]]

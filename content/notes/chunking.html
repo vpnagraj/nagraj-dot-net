@@ -1,0 +1,58 @@
+---
+title: "chunking in R"
+date: 2016-07-11T15:24:47-04:00
+categories: ["notes"]
+tags: ["R", "chunking", "Pubmed"]
+summary: "how to split data into chunks for processing in R"
+---
+
+
+
+<blockquote>
+<p><strong>TL;DR</strong> : “Chunking” a vector can facilitate processing or, as in the example below, serve as a solution for API query limits</p>
+</blockquote>
+<p><a href="http://www.ncbi.nlm.nih.gov/books/NBK25500/">E-Utilities</a> provides an intercace (API) for accessing NCBI databases such as PubMed, GenBank, etc. There are a variety of ways (clients) to leverage this service. Since I typically develop in R, I’ve been using the <a href="https://cran.r-project.org/web/packages/rentrez/vignettes/rentrez_tutorial.html"><strong>rentrez</strong></a> package.</p>
+<p>The API limits are typically pretty forgiving, and there are even <a href="https://cran.r-project.org/web/packages/rentrez/vignettes/rentrez_tutorial.html#use-a-web_history-object">methods to store a “web history”</a> for search results so you don’t have to query again to retrieve them.</p>
+<p>That said, I have encountered an issue with trying to harvest summary XML files for a list of &gt; 1000 records.</p>
+<p>The workflow for retrieving these “esummary” documents is:</p>
+<ol style="list-style-type: decimal">
+<li>Retrieve a list of IDs for your search term(s) with <code>entrez_search()</code></li>
+<li>Use that list of IDs to retrieve summaries for each record with <code>entrez_summary()</code></li>
+<li>Extract field(s) of interest from each summary with <code>extract_from_esummary()</code></li>
+</ol>
+<p>The process above is detailed in the code below:</p>
+<pre class="r"><code>library(rentrez)
+
+results &lt;- entrez_search(&quot;pubmed&quot;, term = &quot;zika&quot;, retmax = 9999)
+
+esummaries &lt;- entrez_summary(&quot;pubmed&quot;, id = results$ids)
+
+journals &lt;- extract_from_esummary(esummaries, elements = &quot;fulljournalname&quot;)</code></pre>
+<p>Unfortunately for a query that returns a large number of results (i.e. “zika”) the <code>entrez_summary()</code> command will fail with something like:</p>
+<blockquote>
+<p>Error in entrez_check(response) : HTTP failure 414, the request is too large. For large requests, try using web history as described in the tutorial</p>
+</blockquote>
+<p>Now for the “chunking” …</p>
+<p>The key here is to partition the <em>single</em> request into a series of <em>multiple</em> requests so the database can handle them one at a time.</p>
+<p>The code that follows implements a technique for splitting the vector of results (IDs) into groups of 500, and is based on a <a href="http://stackoverflow.com/questions/3318333/split-a-vector-into-chunks-in-r">Stack Overflow answer</a> to a similar question.</p>
+<pre class="r"><code>library(rentrez)
+
+# search for articles on zika in pubmed
+
+results &lt;- entrez_search(&quot;pubmed&quot;, term = &quot;zika&quot;, retmax = 9999)
+
+# create an index that splits
+bigqueryindex &lt;- 
+    split(seq(1,length(results$ids)), ceiling(seq_along(seq(1,length(results$ids)))/500))
+
+# create an empty list to hold summary contents
+esummaries &lt;- list()
+
+# loop through the list of ids 500 at a time and pause for 5 seconds in between queries
+for (i in bigqueryindex) {
+esummaries[unlist(i)] &lt;- entrez_summary(&quot;pubmed&quot;, id = results$ids[unlist(i)])
+Sys.sleep(5)
+}
+
+# apply over the list to extract the fulljournalname field from the esummary
+sapply(esummaries, function(x) extract_from_esummary(x, elements = &quot;fulljournalname&quot;))</code></pre>

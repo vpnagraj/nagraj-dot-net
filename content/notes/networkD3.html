@@ -1,0 +1,44 @@
+---
+title: "networkD3"
+date: 2016-01-06T13:18:39-05:00
+categories: ["notes"]
+tags: ["network analysis", "R", "D3", "JavaScript", "Shiny"]
+summary: "interactive network visualiztion with D3 and R"
+---
+
+
+
+<p>I’ve been working on a project that has a network analysis component, and am finally getting my head around how I can visualize the data. The package I’ve been using is <a href="https://cran.r-project.org/web/packages/networkD3/index.html">networkD3</a>, not to be confused with <a href="https://cran.r-project.org/web/packages/d3Network/index.html">d3Network</a> … same author but the former is now the actively developed version, and makes it easier to integrate the plots with something like Shiny.</p>
+<p>The <a href="https://christophergandrud.github.io/networkD3/">vignette</a> is encouraging but kind of opaque, especially in terms of data preparation. With that said, it’s not too hard to wrangle your data frame into something that looks like the built in <em>Les Miserables</em> dataset.</p>
+<p><code>simpleNetwork()</code> takes a data frame, as well as “Source” and “Target” column specifications to create the node-link relationships. What’s worth noting here is that each row represents a relationship. So to fully visualize a network you need a “long” data frame that walks through every combination or connection.</p>
+<p>The code below creates the plot above. First it reads in a dataset that contains the <a href="https://github.com/MuseumofModernArt/collection">Museum of Modern Art (MOMA) collection database</a>. For legibility, the data is filtered by the year 1945, and does not include “various” artist designations. Because this is data frame has a “long” format (i.e. it repeats artist name if he or she has been collected by multiple departments) you can use pass it straight into simple network plot. The “source” in this case will be the artist and the “target” will be the department, and all of which will be nodes that are visualized with a link if they appear in the same row.</p>
+<pre class="r"><code>library(networkD3)
+library(dplyr)
+library(readr)
+library(lubridate)
+
+# https://github.com/MuseumofModernArt/collection
+
+moma &lt;- read_csv(&quot;https://media.githubusercontent.com/media/MuseumofModernArt/collection/master/Artworks.csv&quot;)
+
+moma$YearAcquired &lt;- year(moma$DateAcquired)
+
+moma1945 &lt;-
+    moma %&gt;%
+    # filter a year
+    filter(YearAcquired == 1945) %&gt;%
+    # get rid of &#39;various&#39; artist pieces
+    filter(!grepl(&quot;Various&quot;, Artist)) %&gt;%
+    select(Artist, Department)
+
+# clean up workspace
+rm(moma)
+
+simpleNetwork(moma1945, 
+              Source = &quot;Artist&quot;, 
+              Target = &quot;Department&quot;,  
+              nodeColour = &quot;firebrick&quot;,
+              charge = -75,
+              opacity = .5, 
+              zoom = TRUE)</code></pre>
+<p>Here’s <a href="https://github.com/vpnagraj/moma">code</a> for a Shiny app that creates visualizations very similar to the one above.</p>

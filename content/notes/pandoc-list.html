@@ -1,0 +1,90 @@
+---
+title: "pandoc list"
+date: 2016-01-15T14:07:29-05:00
+categories: ["notes"]
+tags: ["pander", "R markdown"]
+summary: "formatting a character vector as a list in R markdown"
+---
+
+
+
+<p>One of my recent tortures has been formatting RMarkdown reports. The <a href="https://cran.r-project.org/web/packages/pander/index.html">pander</a> package gives you access to all the <a href="http://pandoc.org/README.html">Pandoc options</a> you can handle. Seems like a big mountain to climb, but once you get started it’s actually not too rough.</p>
+<p>In particular, the <code>pandoc.[WHATEVER]()</code> functions from pander make it easy to render nicely formatted objects in RMarkdown.</p>
+<p>An example … say you had the following (not so arbitrary) character vector:</p>
+<pre class="r"><code>bowie &lt;- c(&quot;Young Americans&quot;, &quot;Station To Station&quot;, &quot;Low&quot;, &quot;Heroes&quot;, &quot;Lodger&quot;, &quot;Scary Monsters&quot;, &quot;Let&#39;s Dance&quot;)</code></pre>
+<p>You could just print the object:</p>
+<pre class="r"><code>bowie</code></pre>
+<pre><code>## [1] &quot;Young Americans&quot;    &quot;Station To Station&quot; &quot;Low&quot;               
+## [4] &quot;Heroes&quot;             &quot;Lodger&quot;             &quot;Scary Monsters&quot;    
+## [7] &quot;Let&#39;s Dance&quot;</code></pre>
+<p>Doesn’t look great. Maybe try it with the generic <code>pander()</code> function around the name of the character vector:</p>
+<pre class="r"><code># install.packages(&quot;pander&quot;)
+library(pander)</code></pre>
+<pre><code>## Warning: package &#39;pander&#39; was built under R version 3.4.1</code></pre>
+<pre class="r"><code>pander(bowie)</code></pre>
+<p><em>Young Americans</em>, <em>Station To Station</em>, <em>Low</em>, <em>Heroes</em>, <em>Lodger</em>, <em>Scary Monsters</em> and <em>Let’s Dance</em></p>
+<p>Still not great, but until a couple days ago that’s probably where I would have left it.</p>
+<p>Then I tab-completed into the <code>pandoc.[WHATEVER]()</code> functions and realized I was doing it wrong …</p>
+<p>In this case if I want a list then I should go with <code>pandoc.list()</code>:</p>
+<pre class="r"><code>pandoc.list(bowie)</code></pre>
+<pre><code>## 
+## * Young Americans 
+## * Station To Station 
+## * Low 
+## * Heroes 
+## * Lodger 
+## * Scary Monsters 
+## * Let&#39;s Dance 
+## 
+## &lt;!-- end of list --&gt;</code></pre>
+<p>That looks more like a list … at least as it would be printed in a console.</p>
+<p>If you want to see it bulleted just wrap another <code>pander()</code> around it:</p>
+<pre class="r"><code>pander(pandoc.list(bowie))</code></pre>
+<ul>
+<li>Young Americans</li>
+<li>Station To Station</li>
+<li>Low</li>
+<li>Heroes</li>
+<li>Lodger</li>
+<li>Scary Monsters</li>
+<li>Let’s Dance</li>
+</ul>
+<!-- end of list -->
+<p>And if you want to see the vector ordered:</p>
+<pre class="r"><code>pander(pandoc.list(bowie, style=&quot;ordered&quot;))</code></pre>
+<ol style="list-style-type: decimal">
+<li>Young Americans</li>
+<li>Station To Station</li>
+<li>Low</li>
+<li>Heroes</li>
+<li>Lodger</li>
+<li>Scary Monsters</li>
+<li>Let’s Dance</li>
+</ol>
+<!-- end of list -->
+<p>The best part about these functions is that they’re documented inside R man pages (as opposed to only in the generic pandoc documentation) … check it out:</p>
+<pre class="r"><code>?pandoc.list</code></pre>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>## R version 3.4.0 (2017-04-21)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS Sierra 10.12.6
+## 
+## Matrix products: default
+## BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] methods   stats     graphics  grDevices utils     datasets  base     
+## 
+## other attached packages:
+## [1] pander_0.6.1
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_0.12.15    bookdown_0.5    digest_0.6.14   rprojroot_1.3-2
+##  [5] backports_1.1.2 magrittr_1.5    evaluate_0.10.1 blogdown_0.5   
+##  [9] stringi_1.1.6   rmarkdown_1.8   tools_3.4.0     stringr_1.2.0  
+## [13] xfun_0.1        yaml_2.1.16     compiler_3.4.0  htmltools_0.3.6
+## [17] knitr_1.18</code></pre>

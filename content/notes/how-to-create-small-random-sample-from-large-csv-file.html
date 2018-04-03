@@ -1,0 +1,33 @@
+---
+title: "How To Create Small Random Sample From Large CSV File"
+date: 2016-05-03T12:19:11-04:00
+categories: ["notes"]
+tags: ["R", "sample", "python"]
+summary: "subsampling"
+---
+
+
+
+<blockquote>
+<p><strong>Problem</strong>: How do I generate a small random sample of large CSV to be read into R?</p>
+</blockquote>
+<blockquote>
+<p><strong>Solution</strong>: <a href="https://github.com/paulgb/subsample">subsample</a></p>
+</blockquote>
+<p>One solution to dealing with large datasets is to read the data in smaller chunks, and then combine the pieces together. This isn’t trivial. And it may not be worthwhile, especially if you just want to poke around.</p>
+<p>What about just looking at a single one of those smaller chunks?</p>
+<p>That might be a better approach, particularly if this is purely exploratory. But the problem here is how to read in a representative sample. Any of the “read” functions (i.e. read.csv(), read.delim(), etc.) give you a max number of lines to read in. But the data could be sorted in a non-random way so that the first <em>n</em> lines are biased. So what about generating a small random sample outside of R and then reading that in?</p>
+<p>I’ve found several solutions to this problem on <a href="http://stackoverflow.com/questions/22261082/load-a-small-random-sample-from-a-large-csv-file-into-r-data-frame">Stack Overflow</a>, most of which involve some Perl or BASH scripting … but there’s an easier way …</p>
+<p><code>subsample</code> is a command line tool built with Python. As long as you have <code>pip</code> installed, you can use the following:</p>
+<pre class="r"><code>pip install subsample</code></pre>
+<p>The workflow is simple:</p>
+<ol style="list-style-type: decimal">
+<li>Identify the original CSV file to sample</li>
+<li>Decide how many rows you want</li>
+<li>Pipe that to a new file</li>
+</ol>
+<p>Implemented in code:</p>
+<pre class="r"><code>subsample -n 1000 purple.csv &gt; purple_sample.csv</code></pre>
+<p>Then to get that into R:</p>
+<pre class="r"><code>rain &lt;- read.csv(&quot;purple_sample.csv&quot;)</code></pre>
+<p>The <a href="https://github.com/paulgb/subsample/blob/master/README.rst">documentation</a> details things like dealing with header rows and setting a random seed to recreate samples.</p>

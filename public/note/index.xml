@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Notes on VP Nagraj</title>
+    <link>/note/</link>
+    <description>Recent content in Notes on VP Nagraj</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018</copyright>
+    <lastBuildDate>Sun, 01 Jan 2017 00:00:00 -0500</lastBuildDate>
+    
+	<atom:link href="/note/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Calculating Geographic Distance With R</title>
+      <link>/note/calculating-geographic-distance-with-r/</link>
+      <pubDate>Tue, 08 Dec 2015 15:27:43 -0500</pubDate>
+      
+      <guid>/note/calculating-geographic-distance-with-r/</guid>
+      <description>I’ve been working on an analysis that requires distance measurements as data points. The original dataset only had place names (as strings) so I had to do some geocoding before I could perform my distance calculations. I’ve used the ggmap package (… an R interface to the Google Maps API) to do this kind of thing in the past, but I haven’t documented that work before now.
+The workflow is simple enough:</description>
+    </item>
+    
+  </channel>
+</rss>

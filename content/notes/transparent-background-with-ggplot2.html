@@ -1,0 +1,33 @@
+---
+title: "Transparent ggplot2 Plot Backgrounds"
+date: 2016-08-16T13:27:57-04:00
+categories: ["notes"]
+tags: ["ggplot2", "R"]
+summary: "transparency in ggplot2 plots"
+---
+
+
+
+<p>While I was preparing a figure for a research poster recently, I ran into an issue: my poster had an off-white background but the figure had a white background.</p>
+<p>The first thing that came to mind was making the plot background transparent. Should be easy enough?</p>
+<p><a href="http://stackoverflow.com/questions/7455046/how-to-make-graphics-with-transparent-background-in-r-using-ggplot2">It is.</a></p>
+<p>The gist is that you need to set the both panel and <em>and</em> plot backgrounds to transparent. It’s probably a good idea to “turn off” the grid elements since otherwise they will default to a color. All of the above can be done with options via the <code>theme()</code> function.</p>
+<p>And when saving the plot with <code>ggsave()</code> you also should indicate that the background is transparent.</p>
+<pre class="r"><code>library(ggplot2)
+data(&quot;airquality&quot;)
+
+p &lt;- 
+    ggplot(airquality, aes(Solar.R, Temp)) +
+    geom_point() +
+    geom_smooth() +
+    # set transparency
+    theme(
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill = &quot;transparent&quot;,colour = NA),
+        plot.background = element_rect(fill = &quot;transparent&quot;,colour = NA)
+        )
+
+p</code></pre>
+<p><img src="/notes/transparent-background-with-ggplot2_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code>ggsave(&quot;airquality.png&quot;, p, bg = &quot;transparent&quot;)</code></pre>

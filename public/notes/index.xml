@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Notes on VP Nagraj</title>
+    <link>/notes/</link>
+    <description>Recent content in Notes on VP Nagraj</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018</copyright>
+    <lastBuildDate>Sun, 01 Jan 2017 00:00:00 -0500</lastBuildDate>
+    
+	<atom:link href="/notes/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Transparent ggplot2 Plot Backgrounds</title>
+      <link>/notes/transparent-background-with-ggplot2/</link>
+      <pubDate>Tue, 16 Aug 2016 13:27:57 -0400</pubDate>
+      
+      <guid>/notes/transparent-background-with-ggplot2/</guid>
+      <description>While I was preparing a figure for a research poster recently, I ran into an issue: my poster had an off-white background but the figure had a white background.
+The first thing that came to mind was making the plot background transparent. Should be easy enough?
+It is.
+The gist is that you need to set the both panel and and plot backgrounds to transparent. It’s probably a good idea to “turn off” the grid elements since otherwise they will default to a color.</description>
+    </item>
+    
+    <item>
+      <title>Choropleth Maps With Leaflet</title>
+      <link>/notes/choropleth-maps-with-leaflet/</link>
+      <pubDate>Mon, 25 Jul 2016 09:16:04 -0400</pubDate>
+      
+      <guid>/notes/choropleth-maps-with-leaflet/</guid>
+      <description>Choropleth maps are useful in displaying data across geographic regions. In these plots, the scale is represented by color and typically contained in defined spatial boundaries.
+There are a number of ways to make choropleth visualizations in R, including the ggmap package and the choroplethr package. Both of the methods above seem to work fine. But I recently started using Leaflet, which is a JavaScript mapping library that’s bound to R with the Leaflet pakcage.</description>
+    </item>
+    
+    <item>
+      <title>Multiple RMarkdown Reports, Multiple Data Sets, Single File</title>
+      <link>/notes/multiple-rmarkdown-reports/</link>
+      <pubDate>Thu, 21 Jul 2016 08:38:31 -0400</pubDate>
+      
+      <guid>/notes/multiple-rmarkdown-reports/</guid>
+      <description>Until recently I had yet to run into a scenario where I needed to use R Markdown to produce a “templated” set of reports. That is, a group of PDFs or HTML files with common R code (and therefore common report features, like figures, tables, summary statistics, etc.) executed dynamically on different data sets.
+I encountered this problem when I was trying to automate a workflow for generating reports on publication data.</description>
+    </item>
+    
+    <item>
+      <title>chunking in R</title>
+      <link>/notes/chunking/</link>
+      <pubDate>Mon, 11 Jul 2016 15:24:47 -0400</pubDate>
+      
+      <guid>/notes/chunking/</guid>
+      <description>TL;DR : “Chunking” a vector can facilitate processing or, as in the example below, serve as a solution for API query limits
+ E-Utilities provides an intercace (API) for accessing NCBI databases such as PubMed, GenBank, etc. There are a variety of ways (clients) to leverage this service. Since I typically develop in R, I’ve been using the rentrez package.
+The API limits are typically pretty forgiving, and there are even methods to store a “web history” for search results so you don’t have to query again to retrieve them.</description>
+    </item>
+    
+    <item>
+      <title>How To Create Small Random Sample From Large CSV File</title>
+      <link>/notes/how-to-create-small-random-sample-from-large-csv-file/</link>
+      <pubDate>Tue, 03 May 2016 12:19:11 -0400</pubDate>
+      
+      <guid>/notes/how-to-create-small-random-sample-from-large-csv-file/</guid>
+      <description>Problem: How do I generate a small random sample of large CSV to be read into R?
+  Solution: subsample
+ One solution to dealing with large datasets is to read the data in smaller chunks, and then combine the pieces together. This isn’t trivial. And it may not be worthwhile, especially if you just want to poke around.
+What about just looking at a single one of those smaller chunks?</description>
+    </item>
+    
+    <item>
+      <title>Installing R Packages From Source</title>
+      <link>/notes/installing-r-packages-from-source/</link>
+      <pubDate>Wed, 23 Mar 2016 12:11:02 -0400</pubDate>
+      
+      <guid>/notes/installing-r-packages-from-source/</guid>
+      <description>I upgraded to R version 3.2.2 several months ago and have pretty much reloaded all my packages.
+But today I tried running a script that uses the caret package’s implementation of glm() for a logistic regression model. There was a problem … caret wasn’t installed. And when I ran install.packages(&amp;quot;caret&amp;quot;) I got this message:
+ Error in loadNamespace(j &amp;lt;- i[[1L]], c(lib.loc, .libPaths()), versionCheck = vI[[j]]) : there is no package called ‘pbkrtest’</description>
+    </item>
+    
+    <item>
+      <title>LaTeX Symbols Inside Pandoc Table Column Headings Inside RMarkdown Documents</title>
+      <link>/notes/pandoc-latex-markdown/</link>
+      <pubDate>Thu, 03 Mar 2016 11:26:40 -0500</pubDate>
+      
+      <guid>/notes/pandoc-latex-markdown/</guid>
+      <description>I just spent ~ 30 minutes figuring out how to include LaTeX symbols … in a Pandoc table column header … in an RMarkdown document.
+There are plenty of LaTeX cheat sheets like this one to choose from. And there are plenty of examples of using LaTeX in RMarkdown as well.
+The thing is that the syntax for these LaTeX symbols gets trickier when run inside a chunk (i.e. block of R code).</description>
+    </item>
+    
+    <item>
+      <title>Embedding Shiny Apps Inside RMarkdown Documents</title>
+      <link>/notes/embedding-shiny-apps-inside-rmarkdown-documents/</link>
+      <pubDate>Mon, 29 Feb 2016 12:03:12 -0500</pubDate>
+      
+      <guid>/notes/embedding-shiny-apps-inside-rmarkdown-documents/</guid>
+      <description>I’d read about ‘interactive’ documents before, and saw a presentation that used them at the Shiny Developer Conference. Thought it was a cool idea but figured it was too complicated to put into practice.
+Wrong.
+All it takes is one extra line in the YAML front matter for the RMarkdown …
+runtime: shiny
+… and that’s pretty much it.
+To host the document you do need a Shiny Server running on top of a version of R with the rmarkdown package installed.</description>
+    </item>
+    
+    <item>
+      <title>pandoc list</title>
+      <link>/notes/pandoc-list/</link>
+      <pubDate>Fri, 15 Jan 2016 14:07:29 -0500</pubDate>
+      
+      <guid>/notes/pandoc-list/</guid>
+      <description>One of my recent tortures has been formatting RMarkdown reports. The pander package gives you access to all the Pandoc options you can handle. Seems like a big mountain to climb, but once you get started it’s actually not too rough.
+In particular, the pandoc.[WHATEVER]() functions from pander make it easy to render nicely formatted objects in RMarkdown.
+An example … say you had the following (not so arbitrary) character vector:</description>
+    </item>
+    
+    <item>
+      <title>nagraj-dot-net</title>
+      <link>/notes/nagraj-net/</link>
+      <pubDate>Wed, 13 Jan 2016 13:09:19 -0500</pubDate>
+      
+      <guid>/notes/nagraj-net/</guid>
+      <description>Not sure why I’ve been putting it off but I finally added a custom domain for this site, which is hosted by Github Pages. Once I settled on ‘nagraj.net’ I started looking for domain services. Google Domains had the name available at a reasonable price, and I found really good documentation that spells out exactly how to configure a Github Pages site to use a domain purchased via Google Domains.</description>
+    </item>
+    
+    <item>
+      <title>networkD3</title>
+      <link>/notes/networkd3/</link>
+      <pubDate>Wed, 06 Jan 2016 13:18:39 -0500</pubDate>
+      
+      <guid>/notes/networkd3/</guid>
+      <description>I’ve been working on a project that has a network analysis component, and am finally getting my head around how I can visualize the data. The package I’ve been using is networkD3, not to be confused with d3Network … same author but the former is now the actively developed version, and makes it easier to integrate the plots with something like Shiny.
+The vignette is encouraging but kind of opaque, especially in terms of data preparation.</description>
+    </item>
+    
+    <item>
+      <title>abstruct</title>
+      <link>/notes/abstruct/</link>
+      <pubDate>Tue, 22 Dec 2015 11:10:14 -0500</pubDate>
+      
+      <guid>/notes/abstruct/</guid>
+      <description>Just spent ~ 90 minutes this morning toying with the text generation program I mentioned in a note yesterday.
+dadadodo automatically creates pseudo random output based on input text. It’s a command line utility, and I have it installed on a Linux machine. Since I have a Shiny server running on the same box, I figured I’d see if I could combine the two and create a web app:
+http://apps.bioconnector.virginia.edu/abstruct/</description>
+    </item>
+    
+    <item>
+      <title>dadadodo</title>
+      <link>/notes/dadadodo/</link>
+      <pubDate>Mon, 21 Dec 2015 14:04:03 -0500</pubDate>
+      
+      <guid>/notes/dadadodo/</guid>
+      <description>dadadodo is a commmad line utilitiy for creating (pseudo) random sentences–and it was mentioned in the documentaiton for one of the datasets I wrote about in the last post.
+The name is a nod to the nonsensical, and some times the dadadodo output feels truly postmodern. The program is built on a Markov model but can generate some pretty wild results, especially with a larger corpus.
+That said, it’s easy to install and run from the command line.</description>
+    </item>
+    
+    <item>
+      <title>Free Data</title>
+      <link>/notes/free-data/</link>
+      <pubDate>Wed, 16 Dec 2015 14:19:20 -0500</pubDate>
+      
+      <guid>/notes/free-data/</guid>
+      <description>Found a Github repository that curates links to “awesome public datasets”:
+https://github.com/caesar0301/awesome-public-datasets
+Judging from the fact that the repo has &amp;gt; 6000 stars, I might be a little late to the party …
+Tons of potential here but just to spitball a few ideas:
+ Shiny app with choropleth map tracking spread of Ebola Classification algorithm for “age-appropriateness” of a piece of text based on modeled blog data Visualization of proportion of work on view (versus not on view) at the Minneapolis Institute of Art by artist nationality  </description>
+    </item>
+    
+    <item>
+      <title>Calculating Geographic Distance With R</title>
+      <link>/notes/calculating-geographic-distance-with-r/</link>
+      <pubDate>Tue, 08 Dec 2015 15:27:43 -0500</pubDate>
+      
+      <guid>/notes/calculating-geographic-distance-with-r/</guid>
+      <description>I’ve been working on an analysis that requires distance measurements as data points. The original dataset only had place names (as strings) so I had to do some geocoding before I could perform my distance calculations. I’ve used the ggmap package (… an R interface to the Google Maps API) to do this kind of thing in the past, but I haven’t documented that work before now.
+The workflow is simple enough:</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,15 @@
+---
+title: "dadadodo"
+date: 2015-12-21T14:04:03-05:00
+categories: ["notes"]
+tags: ["text analysis", "dadadodo", "r"]
+summary: "programming cut-ups"
+---
+
+
+
+<p><a href="https://www.jwz.org/dadadodo/">dadadodo</a> is a commmad line utilitiy for creating (pseudo) random sentences–and it was mentioned in the documentaiton for one of the datasets I wrote about in the <a href="notes/free-data/">last post</a>.</p>
+<p>The name is a nod to the nonsensical, and some times the <em>dadadodo</em> output feels truly <a href="https://en.wikipedia.org/wiki/William_S._Burroughs">postmodern</a>. The program is built on a <a href="http://www.cs.princeton.edu/courses/archive/spr05/cos126/assignments/markov.html">Markov model</a> but can generate some pretty wild results, especially with a larger corpus.</p>
+<p>That said, it’s easy to install and run from the command line.</p>
+<p>On a Linux machine <code>sudo apt-get install dadadodo</code> followed by <code>man dadadodo</code> will run the install and then pull up the documentation.</p>
+<p>As the man will tell you, the output can be configured by number of sentences with the <code>-c</code> option. So if you’re passing the program a txt file that has the complete works of William Blake and you want to create one sentence, then your code might look something like <code>dadadodo -c 1 blake.txt</code></p>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37.1" />
+  <meta name="author" content="VP Nagraj">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="Problem: How do I generate a small random sample of large CSV to be read into R?
+  Solution: subsample
+ One solution to dealing with large datasets is to read the data in smaller chunks, and then combine the pieces together. This isn’t trivial. And it may not be worthwhile, especially if you just want to poke around.
+What about just looking at a single one of those smaller chunks?">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/notes/how-to-create-small-random-sample-from-large-csv-file/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#0095eb">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.1/css/academicons.min.css" integrity="sha512-NThgw3XKQ1absAahW6to7Ey42uycrVvfNfyjqcFNgCmOCQ5AR4AO0SiXrN+8ZtYeappp56lk1WtvjVmEa+VR6A==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="VP Nagraj">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="VP Nagraj">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/notes/how-to-create-small-random-sample-from-large-csv-file/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@vpnagraj">
+  <meta property="twitter:creator" content="@vpnagraj">
+  
+  <meta property="og:site_name" content="VP Nagraj">
+  <meta property="og:url" content="/notes/how-to-create-small-random-sample-from-large-csv-file/">
+  <meta property="og:title" content="How To Create Small Random Sample From Large CSV File | VP Nagraj">
+  <meta property="og:description" content="Problem: How do I generate a small random sample of large CSV to be read into R?
+  Solution: subsample
+ One solution to dealing with large datasets is to read the data in smaller chunks, and then combine the pieces together. This isn’t trivial. And it may not be worthwhile, especially if you just want to poke around.
+What about just looking at a single one of those smaller chunks?">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2016-05-03T12:19:11-04:00">
+  
+  <meta property="article:modified_time" content="2016-05-03T12:19:11-04:00">
+  
+
+  
+
+  <title>How To Create Small Random Sample From Large CSV File | VP Nagraj</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">VP Nagraj</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/about/bio">
+            
+            <span>About</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/notes">
+            
+            <span>Notes</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/publication">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">How To Create Small Random Sample From Large CSV File</h1>
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2016-05-03 12:19:11 -0400 EDT" itemprop="datePublished dateModified">
+      May 3, 2016
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="VP Nagraj">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    2 min read
+  </span>
+  
+
+  
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/notes">notes</a
+    >
+    
+  </span>
+  
+  
+
+</div>
+
+    <div class="article-style" itemprop="articleBody">
+      <blockquote>
+<p><strong>Problem</strong>: How do I generate a small random sample of large CSV to be read into R?</p>
+</blockquote>
+<blockquote>
+<p><strong>Solution</strong>: <a href="https://github.com/paulgb/subsample">subsample</a></p>
+</blockquote>
+<p>One solution to dealing with large datasets is to read the data in smaller chunks, and then combine the pieces together. This isn’t trivial. And it may not be worthwhile, especially if you just want to poke around.</p>
+<p>What about just looking at a single one of those smaller chunks?</p>
+<p>That might be a better approach, particularly if this is purely exploratory. But the problem here is how to read in a representative sample. Any of the “read” functions (i.e. read.csv(), read.delim(), etc.) give you a max number of lines to read in. But the data could be sorted in a non-random way so that the first <em>n</em> lines are biased. So what about generating a small random sample outside of R and then reading that in?</p>
+<p>I’ve found several solutions to this problem on <a href="http://stackoverflow.com/questions/22261082/load-a-small-random-sample-from-a-large-csv-file-into-r-data-frame">Stack Overflow</a>, most of which involve some Perl or BASH scripting … but there’s an easier way …</p>
+<p><code>subsample</code> is a command line tool built with Python. As long as you have <code>pip</code> installed, you can use the following:</p>
+<pre class="r"><code>pip install subsample</code></pre>
+<p>The workflow is simple:</p>
+<ol style="list-style-type: decimal">
+<li>Identify the original CSV file to sample</li>
+<li>Decide how many rows you want</li>
+<li>Pipe that to a new file</li>
+</ol>
+<p>Implemented in code:</p>
+<pre class="r"><code>subsample -n 1000 purple.csv &gt; purple_sample.csv</code></pre>
+<p>Then to get that into R:</p>
+<pre class="r"><code>rain &lt;- read.csv(&quot;purple_sample.csv&quot;)</code></pre>
+<p>The <a href="https://github.com/paulgb/subsample/blob/master/README.rst">documentation</a> details things like dealing with header rows and setting a random seed to recreate samples.</p>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/r">R</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/sample">sample</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/python">python</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/notes/installing-r-packages-from-source/">Installing R Packages From Source</a></li>
+        
+        <li><a href="/notes/pandoc-latex-markdown/">LaTeX Symbols Inside Pandoc Table Column Headings Inside RMarkdown Documents</a></li>
+        
+        <li><a href="/notes/networkd3/">networkD3</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+
+    
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+
+  </body>
+</html>
+
