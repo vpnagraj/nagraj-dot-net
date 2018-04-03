@@ -1,5 +1,5 @@
 ---
-title: "chunking in R"
+title: "Chunking in R"
 date: 2016-07-11T15:24:47-04:00
 categories: ["notes"]
 tags: ["R", "chunking", "Pubmed"]

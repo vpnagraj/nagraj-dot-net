@@ -19,7 +19,7 @@ There are a few ways to approach this.
 
 The *ggmap* package includes a function called `mapdist()` that computes the distance between two locations based on a "from" and a "to" argument. These parameters accept strings. What's nice about this is that the two steps described above are combined in one. The names are geocoded and distances between the locations are computed via the [Google API Distance Matrix](https://developers.google.com/maps/documentation/distance-matrix/intro?hl=en). The **mode** can be set to "walking", "bicycling" or "driving" and the **output** format configured to either "simple" (data frame) or "all" (list). But with its defaults, the function gives you easy access to the distance in miles (or meters or kilometers) and duration in minutes (or seconds or hours):
 
-```{r, eval = FALSE}
+```{r eval = FALSE}
 # load ggmap
 library(ggmap)
 

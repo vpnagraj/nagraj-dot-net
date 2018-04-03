@@ -95,8 +95,17 @@
     
     <url>
     
-      <loc>/talk/example-talk/</loc>
-      <lastmod>2017-01-01T00:00:00-05:00</lastmod>
+      <loc>/publication/simplecache/</loc>
+      <lastmod>2018-01-10T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication/hei/</loc>
+      <lastmod>2017-10-04T00:00:00+00:00</lastmod>
     </url>
     
   
@@ -105,15 +114,6 @@
     <url>
     
       <loc>/notes/</loc>
-      <lastmod>2017-01-01T00:00:00-05:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/post/</loc>
       <lastmod>2017-01-01T00:00:00-05:00</lastmod>
     </url>
     
@@ -140,8 +140,17 @@
     
     <url>
     
-      <loc>/talk/</loc>
-      <lastmod>2017-01-01T00:00:00+00:00</lastmod>
+      <loc>/publication/smc-boston-2016/</loc>
+      <lastmod>2016-10-01T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication/nmhss-virginia/</loc>
+      <lastmod>2016-09-01T00:00:00+00:00</lastmod>
     </url>
     
   
@@ -187,15 +196,6 @@
     
       <loc>/notes/how-to-create-small-random-sample-from-large-csv-file/</loc>
       <lastmod>2016-05-03T12:19:11-04:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/post/getting-started/</loc>
-      <lastmod>2018-01-13T00:00:00-05:00</lastmod>
     </url>
     
   
@@ -302,7 +302,7 @@
     
     <url>
     
-      <loc>/publication/person-re-identification/</loc>
+      <loc>/publication/library-crm/</loc>
       <lastmod>2015-09-01T00:00:00+00:00</lastmod>
     </url>
     
@@ -311,17 +311,8 @@
     
     <url>
     
-      <loc>/post/2015-07-23-r-rmarkdown/</loc>
-      <lastmod>2015-07-23T21:13:14-05:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/publication/clothing-search/</loc>
-      <lastmod>2013-07-01T00:00:00+00:00</lastmod>
+      <loc>/publication/exit-as-strategy/</loc>
+      <lastmod>2014-09-01T00:00:00+00:00</lastmod>
     </url>
     
   
@@ -330,7 +321,7 @@
     <url>
     
       <loc>/publication_types/1/</loc>
-      <lastmod>2013-07-01T00:00:00+00:00</lastmod>
+      <lastmod>2016-10-01T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -340,7 +331,17 @@
     <url>
     
       <loc>/publication_types/2/</loc>
-      <lastmod>2015-09-01T00:00:00+00:00</lastmod>
+      <lastmod>2018-01-10T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication_types/6/</loc>
+      <lastmod>2014-09-01T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -578,16 +579,6 @@
     
     <url>
     
-      <loc>/tags/plot/</loc>
-      <lastmod>2015-07-23T21:13:14-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/project/</loc>
       <lastmod>2018-04-02T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -599,17 +590,7 @@
     <url>
     
       <loc>/publication_types/</loc>
-      <lastmod>2013-07-01T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/pubmed/</loc>
-      <lastmod>2016-07-11T15:24:47-04:00</lastmod>
+      <lastmod>2016-10-01T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -620,6 +601,16 @@
     
       <loc>/tags/pubmed/</loc>
       <lastmod>2015-12-22T11:10:14-05:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/pubmed/</loc>
+      <lastmod>2016-07-11T15:24:47-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -650,16 +641,6 @@
     
       <loc>/tags/r/</loc>
       <lastmod>2016-08-16T13:27:57-04:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/categories/r/</loc>
-      <lastmod>2015-07-23T21:13:14-05:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -708,16 +689,6 @@
     
     <url>
     
-      <loc>/tags/regression/</loc>
-      <lastmod>2015-07-23T21:13:14-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/tags/sample/</loc>
       <lastmod>2016-05-03T12:19:11-04:00</lastmod>
       <priority>0</priority>
@@ -729,7 +700,7 @@
     <url>
     
       <loc>/tags/shiny/</loc>
-      <lastmod>2016-02-29T12:03:12-05:00</lastmod>
+      <lastmod>2016-01-06T13:18:39-05:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -739,7 +710,7 @@
     <url>
     
       <loc>/tags/shiny/</loc>
-      <lastmod>2016-01-06T13:18:39-05:00</lastmod>
+      <lastmod>2016-02-29T12:03:12-05:00</lastmod>
       <priority>0</priority>
     </url>
     

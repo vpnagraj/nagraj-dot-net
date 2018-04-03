@@ -13,21 +13,57 @@
     
     
     <item>
-      <title>A Person Re-Identification System For Mobile Devices</title>
-      <link>/publication/person-re-identification/</link>
-      <pubDate>Tue, 01 Sep 2015 00:00:00 +0000</pubDate>
+      <title>simpleCache: R caching for reproducible, distributed, large-scale projects</title>
+      <link>/publication/simplecache/</link>
+      <pubDate>Wed, 10 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>/publication/person-re-identification/</guid>
-      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+      <guid>/publication/simplecache/</guid>
+      <description></description>
     </item>
     
     <item>
-      <title>Mobile visual clothing search</title>
-      <link>/publication/clothing-search/</link>
-      <pubDate>Mon, 01 Jul 2013 00:00:00 +0000</pubDate>
+      <title>hei: Calculate Healthy Eating Index (HEI) Scores</title>
+      <link>/publication/hei/</link>
+      <pubDate>Wed, 04 Oct 2017 00:00:00 +0000</pubDate>
       
-      <guid>/publication/clothing-search/</guid>
-      <description>More detail can easily be written here using Markdown and $\rm \LaTeX$ math code.</description>
+      <guid>/publication/hei/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Integrative genetics of vascular smooth muscle cell phenotypes</title>
+      <link>/publication/smc-boston-2016/</link>
+      <pubDate>Sat, 01 Oct 2016 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/smc-boston-2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>National Mental Health Services Survey: Virginia Summary</title>
+      <link>/publication/nmhss-virginia/</link>
+      <pubDate>Thu, 01 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/nmhss-virginia/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Analyzing Library Services Using Customer Relationship Managment Data and R Programming </title>
+      <link>/publication/library-crm/</link>
+      <pubDate>Tue, 01 Sep 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/library-crm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Exit as Strategy: Web Services as the New Websites for Many Libraries</title>
+      <link>/publication/exit-as-strategy/</link>
+      <pubDate>Mon, 01 Sep 2014 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/exit-as-strategy/</guid>
+      <description>Parker, A., Nagraj V.P. and Moody, D. (2014). Exit as Strategy: Web Services as the New Websites for Many Libraries In K. Varnum (Ed.), The Top Technologies Every Librarian Needs to Know: A LITA Guide (pp. 67-84). Chicago, IL: ALA TechSource.</description>
     </item>
     
   </channel>

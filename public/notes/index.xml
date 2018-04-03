@@ -45,7 +45,7 @@ I encountered this problem when I was trying to automate a workflow for generati
     </item>
     
     <item>
-      <title>chunking in R</title>
+      <title>Chunking in R</title>
       <link>/notes/chunking/</link>
       <pubDate>Mon, 11 Jul 2016 15:24:47 -0400</pubDate>
       
@@ -104,7 +104,7 @@ To host the document you do need a Shiny Server running on top of a version of R
     </item>
     
     <item>
-      <title>pandoc list</title>
+      <title>pandoc.list</title>
       <link>/notes/pandoc-list/</link>
       <pubDate>Fri, 15 Jan 2016 14:07:29 -0500</pubDate>
       
@@ -115,7 +115,7 @@ An example … say you had the following (not so arbitrary) character vector:</d
     </item>
     
     <item>
-      <title>nagraj-dot-net</title>
+      <title>nagraj.net</title>
       <link>/notes/nagraj-net/</link>
       <pubDate>Wed, 13 Jan 2016 13:09:19 -0500</pubDate>
       

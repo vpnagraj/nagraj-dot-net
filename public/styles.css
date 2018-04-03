@@ -910,7 +910,7 @@ article .article-metadata {
   opacity: 0;
   transition: all 0.2s ease-out;
   font-family: 'FontAwesome';
-  content: '\f0c1';
+  /*content: '\f0c1';*/
   text-align: center;
   font-size: 3rem;
   color: #666;
