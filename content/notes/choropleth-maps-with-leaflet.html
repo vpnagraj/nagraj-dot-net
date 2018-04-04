@@ -55,61 +55,8 @@ states &lt;- readOGR(dsn = path.expand(&quot;cb_2015_us_state_20m&quot;), layer 
 # get data for map
 json_api &lt;- &quot;https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json&quot;
 states &lt;- geojson_read(json_api, what = &quot;sp&quot;)</code></pre>
-<p>The <code>sp</code> object created above (“states”) stores its data in slots, which can be accessed with the “@” operator. You can also use the base <code>plot()</code> to visualize the boundaries to make sure they look correct.</p>
+<p>The <code>sp</code> object created above (“states”) stores its data in slots, which can be accessed with the “@” operator.</p>
 <pre class="r"><code>states@data</code></pre>
-<pre><code>##    id                 name   density
-## 0  01              Alabama    94.650
-## 1  02               Alaska     1.264
-## 2  04              Arizona    57.050
-## 3  05             Arkansas    56.430
-## 4  06           California   241.700
-## 5  08             Colorado    49.330
-## 6  09          Connecticut   739.100
-## 7  10             Delaware   464.300
-## 8  11 District of Columbia 10065.000
-## 9  12              Florida   353.400
-## 10 13              Georgia   169.500
-## 11 15               Hawaii   214.100
-## 12 16                Idaho    19.150
-## 13 17             Illinois   231.500
-## 14 18              Indiana   181.700
-## 15 19                 Iowa    54.810
-## 16 20               Kansas    35.090
-## 17 21             Kentucky   110.000
-## 18 22            Louisiana   105.000
-## 19 23                Maine    43.040
-## 20 24             Maryland   596.300
-## 21 25        Massachusetts   840.200
-## 22 26             Michigan   173.900
-## 23 27            Minnesota    67.140
-## 24 28          Mississippi    63.500
-## 25 29             Missouri    87.260
-## 26 30              Montana     6.858
-## 27 31             Nebraska    23.970
-## 28 32               Nevada    24.800
-## 29 33        New Hampshire   147.000
-## 30 34           New Jersey  1189.000
-## 31 35           New Mexico    17.160
-## 32 36             New York   412.300
-## 33 37       North Carolina   198.200
-## 34 38         North Dakota     9.916
-## 35 39                 Ohio   281.900
-## 36 40             Oklahoma    55.220
-## 37 41               Oregon    40.330
-## 38 42         Pennsylvania   284.300
-## 39 44         Rhode Island  1006.000
-## 40 45       South Carolina   155.400
-## 41 46         South Dakota    98.070
-## 42 47            Tennessee    88.080
-## 43 48                Texas    98.070
-## 44 49                 Utah    34.300
-## 45 50              Vermont    67.730
-## 46 51             Virginia   204.500
-## 47 53           Washington   102.600
-## 48 54        West Virginia    77.060
-## 49 55            Wisconsin   105.200
-## 50 56              Wyoming     5.851
-## 51 72          Puerto Rico  1082.000</code></pre>
 <p>With the boundaries created, you can attach whatever data you’d like to map. Again in this case, we’ll be using Zika incidence for a single week in the United States. The code below reads the data (stored as a CSV on Github) and then aggregates it by state and attaches it as a column to the <code>states@data</code> data frame.</p>
 <pre class="r"><code>library(readr)
 library(dplyr)

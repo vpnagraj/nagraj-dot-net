@@ -62,9 +62,9 @@ json_api <- "https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/da
 states <- geojson_read(json_api, what = "sp")
 ```
 
-The `sp` object created above ("states") stores its data in slots, which can be accessed with the "@" operator. You can also use the base `plot()` to visualize the boundaries to make sure they look correct.
+The `sp` object created above ("states") stores its data in slots, which can be accessed with the "@" operator. 
 
-``` {r}
+```{r, eval = FALSE}
 states@data
 ```
 

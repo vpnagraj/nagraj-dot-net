@@ -11,6 +11,24 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Bradycardia and Oxygen Desaturation Events in VLBW infants: Association with BPD and other outcomes</title>
+      <link>/publication/bd-pas-2018/</link>
+      <pubDate>Thu, 03 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/bd-pas-2018/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Seventh Day Respiratory Acuity Score is a Strong Predictor of BPD in VLBW Infants</title>
+      <link>/publication/ras-pas-2018/</link>
+      <pubDate>Thu, 03 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/ras-pas-2018/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Courses</title>
       <link>/project/courses/</link>
       <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
@@ -462,15 +480,67 @@ hist(si, col = &amp;quot;grey&amp;quot;, border = &amp;quot;white&amp;quot;, ncl
       <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/project/hei/</guid>
-      <description>&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis posuere tellus ac convallis placerat. Proin tincidunt magna sed ex sollicitudin condimentum. Sed ac faucibus dolor, scelerisque sollicitudin nisi. Cras purus urna, suscipit quis sapien eu, pulvinar tempor diam. Quisque risus orci, mollis id ante sit amet, gravida egestas nisl. Sed ac tempus magna. Proin in dui enim. Donec condimentum, sem id dapibus fringilla, tellus enim condimentum arcu, nec volutpat est felis vel metus. Vestibulum sit amet erat at nulla eleifend gravida.&lt;/p&gt;
+      <description>
 
-&lt;p&gt;Nullam vel molestie justo. Curabitur vitae efficitur leo. In hac habitasse platea dictumst. Sed pulvinar mauris dui, eget varius purus congue ac. Nulla euismod, lorem vel elementum dapibus, nunc justo porta mi, sed tempus est est vel tellus. Nam et enim eleifend, laoreet sem sit amet, elementum sem. Morbi ut leo congue, maximus velit ut, finibus arcu. In et libero cursus, rutrum risus non, molestie leo. Nullam congue quam et volutpat malesuada. Sed risus tortor, pulvinar et dictum nec, sodales non mi. Phasellus lacinia commodo laoreet. Nam mollis, erat in feugiat consectetur, purus eros egestas tellus, in auctor urna odio at nibh. Mauris imperdiet nisi ac magna convallis, at rhoncus ligula cursus.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://travis-ci.org/timfolsom/hei&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://travis-ci.org/timfolsom/hei.svg?branch=master&#34; alt=&#34;Travis-CI Build Status&#34; /&gt;&lt;/a&gt;
+&lt;a href=&#34;https://cran.r-project.org/package=hei&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;http://www.r-pkg.org/badges/version/hei&#34; alt=&#34;CRAN_Status_Badge&#34; /&gt;&lt;/a&gt;
+&lt;a href=&#34;https://codecov.io/gh/timfolsom/hei&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://codecov.io/gh/timfolsom/hei/branch/master/graph/badge.svg&#34; alt=&#34;codecov&#34; /&gt;&lt;/a&gt;
+&lt;a href=&#34;https://cran.r-project.org/package=hei&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cranlogs.r-pkg.org/badges/hei&#34; alt=&#34;CRAN Downloads&#34; /&gt;&lt;/a&gt;
+&lt;a href=&#34;http://dx.doi.org/10.21105/joss.00417&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;http://joss.theoj.org/papers/10.21105/joss.00417/status.svg&#34; alt=&#34;JOSS Publication&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;Cras aliquam rhoncus ipsum, in hendrerit nunc mattis vitae. Duis vitae efficitur metus, ac tempus leo. Cras nec fringilla lacus. Quisque sit amet risus at ipsum pharetra commodo. Sed aliquam mauris at consequat eleifend. Praesent porta, augue sed viverra bibendum, neque ante euismod ante, in vehicula justo lorem ac eros. Suspendisse augue libero, venenatis eget tincidunt ut, malesuada at lorem. Donec vitae bibendum arcu. Aenean maximus nulla non pretium iaculis. Quisque imperdiet, nulla in pulvinar aliquet, velit quam ultrices quam, sit amet fringilla leo sem vel nunc. Mauris in lacinia lacus.&lt;/p&gt;
+&lt;hr /&gt;
 
-&lt;p&gt;Suspendisse a tincidunt lacus. Curabitur at urna sagittis, dictum ante sit amet, euismod magna. Sed rutrum massa id tortor commodo, vitae elementum turpis tempus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean purus turpis, venenatis a ullamcorper nec, tincidunt et massa. Integer posuere quam rutrum arcu vehicula imperdiet. Mauris ullamcorper quam vitae purus congue, quis euismod magna eleifend. Vestibulum semper vel augue eget tincidunt. Fusce eget justo sodales, dapibus odio eu, ultrices lorem. Duis condimentum lorem id eros commodo, in facilisis mauris scelerisque. Morbi sed auctor leo. Nullam volutpat a lacus quis pharetra. Nulla congue rutrum magna a ornare.&lt;/p&gt;
+&lt;h3 id=&#34;overview&#34;&gt;Overview&lt;/h3&gt;
 
-&lt;p&gt;Aliquam in turpis accumsan, malesuada nibh ut, hendrerit justo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Quisque sed erat nec justo posuere suscipit. Donec ut efficitur arcu, in malesuada neque. Nunc dignissim nisl massa, id vulputate nunc pretium nec. Quisque eget urna in risus suscipit ultricies. Pellentesque odio odio, tincidunt in eleifend sed, posuere a diam. Nam gravida nisl convallis semper elementum. Morbi vitae felis faucibus, vulputate orci placerat, aliquet nisi. Aliquam erat volutpat. Maecenas sagittis pulvinar purus, sed porta quam laoreet at.&lt;/p&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;The goal of &lt;strong&gt;hei&lt;/strong&gt; is to calculate Healthy Eating Index (HEI) scores from National Health and Nutrition Examination Survey (NHANES) data for use in dietary analyses. The HEI is a dietary metric designed by the USDA and NCI to gauge adherence to the US Dietary Guidelines.&lt;/p&gt;
+
+&lt;h3 id=&#34;installation&#34;&gt;Installation&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;strong&gt;hei&lt;/strong&gt; is available on &lt;a href=&#34;https://cran.r-project.org/package=hei&#34; target=&#34;_blank&#34;&gt;CRAN&lt;/a&gt;, and can be installed as follows:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;install.packages(&amp;quot;hei&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To install the development version hosted on this repository, use the &lt;strong&gt;devtools&lt;/strong&gt; package and the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# install.packages(&amp;quot;devtools&amp;quot;)
+devtools::install_github(&amp;quot;timfolsom/hei&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;getting-started&#34;&gt;Getting Started&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;pre&gt;&lt;code&gt;library(hei)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &lt;strong&gt;hei&lt;/strong&gt; package contains one key function:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;hei()&lt;/code&gt; takes as its arguments three data sets: an FPED data set, a NHANES dietary data set, and an NHANES demographic data set, returning a HEI score for each individual in the NHANES study being analyzed.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;hei&lt;/strong&gt; also includes &lt;code&gt;get_fped()&lt;/code&gt; &lt;code&gt;get_diet()&lt;/code&gt; and &lt;code&gt;get_demo()&lt;/code&gt; for retrieving data from the Food Patterns Equivalents Database (FPED) and the NHANES dietary and demographic databases, respectively. The FPED data sets (in the public domain) retrieved by &lt;code&gt;get_fped()&lt;/code&gt; are built into the package and have been converted to .csv files from the SAS data format in which they were originally published by their creators. &lt;code&gt;get_diet()&lt;/code&gt; and &lt;code&gt;get_demo()&lt;/code&gt; require the R package &lt;code&gt;nhanesA&lt;/code&gt; which is employed to retrieve NHANES data sets directly from the web.&lt;/p&gt;
+
+&lt;h3 id=&#34;related-work&#34;&gt;Related Work&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;strong&gt;hei&lt;/strong&gt; is intended as a tool to aid in the analysis of NHANES data. It is important to be familiar with NHANES and its complex survey design as well as the FPED, which is derived from NHANES, before beginning any analyses involving the HEI.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://wwwn.cdc.gov/nchs/nhanes/analyticguidelines.aspx&#34; target=&#34;_blank&#34;&gt;NHANES survey methods and analytical guidelines&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.ars.usda.gov/northeast-area/beltsville-md/beltsville-human-nutrition-research-center/food-surveys-research-group/docs/fped-methodology/&#34; target=&#34;_blank&#34;&gt;FPED methodology and user guides&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;contributing&#34;&gt;Contributing&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;hei&lt;/strong&gt; is licensed under the &lt;a href=&#34;https://www.gnu.org/licenses/gpl-3.0.txt&#34; target=&#34;_blank&#34;&gt;GNU General Public License Version 3&lt;/a&gt;. Questions, feature requests and bug reports are welcome via the &lt;a href=&#34;https://github.com/vpnagraj/hei/issues&#34; target=&#34;_blank&#34;&gt;issue queue&lt;/a&gt;. The maintainer will review pull requests and incorporate contributions at his discretion.&lt;/p&gt;
 </description>
     </item>
     
@@ -642,47 +712,6 @@ change.&lt;/p&gt;
       
       <guid>/publication/smc-boston-2016/</guid>
       <description></description>
-    </item>
-    
-    <item>
-      <title>National Mental Health Services Survey: Virginia Summary</title>
-      <link>/publication/nmhss-virginia/</link>
-      <pubDate>Thu, 01 Sep 2016 00:00:00 +0000</pubDate>
-      
-      <guid>/publication/nmhss-virginia/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Transparent ggplot2 Plot Backgrounds</title>
-      <link>/notes/transparent-background-with-ggplot2/</link>
-      <pubDate>Tue, 16 Aug 2016 13:27:57 -0400</pubDate>
-      
-      <guid>/notes/transparent-background-with-ggplot2/</guid>
-      <description>&lt;p&gt;While I was preparing a figure for a research poster recently, I ran into an issue: my poster had an off-white background but the figure had a white background.&lt;/p&gt;
-&lt;p&gt;The first thing that came to mind was making the plot background transparent. Should be easy enough?&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;http://stackoverflow.com/questions/7455046/how-to-make-graphics-with-transparent-background-in-r-using-ggplot2&#34;&gt;It is.&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;The gist is that you need to set the both panel and &lt;em&gt;and&lt;/em&gt; plot backgrounds to transparent. It’s probably a good idea to “turn off” the grid elements since otherwise they will default to a color. All of the above can be done with options via the &lt;code&gt;theme()&lt;/code&gt; function.&lt;/p&gt;
-&lt;p&gt;And when saving the plot with &lt;code&gt;ggsave()&lt;/code&gt; you also should indicate that the background is transparent.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
-data(&amp;quot;airquality&amp;quot;)
-
-p &amp;lt;- 
-    ggplot(airquality, aes(Solar.R, Temp)) +
-    geom_point() +
-    geom_smooth() +
-    # set transparency
-    theme(
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        panel.background = element_rect(fill = &amp;quot;transparent&amp;quot;,colour = NA),
-        plot.background = element_rect(fill = &amp;quot;transparent&amp;quot;,colour = NA)
-        )
-
-p&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/notes/transparent-background-with-ggplot2_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;airquality.png&amp;quot;, p, bg = &amp;quot;transparent&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-</description>
     </item>
     
   </channel>
