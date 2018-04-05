@@ -15,6 +15,8 @@ image_preview = "simplecache.png"
 # Example: `tags = ["machine-learning", "deep-learning"]`
 tags = ["r-packages"]
 
+badges = ["https://travis-ci.org/databio/simpleCache.svg?branch=master", "https://cran.r-project.org/package=simpleCache"]
+
 # Optional external URL for project (replaces project detail page).
 external_link = ""
 
@@ -27,8 +29,6 @@ math = false
 # caption = "My caption :smile:"
 
 +++
-
-<a href="https://travis-ci.org/databio/simpleCache"><img src="https://travis-ci.org/databio/simpleCache.svg?branch=master" alt="Travis CI status"></img></a><a href="https://cran.r-project.org/package=simpleCache"><img src="https://www.r-pkg.org/badges/version/simpleCache"></img></a>
 
 `simpleCache` is an R package providing functions for caching R objects. Its
 purpose is to encourage writing reusable, restartable, and reproducible analysis

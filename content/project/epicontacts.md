@@ -15,6 +15,8 @@ image_preview = "epicontacts.png"
 # Example: `tags = ["machine-learning", "deep-learning"]`
 tags = ["r-packages"]
 
+badges = ["https://travis-ci.org/reconhub/epicontacts.svg?branch=master", "https://ci.appveyor.com/api/projects/status/7fj30xjlesja0vbr/branch/master?svg=true", "https://codecov.io/github/reconhub/epicontacts/coverage.svg?branch=master", "http://www.r-pkg.org/badges/version/epicontacts",
+"https://cranlogs.r-pkg.org/badges/epicontacts"]
 # Optional external URL for project (replaces project detail page).
 external_link = ""
 
@@ -27,14 +29,6 @@ math = false
 # caption = "My caption :smile:"
 
 +++
-
-[![Travis-CI Build Status](https://travis-ci.org/reconhub/epicontacts.svg?branch=master)](https://travis-ci.org/reconhub/epicontacts)
-[![Build status](https://ci.appveyor.com/api/projects/status/7fj30xjlesja0vbr/branch/master?svg=true)](https://ci.appveyor.com/project/thibautjombart/epicontacts/branch/master)
-[![Coverage Status](https://codecov.io/github/reconhub/epicontacts/coverage.svg?branch=master)](https://codecov.io/github/reconhub/epicontacts?branch=master)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/epicontacts)](https://cran.r-project.org/package=epicontacts)
-[![CRAN Downloads](https://cranlogs.r-pkg.org/badges/epicontacts)](https://cran.r-project.org/package=epicontacts)
-
-<br>
 
 ## Installing the package
 

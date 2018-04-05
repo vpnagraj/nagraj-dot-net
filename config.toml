@@ -195,6 +195,10 @@ defaultContentLanguageInSubdir = false
     #   2 = APA
     #   3 = MLA
     publication_format = 3
+    
+    # badges
+    
+    badges = []
 
   # Social/Academic Networking
   #

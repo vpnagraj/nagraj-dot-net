@@ -23,15 +23,6 @@
     
     <url>
     
-      <loc>/project/courses/</loc>
-      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/project/lolaweb/</loc>
       <lastmod>2018-04-02T00:00:00+00:00</lastmod>
     </url>
@@ -113,6 +104,15 @@
     
     <url>
     
+      <loc>/project/courses/</loc>
+      <lastmod>2018-04-01T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/publication/simplecache/</loc>
       <lastmod>2018-01-10T00:00:00+00:00</lastmod>
     </url>
@@ -124,6 +124,15 @@
     
       <loc>/publication/hei/</loc>
       <lastmod>2017-10-04T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication/vitals-aap-2017/</loc>
+      <lastmod>2017-10-01T00:00:00+00:00</lastmod>
     </url>
     
   
@@ -618,7 +627,7 @@
     <url>
     
       <loc>/tags/pubmed/</loc>
-      <lastmod>2015-12-22T11:10:14-05:00</lastmod>
+      <lastmod>2016-07-11T15:24:47-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -628,7 +637,7 @@
     <url>
     
       <loc>/tags/pubmed/</loc>
-      <lastmod>2016-07-11T15:24:47-04:00</lastmod>
+      <lastmod>2015-12-22T11:10:14-05:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -648,7 +657,7 @@
     <url>
     
       <loc>/tags/r/</loc>
-      <lastmod>2016-02-29T12:03:12-05:00</lastmod>
+      <lastmod>2016-08-16T13:27:57-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -658,7 +667,7 @@
     <url>
     
       <loc>/tags/r/</loc>
-      <lastmod>2016-08-16T13:27:57-04:00</lastmod>
+      <lastmod>2016-02-29T12:03:12-05:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -678,7 +687,7 @@
     <url>
     
       <loc>/tags/r-markdown/</loc>
-      <lastmod>2016-01-15T14:07:29-05:00</lastmod>
+      <lastmod>2016-02-29T12:03:12-05:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -688,7 +697,7 @@
     <url>
     
       <loc>/tags/r-markdown/</loc>
-      <lastmod>2016-02-29T12:03:12-05:00</lastmod>
+      <lastmod>2016-01-15T14:07:29-05:00</lastmod>
       <priority>0</priority>
     </url>
     

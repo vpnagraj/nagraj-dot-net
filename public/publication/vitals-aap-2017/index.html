@@ -17,15 +17,10 @@
       
     
   
-  <meta name="description" content="LOLAweb is an interactive application that implements functions from the LOLA package in a web interface via the Shiny framework.
-The app is hosted and available for use at:
-http://lolaweb.databio.org
-To run the application locally, you&rsquo;ll need to first clone this repository:
-git clone https://github.com/databio/LOLAweb.git  The app requires R to be installed, as well as several packages. From within R run the following to install the dependencies:
-install.packages(c(&quot;ggplot2&quot;, &quot;shiny&quot;, &quot;DT&quot;, &quot;shinyWidgets&quot;, &quot;shinyjs&quot;, &quot;sodium&quot;, &quot;devtools&quot;, &quot;shinyBS&quot;)) devtools::install_github(&quot;databio/simpleCache&quot;) devtools::install_github(&quot;databio/GenomicDistributions&quot;) source(&quot;https://bioconductor.">
+  <meta name="description" content="">
 
   
-  <link rel="alternate" hreflang="en-us" href="/project/lolaweb/">
+  <link rel="alternate" hreflang="en-us" href="/publication/vitals-aap-2017/">
 
   
 
@@ -74,7 +69,7 @@ install.packages(c(&quot;ggplot2&quot;, &quot;shiny&quot;, &quot;DT&quot;, &quot
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/project/lolaweb/">
+  <link rel="canonical" href="/publication/vitals-aap-2017/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -82,24 +77,19 @@ install.packages(c(&quot;ggplot2&quot;, &quot;shiny&quot;, &quot;DT&quot;, &quot
   <meta property="twitter:creator" content="@vpnagraj">
   
   <meta property="og:site_name" content="VP Nagraj">
-  <meta property="og:url" content="/project/lolaweb/">
-  <meta property="og:title" content="LOLAweb | VP Nagraj">
-  <meta property="og:description" content="LOLAweb is an interactive application that implements functions from the LOLA package in a web interface via the Shiny framework.
-The app is hosted and available for use at:
-http://lolaweb.databio.org
-To run the application locally, you&rsquo;ll need to first clone this repository:
-git clone https://github.com/databio/LOLAweb.git  The app requires R to be installed, as well as several packages. From within R run the following to install the dependencies:
-install.packages(c(&quot;ggplot2&quot;, &quot;shiny&quot;, &quot;DT&quot;, &quot;shinyWidgets&quot;, &quot;shinyjs&quot;, &quot;sodium&quot;, &quot;devtools&quot;, &quot;shinyBS&quot;)) devtools::install_github(&quot;databio/simpleCache&quot;) devtools::install_github(&quot;databio/GenomicDistributions&quot;) source(&quot;https://bioconductor.">
+  <meta property="og:url" content="/publication/vitals-aap-2017/">
+  <meta property="og:title" content="Vital Sign Ranges in Premature Neonates Using High Resolution Physiologic Data | VP Nagraj">
+  <meta property="og:description" content="">
   <meta property="og:locale" content="en-us">
   
-  <meta property="article:published_time" content="2018-04-02T00:00:00&#43;00:00">
+  <meta property="article:published_time" content="2017-10-01T00:00:00&#43;00:00">
   
-  <meta property="article:modified_time" content="2018-04-02T00:00:00&#43;00:00">
-  
-
+  <meta property="article:modified_time" content="2017-10-01T00:00:00&#43;00:00">
   
 
-  <title>LOLAweb | VP Nagraj</title>
+  
+
+  <title>Vital Sign Ranges in Premature Neonates Using High Resolution Physiologic Data | VP Nagraj</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -211,120 +201,157 @@ install.packages(c(&quot;ggplot2&quot;, &quot;shiny&quot;, &quot;DT&quot;, &quot
   </div>
 </nav>
 
-
-<article class="article article-project" itemscope itemtype="http://schema.org/Article">
+<div class="pub" itemscope itemtype="http://schema.org/CreativeWork">
 
   
 
 
   <div class="article-container">
-
-    <div class="pub-title">
-      <h1 itemprop="name">LOLAweb</h1>
-      <span class="pub-authors" itemprop="author">&nbsp;</span>
-    </div>
-
-    
-
-    <div class="article-style" itemprop="articleBody">
-
-      <blockquote>
-      LOLAweb is a web server and interactive results viewer for enrichment of overlap between a query region set (a bed file) and a database of region sets. It provides an interactive result explorer to visualize the highest ranked enrichments from the database. You can access the web server at http://lolaweb.databio.org
-
-      </blockquote>
-
+    <h1 itemprop="name">Vital Sign Ranges in Premature Neonates Using High Resolution Physiologic Data</h1>
+    <span class="pub-authors" itemprop="author">
       
-
-
-
-      <p><code>LOLAweb</code> is an interactive application that implements functions from the LOLA package in a web interface via the <a href="https://shiny.rstudio.com/" target="_blank">Shiny</a> framework.</p>
-
-<p>The app is hosted and available for use at:</p>
-
-<p><a href="http://lolaweb.databio.org" target="_blank">http://lolaweb.databio.org</a></p>
-
-<p>To run the application locally, you&rsquo;ll need to first clone this repository:</p>
-
-<pre><code>git clone https://github.com/databio/LOLAweb.git
-</code></pre>
-
-<p>The app requires R to be installed, as well as several packages. From within R run the following to install the dependencies:</p>
-
-<pre><code>install.packages(c(&quot;ggplot2&quot;, &quot;shiny&quot;, &quot;DT&quot;, &quot;shinyWidgets&quot;, &quot;shinyjs&quot;, &quot;sodium&quot;, &quot;devtools&quot;, &quot;shinyBS&quot;))
-devtools::install_github(&quot;databio/simpleCache&quot;)
-devtools::install_github(&quot;databio/GenomicDistributions&quot;)
-
-source(&quot;https://bioconductor.org/biocLite.R&quot;)
-biocLite(c(&quot;LOLA&quot;, &quot;GenomicRanges&quot;))
-</code></pre>
-
-<p>You&rsquo;ll also need underlying data that is not available in this repository in order to establish the universes, example user sets and reference genome directories. Run the following from within the root of this folder to download the data and create the <code>universes/</code>, <code>userSets/</code>, <code>reference/</code> and <code>cache/</code> directories respectively:</p>
-
-<pre><code># create universes dir
-mkdir universes
-mkdir userSets
-
-# example universe and user set
-curl http://cloud.databio.org.s3.amazonaws.com/vignettes/lola_vignette_data_150505.tgz | tar xvz
-
-mv lola_vignette_data/activeDHS_universe.bed universes/.
-mv lola_vignette_data/setB_100.bed userSets/.
-
-rm -rf lola_vignette_data
-</code></pre>
-
-<pre><code># create reference dir
-mkdir reference
-
-# core
-curl http://cloud.databio.org.s3.amazonaws.com/regiondb/LOLACoreCaches_170206.tgz | tar xvz
-mv scratch/ns5bc/resources/regions/LOLACore reference/Core
-rm -rf scratch
-
-# extended
-curl http://cloud.databio.org.s3.amazonaws.com/regiondb/LOLAExtCaches_170206.tgz | tar xvz
-mv scratch/ns5bc/resources/regions/LOLAExt reference/Extended
-rm -rf scratch
-</code></pre>
-
-<pre><code># create cache dir
-mkdir cache
-</code></pre>
-
-<p>With all of the above installed you can now launch the app with <code>shiny::runApp()</code> from within R at the root of this directory.</p>
-
-    </div>
-
-    
-
-
-<div class="article-tags">
-  
-  <a class="btn btn-primary btn-outline" href="/tags/other">other</a>
-  
+      CJ Alonzo, VP Nagraj, JR Moorman, DE Lake, MC Spaeder
+      
+    </span>
+    <span class="pull-right">
+      
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Vital%20Sign%20Ranges%20in%20Premature%20Neonates%20Using%20High%20Resolution%20Physiologic%20Data&amp;url=%2fpublication%2fvitals-aap-2017%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpublication%2fvitals-aap-2017%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpublication%2fvitals-aap-2017%2f&amp;title=Vital%20Sign%20Ranges%20in%20Premature%20Neonates%20Using%20High%20Resolution%20Physiologic%20Data"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpublication%2fvitals-aap-2017%2f&amp;title=Vital%20Sign%20Ranges%20in%20Premature%20Neonates%20Using%20High%20Resolution%20Physiologic%20Data"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Vital%20Sign%20Ranges%20in%20Premature%20Neonates%20Using%20High%20Resolution%20Physiologic%20Data&amp;body=%2fpublication%2fvitals-aap-2017%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
 </div>
 
 
+    </span>
 
-
-    
-    
     
 
     
-      
-      
-      
-      
 
-      
-      
-      
-      
     
+    <div class="row">
+      <div class="col-sm-1"></div>
+      <div class="col-sm-10">
+        <div class="row">
+          <div class="col-xs-12 col-sm-3 pub-row-heading">Type</div>
+          <div class="col-xs-12 col-sm-9">
+            
+            <a href="/publication/#1">
+              Conference paper
+            </a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-1"></div>
+    </div>
+    <div class="visible-xs space-below"></div>
+    
+
+    
+    <div class="row">
+      <div class="col-sm-1"></div>
+      <div class="col-sm-10">
+        <div class="row">
+          <div class="col-xs-12 col-sm-3 pub-row-heading">Publication</div>
+          <div class="col-xs-12 col-sm-9">Poster presented at American Academy of Pediatrics (AAP) National Conference, Chicago</div>
+        </div>
+      </div>
+      <div class="col-sm-1"></div>
+    </div>
+    <div class="visible-xs space-below"></div>
+    
+
+    <div class="row">
+      <div class="col-sm-1"></div>
+      <div class="col-sm-10">
+        <div class="row">
+          <div class="col-xs-12 col-sm-3 pub-row-heading">Date</div>
+          <div class="col-xs-12 col-sm-9" itemprop="datePublished">
+            October, 2017
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-1"></div>
+    </div>
+    <div class="visible-xs space-below"></div>
+
+    <div class="row" style="padding-top: 10px">
+      <div class="col-sm-1"></div>
+      <div class="col-sm-10">
+        <div class="row">
+          <div class="col-xs-12 col-sm-3 pub-row-heading" style="line-height:34px;">Links</div>
+          <div class="col-xs-12 col-sm-9">
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-1"></div>
+    </div>
+    <div class="visible-xs space-below"></div>
+
+    <div class="space-below"></div>
+
+    <div class="article-style"></div>
+
+    
+
 
   </div>
-</article>
+</div>
 
 
 
@@ -406,6 +433,13 @@ mkdir cache
       <script>hljs.initHighlightingOnLoad();</script>
     
 
+    
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML" integrity="sha512-tOav5w1OjvsSJzePRtt2uQPFwBoHt1VZcUq8l8nm5284LEKE9FSJBQryzMBzHxY5P0zRdNqEcpLIRVYFNgu1jw==" crossorigin="anonymous"></script>
     
     
 

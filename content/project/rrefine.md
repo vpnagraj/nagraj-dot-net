@@ -15,6 +15,8 @@ image_preview = "code.png"
 # Example: `tags = ["machine-learning", "deep-learning"]`
 tags = ["r-packages"]
 
+badges = ["https://travis-ci.org/vpnagraj/rrefine.svg", "http://www.r-pkg.org/badges/version/rrefine","http://cranlogs.r-pkg.org/badges/rrefine"]
+
 # Optional external URL for project (replaces project detail page).
 external_link = ""
 
@@ -23,14 +25,9 @@ math = false
 
 # Optional featured image (relative to `static/img/` folder).
 [header]
-image = "headers/bubbles-wide.jpg"
-caption = "My caption :smile:"
-
+# image = "headers/bubbles-wide.jpg"
+# caption = "My caption :smile:"
 +++
-
-<a href="https://travis-ci.org/vpnagraj/rrefine">
-<img src="https://travis-ci.org/vpnagraj/rrefine.svg?branch=master" alt="Travis CI Status"></img></a> [![CRAN Release](http://www.r-pkg.org/badges/version/rrefine)](https://cran.r-project.org/packages=rrefine) ![](http://cranlogs.r-pkg.org/badges/rrefine)
-
 
 ## Introduction
 

@@ -40,30 +40,7 @@ date = "2016-04-20T00:00:00"
 
       <div class="portrait-title">
         <h2 itemprop="name">VP Nagraj</h2>
-        
 
-        
-        
-
-        
-        <h3 itemprop="worksFor" itemscope="" itemtype="http://schema.org/Organization">
-          
-          <span itemprop="name">University of Virginia</span>
-          
-        </h3>
-        
-        <h3 itemprop="worksFor" itemscope="" itemtype="http://schema.org/Organization">
-          
-          <span itemprop="name">School of Medicine</span>
-          
-        </h3>
-        
-        <h3 itemprop="worksFor" itemscope="" itemtype="http://schema.org/Organization">
-          
-          <span itemprop="name">Research Computing</span>
-          
-        </h3>
-        
       </div>
 
       <link itemprop="url" href="/">
@@ -97,9 +74,18 @@ date = "2016-04-20T00:00:00"
   </div>
   <div class="col-xs-12 col-md-8" itemprop="description">
 
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proin eget egestas augue. Praesent ut sem nec arcu pellentesque aliquet. Duis dapibus diam vel metus tempus vulputate.</p>
+    <blockquote>
+    	<h3>
+    	Data Analyst
+    	<br>
+    	University of Virginia
+    	<br>
+    	<a href = "https://somrc.virginia.edu">School of Medicine<br>Research Computing</a>
+    	</h3>
+    </blockquote>
 
 
+    <!--
     <div class="row">
 
       
@@ -107,11 +93,11 @@ date = "2016-04-20T00:00:00"
         <h3>Interests</h3>
         <ul class="ul-interests">
           
-          <li>R programming</li>
-          
-          <li>Data analysis</li>
+          <li>R Programming</li>
           
           <li>Epidemiology</li>
+          
+          <li>Small Data</li>
           
         </ul>
       </div>
@@ -125,7 +111,7 @@ date = "2016-04-20T00:00:00"
           <li>
             <i class="fa-li fa fa-graduation-cap"></i>
             <div class="description">
-              <p class="course">MS Epidemiology, 2019</p>
+              <p class="course">MS Epidemiology 2019</p>
               <p class="institution">Columbia University</p>
             </div>
           </li>
@@ -133,7 +119,7 @@ date = "2016-04-20T00:00:00"
           <li>
             <i class="fa-li fa fa-graduation-cap"></i>
             <div class="description">
-              <p class="course">BA English, 2009</p>
+              <p class="course">BA English 2009</p>
               <p class="institution">University of Virginia</p>
             </div>
           </li>
@@ -143,6 +129,7 @@ date = "2016-04-20T00:00:00"
       
 
     </div>
+    -->
   </div>
 </div>
 

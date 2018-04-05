@@ -20,7 +20,11 @@
 
       <blockquote>
       {{ .Params.summary }}
+
       </blockquote>
+
+      {{ partial "badges.html" . }}
+
 
       {{ .Content }}
     </div>

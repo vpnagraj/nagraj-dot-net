@@ -15,6 +15,11 @@ image_preview = "code.png"
 # Example: `tags = ["machine-learning", "deep-learning"]`
 tags = ["r-packages"]
 
+badges = ["https://travis-ci.org/timfolsom/hei.svg?branch=master", "http://www.r-pkg.org/badges/version/hei", "https://codecov.io/gh/timfolsom/hei/branch/master/graph/badge.svg", 
+"https://cranlogs.r-pkg.org/badges/hei",
+"http://joss.theoj.org/papers/10.21105/joss.00417/status.svg"]
+ 
+
 # Optional external URL for project (replaces project detail page).
 external_link = ""
 
@@ -28,13 +33,6 @@ caption = ""
 
 +++
 
-[![Travis-CI Build Status](https://travis-ci.org/timfolsom/hei.svg?branch=master)](https://travis-ci.org/timfolsom/hei)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/hei)](https://cran.r-project.org/package=hei)
-[![codecov](https://codecov.io/gh/timfolsom/hei/branch/master/graph/badge.svg)](https://codecov.io/gh/timfolsom/hei)
-[![CRAN Downloads](https://cranlogs.r-pkg.org/badges/hei)](https://cran.r-project.org/package=hei)
-[![JOSS Publication](http://joss.theoj.org/papers/10.21105/joss.00417/status.svg)](http://dx.doi.org/10.21105/joss.00417)
-
-___
 ### Overview
 ___
 The goal of **hei** is to calculate Healthy Eating Index (HEI) scores from National Health and Nutrition Examination Survey (NHANES) data for use in dietary analyses. The HEI is a dietary metric designed by the USDA and NCI to gauge adherence to the US Dietary Guidelines.

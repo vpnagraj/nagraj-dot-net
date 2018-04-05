@@ -29,15 +29,6 @@
     </item>
     
     <item>
-      <title>Courses</title>
-      <link>/project/courses/</link>
-      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/project/courses/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>LOLAweb</title>
       <link>/project/lolaweb/</link>
       <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
@@ -144,14 +135,6 @@ mkdir cache
       
       <guid>/project/epicontacts/</guid>
       <description>
-
-&lt;p&gt;&lt;a href=&#34;https://travis-ci.org/reconhub/epicontacts&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://travis-ci.org/reconhub/epicontacts.svg?branch=master&#34; alt=&#34;Travis-CI Build Status&#34; /&gt;&lt;/a&gt;
-&lt;a href=&#34;https://ci.appveyor.com/project/thibautjombart/epicontacts/branch/master&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://ci.appveyor.com/api/projects/status/7fj30xjlesja0vbr/branch/master?svg=true&#34; alt=&#34;Build status&#34; /&gt;&lt;/a&gt;
-&lt;a href=&#34;https://codecov.io/github/reconhub/epicontacts?branch=master&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://codecov.io/github/reconhub/epicontacts/coverage.svg?branch=master&#34; alt=&#34;Coverage Status&#34; /&gt;&lt;/a&gt;
-&lt;a href=&#34;https://cran.r-project.org/package=epicontacts&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;http://www.r-pkg.org/badges/version/epicontacts&#34; alt=&#34;CRAN_Status_Badge&#34; /&gt;&lt;/a&gt;
-&lt;a href=&#34;https://cran.r-project.org/package=epicontacts&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cranlogs.r-pkg.org/badges/epicontacts&#34; alt=&#34;CRAN Downloads&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;br&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;installing-the-package&#34;&gt;Installing the package&lt;/h2&gt;
 
@@ -482,14 +465,6 @@ hist(si, col = &amp;quot;grey&amp;quot;, border = &amp;quot;white&amp;quot;, ncl
       <guid>/project/hei/</guid>
       <description>
 
-&lt;p&gt;&lt;a href=&#34;https://travis-ci.org/timfolsom/hei&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://travis-ci.org/timfolsom/hei.svg?branch=master&#34; alt=&#34;Travis-CI Build Status&#34; /&gt;&lt;/a&gt;
-&lt;a href=&#34;https://cran.r-project.org/package=hei&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;http://www.r-pkg.org/badges/version/hei&#34; alt=&#34;CRAN_Status_Badge&#34; /&gt;&lt;/a&gt;
-&lt;a href=&#34;https://codecov.io/gh/timfolsom/hei&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://codecov.io/gh/timfolsom/hei/branch/master/graph/badge.svg&#34; alt=&#34;codecov&#34; /&gt;&lt;/a&gt;
-&lt;a href=&#34;https://cran.r-project.org/package=hei&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cranlogs.r-pkg.org/badges/hei&#34; alt=&#34;CRAN Downloads&#34; /&gt;&lt;/a&gt;
-&lt;a href=&#34;http://dx.doi.org/10.21105/joss.00417&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;http://joss.theoj.org/papers/10.21105/joss.00417/status.svg&#34; alt=&#34;JOSS Publication&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-
 &lt;h3 id=&#34;overview&#34;&gt;Overview&lt;/h3&gt;
 
 &lt;hr /&gt;
@@ -552,9 +527,6 @@ devtools::install_github(&amp;quot;timfolsom/hei&amp;quot;)
       <guid>/project/rrefine/</guid>
       <description>
 
-&lt;p&gt;&lt;a href=&#34;https://travis-ci.org/vpnagraj/rrefine&#34;&gt;
-&lt;img src=&#34;https://travis-ci.org/vpnagraj/rrefine.svg?branch=master&#34; alt=&#34;Travis CI Status&#34;&gt;&lt;/img&gt;&lt;/a&gt; &lt;a href=&#34;https://cran.r-project.org/packages=rrefine&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;http://www.r-pkg.org/badges/version/rrefine&#34; alt=&#34;CRAN Release&#34; /&gt;&lt;/a&gt; &lt;img src=&#34;http://cranlogs.r-pkg.org/badges/rrefine&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
 &lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 
 &lt;p&gt;&lt;a href=&#34;http://openrefine.org/&#34; target=&#34;_blank&#34;&gt;&lt;em&gt;OpenRefine&lt;/em&gt;&lt;/a&gt; (formerly &lt;em&gt;Google Refine&lt;/em&gt;) is a popular, open source data cleaning software. &lt;strong&gt;rrefine&lt;/strong&gt; enables users to programmatically trigger data transfer between R and &lt;em&gt;OpenRefine&lt;/em&gt;. Using the functions available in this package, you can import, export or delete a project in &lt;em&gt;OpenRefine&lt;/em&gt; directly from R. There are &lt;a href=&#34;https://github.com/OpenRefine/OpenRefine/wiki/Documentation-For-Developers#known-client-libraries-for-refine&#34; target=&#34;_blank&#34;&gt;several client libraries for automating &lt;em&gt;OpenRefine&lt;/em&gt; tasks via Python, nodeJS and Ruby&lt;/a&gt;. &lt;strong&gt;rrefine&lt;/strong&gt; extends this functionality to R users.&lt;/p&gt;
@@ -599,8 +571,6 @@ library(rrefine)
       
       <guid>/project/simplecache/</guid>
       <description>
-
-&lt;p&gt;&lt;a href=&#34;https://travis-ci.org/databio/simpleCache&#34;&gt;&lt;img src=&#34;https://travis-ci.org/databio/simpleCache.svg?branch=master&#34; alt=&#34;Travis CI status&#34;&gt;&lt;/img&gt;&lt;/a&gt;&lt;a href=&#34;https://cran.r-project.org/package=simpleCache&#34;&gt;&lt;img src=&#34;https://www.r-pkg.org/badges/version/simpleCache&#34;&gt;&lt;/img&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;code&gt;simpleCache&lt;/code&gt; is an R package providing functions for caching R objects. Its
 purpose is to encourage writing reusable, restartable, and reproducible analysis
@@ -688,6 +658,85 @@ change.&lt;/p&gt;
     </item>
     
     <item>
+      <title>Courses</title>
+      <link>/project/courses/</link>
+      <pubDate>Sun, 01 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/courses/</guid>
+      <description>
+
+&lt;h2 id=&#34;spring-2018&#34;&gt;Spring 2018&lt;/h2&gt;
+
+&lt;h3 id=&#34;bims-8382-introduction-to-biomedical-data-science&#34;&gt;BIMS 8382: Introduction to Biomedical Data Science&lt;/h3&gt;
+
+&lt;h2 id=&#34;summer-2017&#34;&gt;Summer 2017&lt;/h2&gt;
+
+&lt;h3 id=&#34;data-science-institute-bootcamp-introduction-to-cloud-computing-with-aws&#34;&gt;Data Science Institute Bootcamp: Introduction to Cloud Computing with AWS&lt;/h3&gt;
+
+&lt;h2 id=&#34;spring-2017&#34;&gt;Spring 2017&lt;/h2&gt;
+
+&lt;h3 id=&#34;bims-8382-introduction-to-biomedical-data-science-1&#34;&gt;BIMS 8382: Introduction to Biomedical Data Science&lt;/h3&gt;
+
+&lt;h2 id=&#34;summer-2016&#34;&gt;Summer 2016&lt;/h2&gt;
+
+&lt;h3 id=&#34;data-science-institute-bootcamp-introduction-to-git-and-github&#34;&gt;Data Science Institute Bootcamp: Introduction to Git and Github&lt;/h3&gt;
+
+&lt;h2 id=&#34;spring-2016&#34;&gt;Spring 2016&lt;/h2&gt;
+
+&lt;h3 id=&#34;bims-8382-introduction-to-biomedical-data-science-2&#34;&gt;BIMS 8382: Introduction to Biomedical Data Science&lt;/h3&gt;
+
+&lt;div id=&#34;accordion&#34;&gt;
+  &lt;div class=&#34;card&#34;&gt;
+    &lt;div class=&#34;card-header&#34; id=&#34;headingOne&#34;&gt;
+      &lt;h5 class=&#34;mb-0&#34;&gt;
+        &lt;button class=&#34;btn btn-link&#34; data-toggle=&#34;collapse&#34; data-target=&#34;#collapseOne&#34; aria-expanded=&#34;true&#34; aria-controls=&#34;collapseOne&#34;&gt;
+          Spring 2018
+        &lt;/button&gt;
+      &lt;/h5&gt;
+    &lt;/div&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;div id=&amp;quot;collapseOne&amp;quot; class=&amp;quot;collapse show&amp;quot; aria-labelledby=&amp;quot;headingOne&amp;quot; data-parent=&amp;quot;#accordion&amp;quot;&amp;gt;
+        &amp;lt;div class=&amp;quot;card-body&amp;quot;&amp;gt;
+    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven&#39;t heard of them accusamus labore sustainable VHS.
+  &amp;lt;/div&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;/div&gt;
+  &lt;div class=&#34;card&#34;&gt;
+    &lt;div class=&#34;card-header&#34; id=&#34;headingTwo&#34;&gt;
+      &lt;h5 class=&#34;mb-0&#34;&gt;
+        &lt;button class=&#34;btn btn-link collapsed&#34; data-toggle=&#34;collapse&#34; data-target=&#34;#collapseTwo&#34; aria-expanded=&#34;false&#34; aria-controls=&#34;collapseTwo&#34;&gt;
+          Collapsible Group Item #2
+        &lt;/button&gt;
+      &lt;/h5&gt;
+    &lt;/div&gt;
+    &lt;div id=&#34;collapseTwo&#34; class=&#34;collapse&#34; aria-labelledby=&#34;headingTwo&#34; data-parent=&#34;#accordion&#34;&gt;
+      &lt;div class=&#34;card-body&#34;&gt;
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven&amp;rsquo;t heard of them accusamus labore sustainable VHS.
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&#34;card&#34;&gt;
+    &lt;div class=&#34;card-header&#34; id=&#34;headingThree&#34;&gt;
+      &lt;h5 class=&#34;mb-0&#34;&gt;
+        &lt;button class=&#34;btn btn-link collapsed&#34; data-toggle=&#34;collapse&#34; data-target=&#34;#collapseThree&#34; aria-expanded=&#34;false&#34; aria-controls=&#34;collapseThree&#34;&gt;
+          Collapsible Group Item #3
+        &lt;/button&gt;
+      &lt;/h5&gt;
+    &lt;/div&gt;
+    &lt;div id=&#34;collapseThree&#34; class=&#34;collapse&#34; aria-labelledby=&#34;headingThree&#34; data-parent=&#34;#accordion&#34;&gt;
+      &lt;div class=&#34;card-body&#34;&gt;
+        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven&amp;rsquo;t heard of them accusamus labore sustainable VHS.
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>simpleCache: R caching for reproducible, distributed, large-scale projects</title>
       <link>/publication/simplecache/</link>
       <pubDate>Wed, 10 Jan 2018 00:00:00 +0000</pubDate>
@@ -706,11 +755,11 @@ change.&lt;/p&gt;
     </item>
     
     <item>
-      <title>Integrative genetics of vascular smooth muscle cell phenotypes</title>
-      <link>/publication/smc-boston-2016/</link>
-      <pubDate>Sat, 01 Oct 2016 00:00:00 +0000</pubDate>
+      <title>Vital Sign Ranges in Premature Neonates Using High Resolution Physiologic Data</title>
+      <link>/publication/vitals-aap-2017/</link>
+      <pubDate>Sun, 01 Oct 2017 00:00:00 +0000</pubDate>
       
-      <guid>/publication/smc-boston-2016/</guid>
+      <guid>/publication/vitals-aap-2017/</guid>
       <description></description>
     </item>
     

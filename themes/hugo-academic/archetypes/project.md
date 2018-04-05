@@ -7,6 +7,8 @@ draft = false
 # Example: `tags = ["machine-learning", "deep-learning"]`
 tags = []
 
+badges = []
+
 # Project summary to display on homepage.
 summary = ""
 

@@ -13,15 +13,6 @@
     
     
     <item>
-      <title>Courses</title>
-      <link>/project/courses/</link>
-      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/project/courses/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>LOLAweb</title>
       <link>/project/lolaweb/</link>
       <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
@@ -81,7 +72,8 @@ install.packages(c(&amp;quot;ggplot2&amp;quot;, &amp;quot;shiny&amp;quot;, &amp;
 install.packages(&amp;quot;epicontacts&amp;quot;)  To benefit from the latest features and bug fixes, install the development, github version of the package using:
 devtools::install_github(&amp;quot;reconhub/epicontacts&amp;quot;)  Note that this requires the package devtools installed.
 What does it do? The main features of the package include:
- epicontacts: a new S3 class for storing linelists and contacts data</description>
+ epicontacts: a new S3 class for storing linelists and contacts data
+ make_epicontacts: a constructor for the new epicontacts class</description>
     </item>
     
     <item>
@@ -113,6 +105,15 @@ Installation The latest version of rrefine is availabe on Github and can be inst
       <guid>/project/simplecache/</guid>
       <description>simpleCache is an R package providing functions for caching R objects. Its purpose is to encourage writing reusable, restartable, and reproducible analysis pipelines for projects with massive data and computational requirements.
 Like its name indicates, simpleCache is intended to be simple. You choose a location to store your caches, and then provide the function with nothing more than a cache name and instructions (R code) for how to produce the R object.</description>
+    </item>
+    
+    <item>
+      <title>Courses</title>
+      <link>/project/courses/</link>
+      <pubDate>Sun, 01 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/courses/</guid>
+      <description>Spring 2018 BIMS 8382: Introduction to Biomedical Data Science Summer 2017 Data Science Institute Bootcamp: Introduction to Cloud Computing with AWS Spring 2017 BIMS 8382: Introduction to Biomedical Data Science Summer 2016 Data Science Institute Bootcamp: Introduction to Git and Github Spring 2016 BIMS 8382: Introduction to Biomedical Data Science Spring 2018    &amp;lt;div id=&amp;quot;collapseOne&amp;quot; class=&amp;quot;collapse show&amp;quot; aria-labelledby=&amp;quot;headingOne&amp;quot; data-parent=&amp;quot;#accordion&amp;quot;&amp;gt; &amp;lt;div class=&amp;quot;card-body&amp;quot;&amp;gt; Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.</description>
     </item>
     
   </channel>

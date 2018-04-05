@@ -1,0 +1,12 @@
+{{ if isset $.Params "badges" }}
+{{ $badgesLen := len $.Params.badges }}
+{{ if gt $badgesLen 0 }}
+<div>
+  {{ range $k, $v := $.Params.badges }}
+
+    <img class = "badges" src = {{ . }}> </img>
+
+  {{ end }}
+</div>
+{{ end }}
+{{ end }}
