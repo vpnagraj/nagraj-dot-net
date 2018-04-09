@@ -125,7 +125,106 @@ mkdir cache
       <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/project/workshops/</guid>
-      <description></description>
+      <description>
+
+&lt;h2 id=&#34;spring-2018&#34;&gt;Spring 2018&lt;/h2&gt;
+
+&lt;h3 id=&#34;school-of-medicine-research-computing-series-university-of-virginia&#34;&gt;School of Medicine Research Computing Series (University of Virginia)&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;R Package Development Tools&lt;/li&gt;
+&lt;li&gt;Writing Functions in R&lt;/li&gt;
+&lt;li&gt;Conditional Logic in R&lt;/li&gt;
+&lt;li&gt;Introduction to R&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;health-sciences-library-workshop-series-university-of-virginia&#34;&gt;Health Sciences Library Workshop Series (University of Virginia)&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Interactive Visualization with Javascript and R&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;fall-2017&#34;&gt;Fall 2017&lt;/h2&gt;
+
+&lt;h3 id=&#34;school-of-medicine-research-computing-series-university-of-virginia-1&#34;&gt;School of Medicine Research Computing Series (University of Virginia)&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;R Package Development Tools&lt;/li&gt;
+&lt;li&gt;Advanced Data Visualization with R&lt;/li&gt;
+&lt;li&gt;Introduction to Ivy Secure Computing Environment&lt;/li&gt;
+&lt;li&gt;R For Beginners&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;statlab-workshop-series-university-of-virginia&#34;&gt;StatLab Workshop Series (University of Virginia)&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Interactive Visualization with Javascript and R&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;spring-2017&#34;&gt;Spring 2017&lt;/h2&gt;
+
+&lt;h3 id=&#34;bioconnector-workshop-series-university-of-virginia&#34;&gt;BioConnector Workshop Series (University of Virginia)&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Introduction to the Command Line&lt;/li&gt;
+&lt;li&gt;Advanced Data Visualization with R&lt;/li&gt;
+&lt;li&gt;Advanced Data Manipulation with R&lt;/li&gt;
+&lt;li&gt;Building Shiny Web Applications In R&lt;/li&gt;
+&lt;li&gt;R For Beginners&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;statlab-workshop-series-university-of-virginia-1&#34;&gt;StatLab Workshop Series (University of Virginia)&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Advanced Data Visualization with R&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;fall-2016&#34;&gt;Fall 2016&lt;/h2&gt;
+
+&lt;h3 id=&#34;bioconnector-workshop-series-university-of-virginia-1&#34;&gt;BioConnector Workshop Series (University of Virginia)&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Harvesting Data from NCBI&lt;/li&gt;
+&lt;li&gt;Reproducible Reporting: Generating Dynamic Documents with R+RStudio&lt;/li&gt;
+&lt;li&gt;Advanced Data Visualization with R&lt;/li&gt;
+&lt;li&gt;Advanced Data Manipulation with R&lt;/li&gt;
+&lt;li&gt;Building Shiny Web Applications In R&lt;/li&gt;
+&lt;li&gt;R For Beginners&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;statlab-workshop-series-university-of-virginia-2&#34;&gt;StatLab Workshop Series (University of Virginia)&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Manipulating List Objects in R&lt;/li&gt;
+&lt;li&gt;Interactive Visualization with Javascript and R&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;summer-2016&#34;&gt;Summer 2016&lt;/h2&gt;
+
+&lt;h3 id=&#34;bioconnector-workshop-series-university-of-virginia-2&#34;&gt;BioConnector Workshop Series (University of Virginia)&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Advanced Data Visualization with R&lt;/li&gt;
+&lt;li&gt;Advanced Data Manipulation with R&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;spring-2016&#34;&gt;Spring 2016&lt;/h2&gt;
+
+&lt;h3 id=&#34;bioconnector-workshop-series-university-of-virginia-3&#34;&gt;BioConnector Workshop Series (University of Virginia)&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Building Shiny Web Applications In R&lt;/li&gt;
+&lt;li&gt;R For Beginners&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;fall-2015&#34;&gt;Fall 2015&lt;/h2&gt;
+
+&lt;h3 id=&#34;statlab-workshop-series-university-of-virginia-3&#34;&gt;StatLab Workshop Series (University of Virginia)&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Building Shiny Web Applications In R&lt;/li&gt;
+&lt;/ul&gt;
+</description>
     </item>
     
     <item>
@@ -684,55 +783,6 @@ change.&lt;/p&gt;
 &lt;h2 id=&#34;spring-2016&#34;&gt;Spring 2016&lt;/h2&gt;
 
 &lt;h3 id=&#34;bims-8382-introduction-to-biomedical-data-science-2&#34;&gt;BIMS 8382: Introduction to Biomedical Data Science&lt;/h3&gt;
-
-&lt;div id=&#34;accordion&#34;&gt;
-  &lt;div class=&#34;card&#34;&gt;
-    &lt;div class=&#34;card-header&#34; id=&#34;headingOne&#34;&gt;
-      &lt;h5 class=&#34;mb-0&#34;&gt;
-        &lt;button class=&#34;btn btn-link&#34; data-toggle=&#34;collapse&#34; data-target=&#34;#collapseOne&#34; aria-expanded=&#34;true&#34; aria-controls=&#34;collapseOne&#34;&gt;
-          Spring 2018
-        &lt;/button&gt;
-      &lt;/h5&gt;
-    &lt;/div&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;div id=&amp;quot;collapseOne&amp;quot; class=&amp;quot;collapse show&amp;quot; aria-labelledby=&amp;quot;headingOne&amp;quot; data-parent=&amp;quot;#accordion&amp;quot;&amp;gt;
-        &amp;lt;div class=&amp;quot;card-body&amp;quot;&amp;gt;
-    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven&#39;t heard of them accusamus labore sustainable VHS.
-  &amp;lt;/div&amp;gt;
-&amp;lt;/div&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;/div&gt;
-  &lt;div class=&#34;card&#34;&gt;
-    &lt;div class=&#34;card-header&#34; id=&#34;headingTwo&#34;&gt;
-      &lt;h5 class=&#34;mb-0&#34;&gt;
-        &lt;button class=&#34;btn btn-link collapsed&#34; data-toggle=&#34;collapse&#34; data-target=&#34;#collapseTwo&#34; aria-expanded=&#34;false&#34; aria-controls=&#34;collapseTwo&#34;&gt;
-          Collapsible Group Item #2
-        &lt;/button&gt;
-      &lt;/h5&gt;
-    &lt;/div&gt;
-    &lt;div id=&#34;collapseTwo&#34; class=&#34;collapse&#34; aria-labelledby=&#34;headingTwo&#34; data-parent=&#34;#accordion&#34;&gt;
-      &lt;div class=&#34;card-body&#34;&gt;
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven&amp;rsquo;t heard of them accusamus labore sustainable VHS.
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class=&#34;card&#34;&gt;
-    &lt;div class=&#34;card-header&#34; id=&#34;headingThree&#34;&gt;
-      &lt;h5 class=&#34;mb-0&#34;&gt;
-        &lt;button class=&#34;btn btn-link collapsed&#34; data-toggle=&#34;collapse&#34; data-target=&#34;#collapseThree&#34; aria-expanded=&#34;false&#34; aria-controls=&#34;collapseThree&#34;&gt;
-          Collapsible Group Item #3
-        &lt;/button&gt;
-      &lt;/h5&gt;
-    &lt;/div&gt;
-    &lt;div id=&#34;collapseThree&#34; class=&#34;collapse&#34; aria-labelledby=&#34;headingThree&#34; data-parent=&#34;#accordion&#34;&gt;
-      &lt;div class=&#34;card-body&#34;&gt;
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven&amp;rsquo;t heard of them accusamus labore sustainable VHS.
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
 </description>
     </item>
     
