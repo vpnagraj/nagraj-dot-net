@@ -34,7 +34,7 @@ date = "2016-04-20T00:00:00"
     <div id="profile">
 
       
-      <div class="portrait" style="background-image: url('/img/portrait.jpg');"></div>
+      <div class="portrait" style="background-image: url('/img/black.jpeg');"></div>
       <meta itemprop="image" content="/img/portrait.jpg">
       
 
