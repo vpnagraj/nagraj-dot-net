@@ -13,6 +13,16 @@
     
     
     <item>
+      <title>BIEN</title>
+      <link>/notes/bien/</link>
+      <pubDate>Fri, 27 Apr 2018 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/bien/</guid>
+      <description>As a side project I recently helped a friend use an R package for retrieving data from the Botantical Information and Ecology Network Database (BIEN). The code / output for that exploration is documented below.
+install.packages(&amp;quot;BIEN&amp;quot;) install.packages(&amp;quot;dplyr&amp;quot;) install.packages(&amp;quot;leaflet&amp;quot;) install.packages(&amp;quot;rgdal&amp;quot;) install.packages(&amp;quot;geojsonio&amp;quot;) install.packages(&amp;quot;htmltools&amp;quot;) install.packages(&amp;quot;knitr&amp;quot;) library(BIEN) library(leaflet) library(rgdal) library(geojsonio) library(dplyr) library(htmltools) library(knitr) Occurrence BIEN includes occurence data on the species level. The code below queries the database for Western Sumac (Rhus copallanium) and returns an interactive map with markers for all of the places where the species has been documented.</description>
+    </item>
+    
+    <item>
       <title>Transparent ggplot2 Plot Backgrounds</title>
       <link>/notes/transparent-background-with-ggplot2/</link>
       <pubDate>Tue, 16 Aug 2016 13:27:57 -0400</pubDate>

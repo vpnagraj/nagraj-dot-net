@@ -23,6 +23,15 @@
     
     <url>
     
+      <loc>/notes/bien/</loc>
+      <lastmod>2018-04-27T17:14:59+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/project/lolaweb/</loc>
       <lastmod>2018-04-02T00:00:00+00:00</lastmod>
     </url>
@@ -536,6 +545,16 @@
     
     <url>
     
+      <loc>/tags/leaflet/</loc>
+      <lastmod>2018-04-27T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/tags/maps/</loc>
       <lastmod>2016-07-25T09:16:04-04:00</lastmod>
       <priority>0</priority>
@@ -557,7 +576,7 @@
     <url>
     
       <loc>/categories/notes/</loc>
-      <lastmod>2016-08-16T13:27:57-04:00</lastmod>
+      <lastmod>2018-04-27T17:14:59+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -606,6 +625,16 @@
     
     <url>
     
+      <loc>/tags/plants/</loc>
+      <lastmod>2018-04-27T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/project/</loc>
       <lastmod>2018-04-02T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -627,7 +656,7 @@
     <url>
     
       <loc>/tags/pubmed/</loc>
-      <lastmod>2015-12-22T11:10:14-05:00</lastmod>
+      <lastmod>2016-07-11T15:24:47-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -637,7 +666,7 @@
     <url>
     
       <loc>/tags/pubmed/</loc>
-      <lastmod>2016-07-11T15:24:47-04:00</lastmod>
+      <lastmod>2015-12-22T11:10:14-05:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -667,7 +696,7 @@
     <url>
     
       <loc>/tags/r/</loc>
-      <lastmod>2016-08-16T13:27:57-04:00</lastmod>
+      <lastmod>2018-04-27T17:14:59+00:00</lastmod>
       <priority>0</priority>
     </url>
     
