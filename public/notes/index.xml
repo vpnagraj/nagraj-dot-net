@@ -13,6 +13,16 @@
     
     
     <item>
+      <title>Fixed Width Formats in R</title>
+      <link>/notes/fixed-width-format-r/</link>
+      <pubDate>Sun, 29 Apr 2018 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/fixed-width-format-r/</guid>
+      <description>The Centers for Disease Control (CDC) collects vital statistics (mortality and natality) and hosts these for public use. These data can be accessed via a web-based query builder or by download. The files are available as zip archives, and when uncompressed contain tabular data with observations stored in fixed width format.
+This post documents the steps I took to prepare the 2016 CDC national natality data for an analysis in R.</description>
+    </item>
+    
+    <item>
       <title>BIEN</title>
       <link>/notes/bien/</link>
       <pubDate>Fri, 27 Apr 2018 17:14:59 +0000</pubDate>
