@@ -6,6 +6,12 @@ tags: ["R Markdown", "R"]
 summary: "how to create 'templated' rmarkdown reports"
 ---
 
+```{r, include = FALSE}
+library(knitr)
+opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, eval = FALSE)
+catn <- function(x="") cat("    ", x, "\n")
+```
+
 Until recently I had yet to run into a scenario where I needed to use R Markdown to produce a "templated" set of reports. That is, a group of PDFs or HTML files with common R code (and therefore common report features, like figures, tables, summary statistics, etc.) executed dynamically on different data sets. 
 
 I encountered this problem when I was trying to automate a workflow for generating reports on publication data. The datasets are compiled individually for each department (Neurology, Pathology, etc.) but the final product (a PDF) features a common set of plots based on the input data set.
@@ -27,88 +33,103 @@ Stack Overflow features posts that speak to this issue. One post describes a sim
 
 My solution borrows from the posts above. The basic premise here is that you can use a single R script to "drive" the rendering of your R Markdown file. [Another piece of documentation](http://brooksandrew.github.io/simpleblog/articles/render-reports-directly-from-R-scripts/) I found does a great job detailing this idea.
 
-With everything above in mind, here's the workflow that works for me:
+All that said ... here's the workflow that works for me:
 
 1. Move all data files to a "data" subdirectory of my project root
+
+```{r, eval = FALSE}
+library(gapminder)
+library(dplyr)
+library(readr)
+
+gapminder %>%
+  filter(continent == "Asia") %>%
+  write_csv("data/asia.csv")
+
+gapminder %>%
+  filter(continent == "Americas") %>%
+  write_csv("data/americas.csv")
+
+gapminder %>%
+  filter(continent == "Africa") %>%
+  write_csv("data/africa.csv")
+
+gapminder %>%
+  filter(continent == "Europe") %>%
+  write_csv("data/europe.csv")
+
+gapminder %>%
+  filter(continent == "Oceania") %>%
+  write_csv("data/oceania.csv")
+```
+
 2. Check that data is prepared correctly (i.e. all columns are named the same, missing values are represented consistently)
-2. Write an RMarkdown file (first code block below) that is generic enough to work for each data set 
-3. Write an R script (second code block below) that:
+
+3. Write an RMarkdown file that is generic enough to work for each data set ... and the title of in the YAML header for the Rmd can include data specific to the file being processed
+
+<p>
+```{r, echo=FALSE, results='asis', eval = TRUE}
+catn("---")
+catn("title: '`r unique(cont$continent)`'")
+catn("output: pdf_document")
+catn("---")
+```
+</p>
+
+```{r, echo=F, results='asis', eval = TRUE}
+catn("```{r}")
+catn("library(ggplot2)")
+catn("library(dplyr)")
+catn("")
+catn("cont %>%")
+catn("  # average life expectancy and gdp per capita")
+catn("  group_by(country) %>%")
+catn("  summarise(lifeExp = mean(lifeExp), gdpPercap = mean(gdpPercap)) %>%")
+catn("  # scatterplot of life expectancy by gdp per capita")
+catn("  ggplot(aes(lifeExp, gdpPercap, label = country)) +")
+catn("  geom_text() +")
+catn("  theme_minimal()")
+catn("```")
+```
+
+4. Write an R script that:
 
     1. Loops through the data folder
     2. Creates an individual object (`pubs`) based on the given file in the loop 
-    3. Renders a PDF (using `rmarkdown::render()`) that is named accodring to the raw data file.
-    4. Run the R script
+    3. Renders a PDF (using `rmarkdown::render()`) that is named according to the raw data file.
 
-<!--
 
-```
----
-title: "Publication Metrics"
-author: "VP Nagraj"
-date: "July 14, 2016"
-output: pdf_document
----
-```
-
-```{r, setup, echo = FALSE}
-
-library(knitr)
-opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
-
-library(ggplot2)
-library(readr)
-library(dplyr)
-library(tidyr)
-library(networkD3)
-```
-```{r, eval = FALSE, authpos}
-
-pubs %>%
-    select(firstauthor:soloauthor) %>%
-    gather(key = pos, val) %>%
-    filter(!is.na(val)) %>%
-    group_by(pos) %>%
-    summarise(val = sum(val)) %>%
-    spread(pos, val) %>%
-    mutate(otherauthor = nrow(pubs) - (firstauthor + lastauthor + soloauthor)) %>%
-    rename(Middle = otherauthor, 
-        First = firstauthor, 
-        Last = lastauthor, 
-        Solo = soloauthor) %>%
-    gather(Position, n) %>%
-    ggplot(aes(reorder(Position, n), n)) +
-    geom_bar(stat = "identity") +
-    xlab("") +
-    ylab("Number of Articles") +
-    ggtitle("Distribution of Authorship Position for Department") +
-    coord_flip() +
-    theme_minimal()
-```
-
-```{r eval = FALSE}
+```{r}
 library(knitr)
 library(readr)
 library(dplyr)
 
 filelist <- list.files("data")
 
-somdat <- read_csv("All_SOM13-15v2_clean.csv")
-
 # loop through the file list to read in data and clean it up
 
 for (file in filelist) {
-    
-    fp <- paste("data/", file, sep="")
-    
-    # read in pubs but exclude web of science and xref
-    pubs <- read_csv(fp) %>%
-        filter(!grepl("WOS", Proprietary.ID) & !grepl("\\.", Proprietary.ID))
-    
-    rmarkdown::render(input = "pmbrochure.Rmd", 
-              output_format = "pdf_document",
-              output_file = paste(file, ".pdf", sep=''),
-              output_dir = "reports")
-    
+  
+  fp <- paste("data/", file, sep="")
+  
+  # read in continents
+  cont <- 
+    read_csv(fp) %>%
+    # look only at data since 1980
+    filter(year >= 1980)
+  
+  rmarkdown::render(input = "multireport.Rmd", 
+                    output_format = "pdf_document",
+                    output_file = paste0(gsub(".csv","", file), ".pdf"),
+                    output_dir = "reports")
+  
 }
 ```
--->
+
+
+5. Run the R script
+
+```{r}
+source("multireports.R")
+```
+

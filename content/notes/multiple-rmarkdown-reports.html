@@ -23,66 +23,89 @@ summary: "how to create 'templated' rmarkdown reports"
 <p>Instead I started looking around for ways to loop through a list of files and generate multiple PDF reports. Each PDF would be based on data from each file.</p>
 <p>Stack Overflow features posts that speak to this issue. One post describes a similar problem, but in terms of <a href="http://stackoverflow.com/questions/15396755/using-loops-with-knitr-to-produce-multiple-pdf-reports-need-a-little-help-to"><strong>knitr</strong> with Sweave</a>. Another seems more relavent to my workflow (since I’m using RMarkdown rather than Sweave) but explains <a href="http://stackoverflow.com/questions/26304576/how-to-best-generate-multiple-html-files-from-rmarkdown-based-on-one-dataset">how to create multiple reports from a <em>single</em> data set</a>.</p>
 <p>My solution borrows from the posts above. The basic premise here is that you can use a single R script to “drive” the rendering of your R Markdown file. <a href="http://brooksandrew.github.io/simpleblog/articles/render-reports-directly-from-R-scripts/">Another piece of documentation</a> I found does a great job detailing this idea.</p>
-<p>With everything above in mind, here’s the workflow that works for me:</p>
+<p>All that said … here’s the workflow that works for me:</p>
 <ol style="list-style-type: decimal">
 <li>Move all data files to a “data” subdirectory of my project root</li>
-<li>Check that data is prepared correctly (i.e. all columns are named the same, missing values are represented consistently)</li>
-<li>Write an RMarkdown file (first code block below) that is generic enough to work for each data set</li>
-<li><p>Write an R script (second code block below) that:</p>
+</ol>
+<pre class="r"><code>library(gapminder)
+library(dplyr)
+library(readr)
+
+gapminder %&gt;%
+  filter(continent == &quot;Asia&quot;) %&gt;%
+  write_csv(&quot;data/asia.csv&quot;)
+
+gapminder %&gt;%
+  filter(continent == &quot;Americas&quot;) %&gt;%
+  write_csv(&quot;data/americas.csv&quot;)
+
+gapminder %&gt;%
+  filter(continent == &quot;Africa&quot;) %&gt;%
+  write_csv(&quot;data/africa.csv&quot;)
+
+gapminder %&gt;%
+  filter(continent == &quot;Europe&quot;) %&gt;%
+  write_csv(&quot;data/europe.csv&quot;)
+
+gapminder %&gt;%
+  filter(continent == &quot;Oceania&quot;) %&gt;%
+  write_csv(&quot;data/oceania.csv&quot;)</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li><p>Check that data is prepared correctly (i.e. all columns are named the same, missing values are represented consistently)</p></li>
+<li><p>Write an RMarkdown file that is generic enough to work for each data set … and the title of in the YAML header for the Rmd can include data specific to the file being processed</p></li>
+</ol>
+<p>
+<pre><code> --- 
+ title: &#39;`r unique(cont$continent)`&#39; 
+ output: pdf_document 
+ --- </code></pre>
+</p>
+<pre><code> ```{r} 
+ library(ggplot2) 
+ library(dplyr) 
+  
+ cont %&gt;% 
+   # average life expectancy and gdp per capita 
+   group_by(country) %&gt;% 
+   summarise(lifeExp = mean(lifeExp), gdpPercap = mean(gdpPercap)) %&gt;% 
+   # scatterplot of life expectancy by gdp per capita 
+   ggplot(aes(lifeExp, gdpPercap, label = country)) + 
+   geom_text() + 
+   theme_minimal() 
+ ``` </code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li><p>Write an R script that:</p>
 <ol style="list-style-type: decimal">
 <li>Loops through the data folder</li>
 <li>Creates an individual object (<code>pubs</code>) based on the given file in the loop</li>
-<li>Renders a PDF (using <code>rmarkdown::render()</code>) that is named accodring to the raw data file.</li>
-<li>Run the R script</li>
+<li>Renders a PDF (using <code>rmarkdown::render()</code>) that is named according to the raw data file.</li>
 </ol></li>
 </ol>
-<!--
+<pre class="r"><code>library(knitr)
+library(readr)
+library(dplyr)
 
-```
----
-title: "Publication Metrics"
-author: "VP Nagraj"
-date: "July 14, 2016"
-output: pdf_document
----
-```
+filelist &lt;- list.files(&quot;data&quot;)
 
+# loop through the file list to read in data and clean it up
 
-```
-## Warning: package 'knitr' was built under R version 3.4.3
-```
-
-```
-## Warning: package 'dplyr' was built under R version 3.4.2
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-```
-
-```
-## The following object is masked from 'package:ggplot2':
-## 
-##     vars
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```
-## Warning: package 'tidyr' was built under R version 3.4.2
-```
-
-
-
--->
+for (file in filelist) {
+  
+  fp &lt;- paste(&quot;data/&quot;, file, sep=&quot;&quot;)
+  
+  # read in continents
+  cont &lt;- 
+    read_csv(fp) %&gt;%
+    # look only at data since 1980
+    filter(year &gt;= 1980)
+  
+  rmarkdown::render(input = &quot;multireport.Rmd&quot;, 
+                    output_format = &quot;pdf_document&quot;,
+                    output_file = paste0(gsub(&quot;.csv&quot;,&quot;&quot;, file), &quot;.pdf&quot;),
+                    output_dir = &quot;reports&quot;)
+  
+}</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>Run the R script</li>
+</ol>
+<pre class="r"><code>source(&quot;multireports.R&quot;)</code></pre>
