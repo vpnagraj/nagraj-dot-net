@@ -29,6 +29,146 @@
     </item>
     
     <item>
+      <title>Expand Dates Between</title>
+      <link>/notes/dates-between/</link>
+      <pubDate>Mon, 30 Apr 2018 08:38:31 -0400</pubDate>
+      
+      <guid>/notes/dates-between/</guid>
+      <description>&lt;p&gt;A few weeks ago I helped someone who needed to expand a data frame that included events (with a start and stop date for each) to one that had rows for every date in an event (including start and stop) … the code below gives a reproducible example of how to do that with &lt;code&gt;dplyr&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+
+start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5)
+end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_frame(start = start_time, end = end_time)&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;start&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;end&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-22&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-24&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-16&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-20&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-23&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-26&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-22&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-26&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1999-09-21&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-09-23&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_frame(start = start_time, end = end_time) %&amp;gt;%
+  mutate(id = 1:nrow(.)) %&amp;gt;%
+  rowwise() %&amp;gt;%
+  do(data.frame(id=.$id, days=seq(.$start,.$end,by=&amp;quot;days&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;right&#34;&gt;id&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;days&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-22&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-23&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-24&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-16&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-17&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-18&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-19&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-20&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-23&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-24&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-25&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-26&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-22&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-23&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-24&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-25&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-26&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-09-21&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-09-22&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-09-23&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;This borrows from a &lt;a href=&#34;https://stackoverflow.com/questions/24803361/expand-rows-by-date-range-using-start-and-end-date?answertab=votes#tab-top&#34;&gt;SO post&lt;/a&gt; that also includes a &lt;code&gt;data.table&lt;/code&gt; solution.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Fixed Width Formats in R</title>
       <link>/notes/fixed-width-format-r/</link>
       <pubDate>Sun, 29 Apr 2018 17:14:59 +0000</pubDate>
@@ -980,15 +1120,6 @@ change.&lt;/p&gt;
 
 &lt;h3 id=&#34;bims-8382-introduction-to-biomedical-data-science-2&#34;&gt;BIMS 8382: Introduction to Biomedical Data Science&lt;/h3&gt;
 </description>
-    </item>
-    
-    <item>
-      <title>simpleCache: R caching for reproducible, distributed, large-scale projects</title>
-      <link>/publication/simplecache/</link>
-      <pubDate>Wed, 10 Jan 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/publication/simplecache/</guid>
-      <description></description>
     </item>
     
   </channel>

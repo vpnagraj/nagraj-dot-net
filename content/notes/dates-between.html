@@ -1,0 +1,141 @@
+---
+title: "Expand Dates Between"
+date: 2018-04-30T08:38:31-04:00
+categories: ["notes"]
+tags: ["dplyr", "R"]
+summary: "fill dates between a start and stop time with dplyr syntax"
+---
+
+
+
+<p>A few weeks ago I helped someone who needed to expand a data frame that included events (with a start and stop date for each) to one that had rows for every date in an event (including start and stop) … the code below gives a reproducible example of how to do that with <code>dplyr</code>:</p>
+<pre class="r"><code>library(dplyr)
+
+start_time &lt;- sample(seq(as.Date(&quot;1999/1/1&quot;), as.Date(&quot;1999/12/31&quot;), &quot;days&quot;), 5)
+end_time &lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE)</code></pre>
+<pre class="r"><code>data_frame(start = start_time, end = end_time)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">start</th>
+<th align="left">end</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1999-01-22</td>
+<td align="left">1999-01-24</td>
+</tr>
+<tr class="even">
+<td align="left">1999-10-16</td>
+<td align="left">1999-10-20</td>
+</tr>
+<tr class="odd">
+<td align="left">1999-01-23</td>
+<td align="left">1999-01-26</td>
+</tr>
+<tr class="even">
+<td align="left">1999-12-22</td>
+<td align="left">1999-12-26</td>
+</tr>
+<tr class="odd">
+<td align="left">1999-09-21</td>
+<td align="left">1999-09-23</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>data_frame(start = start_time, end = end_time) %&gt;%
+  mutate(id = 1:nrow(.)) %&gt;%
+  rowwise() %&gt;%
+  do(data.frame(id=.$id, days=seq(.$start,.$end,by=&quot;days&quot;)))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">id</th>
+<th align="left">days</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">1999-01-22</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">1999-01-23</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">1999-01-24</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">1999-10-16</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="left">1999-10-17</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">1999-10-18</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="left">1999-10-19</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">1999-10-20</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">1999-01-23</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="left">1999-01-24</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">1999-01-25</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="left">1999-01-26</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="left">1999-12-22</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">1999-12-23</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="left">1999-12-24</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">1999-12-25</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="left">1999-12-26</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="left">1999-09-21</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">1999-09-22</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="left">1999-09-23</td>
+</tr>
+</tbody>
+</table>
+<p>This borrows from a <a href="https://stackoverflow.com/questions/24803361/expand-rows-by-date-range-using-start-and-end-date?answertab=votes#tab-top">SO post</a> that also includes a <code>data.table</code> solution.</p>

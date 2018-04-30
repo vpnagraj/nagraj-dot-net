@@ -1,0 +1,47 @@
+---
+title: "Expand Dates Between"
+date: 2018-04-30T08:38:31-04:00
+categories: ["notes"]
+tags: ["dplyr", "R"]
+summary: "fill dates between a start and stop time with dplyr syntax"
+---
+
+A few weeks ago I helped someone who needed to expand a data frame that included events (with a start and stop date for each) to one that had rows for every date in an event (including start and stop) ... the code below gives a reproducible example of how to do that with `dplyr`:
+
+```{r, include = FALSE}
+library(knitr)
+opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r}
+library(dplyr)
+
+start_time <- sample(seq(as.Date("1999/1/1"), as.Date("1999/12/31"), "days"), 5)
+end_time <- start_time + sample(2:4, size = length(start_time), replace = TRUE)
+```
+
+```{r, eval = FALSE}
+data_frame(start = start_time, end = end_time)
+```
+
+```{r, echo = FALSE}
+kable(data_frame(start = start_time, end = end_time))
+```
+
+```{r, eval = FALSE}
+data_frame(start = start_time, end = end_time) %>%
+  mutate(id = 1:nrow(.)) %>%
+  rowwise() %>%
+  do(data.frame(id=.$id, days=seq(.$start,.$end,by="days")))
+```
+
+```{r, echo = FALSE}
+data_frame(start = start_time, end = end_time) %>%
+  mutate(id = 1:nrow(.)) %>%
+  rowwise() %>%
+  do(data.frame(id=.$id, days=seq(.$start,.$end,by="days"))) %>%
+  kable()
+```
+
+This borrows from a [SO post](https://stackoverflow.com/questions/24803361/expand-rows-by-date-range-using-start-and-end-date?answertab=votes#tab-top) that also includes a `data.table` solution.
+
