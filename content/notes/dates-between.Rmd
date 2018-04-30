@@ -1,6 +1,6 @@
 ---
 title: "Expand Dates Between"
-date: 2018-04-30T08:38:31-04:00
+date: 2018-04-29T08:38:31-04:00
 categories: ["notes"]
 tags: ["dplyr", "R"]
 summary: "fill dates between a start and stop time with dplyr syntax"

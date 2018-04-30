@@ -29,9 +29,95 @@
     </item>
     
     <item>
+      <title>dplyr filter() Benchmark</title>
+      <link>/notes/filter-benchmark/</link>
+      <pubDate>Mon, 30 Apr 2018 14:50:23 +0000</pubDate>
+      
+      <guid>/notes/filter-benchmark/</guid>
+      <description>&lt;p&gt;Last week I finished preparing new teaching material for a workshop on R optimization techniques. Some of the examples were motivated by benchmarking tests I ran on data manipulation methods with &lt;code&gt;base&lt;/code&gt; vs &lt;code&gt;dplyr&lt;/code&gt; vs &lt;code&gt;data.table&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Not surprisingly, &lt;code&gt;data.table&lt;/code&gt; was generally most efficient in terms of speed when running the &lt;code&gt;microbenchmark&lt;/code&gt; tests.&lt;/p&gt;
+&lt;p&gt;One oddball result did creep up …&lt;/p&gt;
+&lt;p&gt;When comparing &lt;code&gt;dplyr::filter()&lt;/code&gt; versus a base method (using bracket indices and &lt;code&gt;which()&lt;/code&gt;), I noticed that the former was quite a bit slower for a data frame with 5000 rows. But that result reversed as the size of the data frame increased … in other words, &lt;code&gt;filter()&lt;/code&gt; was actually much &lt;em&gt;faster&lt;/em&gt; for a larger dataset.&lt;/p&gt;
+&lt;p&gt;First we can load the packages we’ll be using:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(microbenchmark)
+library(dplyr)
+library(ggplot2)
+library(nycflights13)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next create a sample of n = 5000 rows of the &lt;code&gt;nycflights13&lt;/code&gt; dataset:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;flights_sample &amp;lt;- 
+  sample_n(flights, 5000)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then run the benchmark on the sample of n = 5000 rows:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# run benchmark on n = 5000
+microbenchmark(
+  bracket = flights_sample[which(flights_sample$dep_delay &amp;gt; 0),],
+  filter = filter(flights_sample, dep_delay &amp;gt; 0),
+  times = 10
+  )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Unit: microseconds
+##     expr      min       lq     mean    median       uq      max neval
+##  bracket  528.900  543.692 2881.957  616.8865  687.474 23348.52    10
+##   filter 1229.799 1384.516 2688.792 1573.2475 1701.045 12775.43    10&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now run the benchmark on the full n = 336776 rows:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;microbenchmark(
+  bracket = flights[which(flights$dep_delay &amp;gt; 0),],
+  filter = filter(flights, dep_delay &amp;gt; 0),
+  times = 10
+  )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Unit: milliseconds
+##     expr      min       lq     mean   median       uq      max neval
+##  bracket 25.78197 28.99358 30.08971 29.85949 31.46580 36.93485    10
+##   filter 16.43049 18.37075 20.48562 18.63875 21.77536 28.94453    10&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;My guess is that there’s some overhead to using &lt;code&gt;filter()&lt;/code&gt; … but this clearly pays off eventually. So how big (i.e. how many rows) does a data frame need to be for &lt;code&gt;filter()&lt;/code&gt; to be faster?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create sequence of number of rows to sample by 20000
+sample_seq &amp;lt;- seq(5000, nrow(flights), by = 20000)
+
+# set up empty data frame that will store results
+mbm &amp;lt;- data_frame()
+
+# loop through the samples and calculate microbencharmk in ms
+for(n in sample_seq) {
+  
+  flights_sample &amp;lt;- sample_n(flights, n)
+  
+  tmpmbm &amp;lt;-
+    microbenchmark(
+      bracket = flights_sample[which(flights_sample$dep_delay &amp;gt; 0),],
+      filter = filter(flights_sample, dep_delay &amp;gt; 0),
+      times = 10,
+      unit = &amp;quot;ms&amp;quot;
+    )
+  
+  mbm &amp;lt;- rbind(mbm, summary(tmpmbm))
+  
+}
+
+# add the sample n as a column for plotting
+mbm$n &amp;lt;- rep(sample_seq, each = 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The plot below shows the threshold (number of rows on y axis) at which &lt;code&gt;filter()&lt;/code&gt; is faster (ratio &amp;lt; 1 on x axis). It also demonstrates that the absolute amount of time starts leveling off as the datasets get bigger.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mbm %&amp;gt;%
+  select(method = expr,
+         nrows = n,
+         time = median) %&amp;gt;%
+  group_by(nrows) %&amp;gt;%
+  mutate(ratio = time / lag(time)) %&amp;gt;%
+  filter(!is.na(ratio)) %&amp;gt;%
+  ggplot(aes(nrows, ratio, size = time)) +
+  geom_point() +
+  geom_hline(yintercept = 1, col = &amp;quot;firebrick&amp;quot;, lwd = 2) +
+  scale_x_reverse(breaks = sample_seq) +
+  xlab(&amp;quot;number of rows&amp;quot;) +
+  ylab(&amp;quot;ratio of time\ndplyr::filter() / base&amp;quot;) +
+  coord_flip() +
+  theme_minimal() +
+  guides(size = guide_legend(title = &amp;quot;time\n(milliseconds)&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/notes/filter-benchmark_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Expand Dates Between</title>
       <link>/notes/dates-between/</link>
-      <pubDate>Mon, 30 Apr 2018 08:38:31 -0400</pubDate>
+      <pubDate>Sun, 29 Apr 2018 08:38:31 -0400</pubDate>
       
       <guid>/notes/dates-between/</guid>
       <description>&lt;p&gt;A few weeks ago I helped someone who needed to expand a data frame that included events (with a start and stop date for each) to one that had rows for every date in an event (including start and stop) … the code below gives a reproducible example of how to do that with &lt;code&gt;dplyr&lt;/code&gt;:&lt;/p&gt;
@@ -49,24 +135,24 @@ end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace =
 &lt;/thead&gt;
 &lt;tbody&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-01-22&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-01-24&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-10-16&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-10-20&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-01-23&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-01-26&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-20&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;1999-12-22&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-26&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-09&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-13&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-21&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-23&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-14&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-16&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1999-11-04&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-11-06&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-19&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-21&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -84,83 +170,71 @@ end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace =
 &lt;tbody&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-01-22&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-20&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-01-23&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-21&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-01-24&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-10-16&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-10-17&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-10-18&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-10-19&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-10-20&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-01-23&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-01-24&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-01-25&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-01-26&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;1999-12-22&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-23&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-09&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-24&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-10&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-11&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-12&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-13&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-14&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-15&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-16&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-25&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-11-04&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-26&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-11-05&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-21&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-11-06&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-22&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-19&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-23&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-20&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-21&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -171,7 +245,7 @@ end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace =
     <item>
       <title>Fixed Width Formats in R</title>
       <link>/notes/fixed-width-format-r/</link>
-      <pubDate>Sun, 29 Apr 2018 17:14:59 +0000</pubDate>
+      <pubDate>Sat, 28 Apr 2018 17:14:59 +0000</pubDate>
       
       <guid>/notes/fixed-width-format-r/</guid>
       <description>&lt;p&gt;The Centers for Disease Control (CDC) collects &lt;a href=&#34;https://www.cdc.gov/nchs/data_access/vitalstatsonline.htm&#34;&gt;vital statistics&lt;/a&gt; (mortality and natality) and hosts these for public use. These data can be accessed via a &lt;a href=&#34;https://wonder.cdc.gov/&#34;&gt;web-based query builder&lt;/a&gt; or by download. The files are available as zip archives, and when uncompressed contain tabular data with observations stored in fixed width format.&lt;/p&gt;
@@ -1089,36 +1163,6 @@ change.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;simpleCache&lt;/code&gt; is licensed under the &lt;a href=&#34;https://opensource.org/licenses/BSD-2-Clause&#34; target=&#34;_blank&#34;&gt;2-Clause BSD License&lt;/a&gt;. Questions, feature requests and bug reports are welcome via the &lt;a href=&#34;https://github.com/databio/simpleCache/issues&#34; target=&#34;_blank&#34;&gt;issue queue&lt;/a&gt;. The maintainer will review pull requests and incorporate contributions at his discretion.&lt;/p&gt;
 
 &lt;p&gt;For more information refer to the contributing document and pull request / issue templates in the &lt;a href=&#34;https://github.com/databio/simpleCache/tree/master/.github&#34; target=&#34;_blank&#34;&gt;.github folder&lt;/a&gt; of this repository.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Courses</title>
-      <link>/project/courses/</link>
-      <pubDate>Sun, 01 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/project/courses/</guid>
-      <description>
-
-&lt;h2 id=&#34;spring-2018&#34;&gt;Spring 2018&lt;/h2&gt;
-
-&lt;h3 id=&#34;bims-8382-introduction-to-biomedical-data-science&#34;&gt;BIMS 8382: Introduction to Biomedical Data Science&lt;/h3&gt;
-
-&lt;h2 id=&#34;summer-2017&#34;&gt;Summer 2017&lt;/h2&gt;
-
-&lt;h3 id=&#34;data-science-institute-bootcamp-introduction-to-cloud-computing-with-aws&#34;&gt;Data Science Institute Bootcamp: Introduction to Cloud Computing with AWS&lt;/h3&gt;
-
-&lt;h2 id=&#34;spring-2017&#34;&gt;Spring 2017&lt;/h2&gt;
-
-&lt;h3 id=&#34;bims-8382-introduction-to-biomedical-data-science-1&#34;&gt;BIMS 8382: Introduction to Biomedical Data Science&lt;/h3&gt;
-
-&lt;h2 id=&#34;summer-2016&#34;&gt;Summer 2016&lt;/h2&gt;
-
-&lt;h3 id=&#34;data-science-institute-bootcamp-introduction-to-git-and-github&#34;&gt;Data Science Institute Bootcamp: Introduction to Git and Github&lt;/h3&gt;
-
-&lt;h2 id=&#34;spring-2016&#34;&gt;Spring 2016&lt;/h2&gt;
-
-&lt;h3 id=&#34;bims-8382-introduction-to-biomedical-data-science-2&#34;&gt;BIMS 8382: Introduction to Biomedical Data Science&lt;/h3&gt;
 </description>
     </item>
     

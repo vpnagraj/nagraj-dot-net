@@ -1,0 +1,87 @@
+---
+title: "dplyr filter() Benchmark"
+date: 2018-04-30T14:50:23+00:00
+categories: ["notes"]
+tags: ["dplyr", "R", "benchmark"]
+summary: "benchmarking dplyr filter versus base subsetting methods"
+---
+
+
+
+<p>Last week I finished preparing new teaching material for a workshop on R optimization techniques. Some of the examples were motivated by benchmarking tests I ran on data manipulation methods with <code>base</code> vs <code>dplyr</code> vs <code>data.table</code>.</p>
+<p>Not surprisingly, <code>data.table</code> was generally most efficient in terms of speed when running the <code>microbenchmark</code> tests.</p>
+<p>One oddball result did creep up …</p>
+<p>When comparing <code>dplyr::filter()</code> versus a base method (using bracket indices and <code>which()</code>), I noticed that the former was quite a bit slower for a data frame with 5000 rows. But that result reversed as the size of the data frame increased … in other words, <code>filter()</code> was actually much <em>faster</em> for a larger dataset.</p>
+<p>First we can load the packages we’ll be using:</p>
+<pre class="r"><code>library(microbenchmark)
+library(dplyr)
+library(ggplot2)
+library(nycflights13)</code></pre>
+<p>Next create a sample of n = 5000 rows of the <code>nycflights13</code> dataset:</p>
+<pre class="r"><code>flights_sample &lt;- 
+  sample_n(flights, 5000)</code></pre>
+<p>Then run the benchmark on the sample of n = 5000 rows:</p>
+<pre class="r"><code># run benchmark on n = 5000
+microbenchmark(
+  bracket = flights_sample[which(flights_sample$dep_delay &gt; 0),],
+  filter = filter(flights_sample, dep_delay &gt; 0),
+  times = 10
+  )</code></pre>
+<pre><code>## Unit: microseconds
+##     expr      min       lq     mean    median       uq      max neval
+##  bracket  528.900  543.692 2881.957  616.8865  687.474 23348.52    10
+##   filter 1229.799 1384.516 2688.792 1573.2475 1701.045 12775.43    10</code></pre>
+<p>Now run the benchmark on the full n = 336776 rows:</p>
+<pre class="r"><code>microbenchmark(
+  bracket = flights[which(flights$dep_delay &gt; 0),],
+  filter = filter(flights, dep_delay &gt; 0),
+  times = 10
+  )</code></pre>
+<pre><code>## Unit: milliseconds
+##     expr      min       lq     mean   median       uq      max neval
+##  bracket 25.78197 28.99358 30.08971 29.85949 31.46580 36.93485    10
+##   filter 16.43049 18.37075 20.48562 18.63875 21.77536 28.94453    10</code></pre>
+<p>My guess is that there’s some overhead to using <code>filter()</code> … but this clearly pays off eventually. So how big (i.e. how many rows) does a data frame need to be for <code>filter()</code> to be faster?</p>
+<pre class="r"><code># create sequence of number of rows to sample by 20000
+sample_seq &lt;- seq(5000, nrow(flights), by = 20000)
+
+# set up empty data frame that will store results
+mbm &lt;- data_frame()
+
+# loop through the samples and calculate microbencharmk in ms
+for(n in sample_seq) {
+  
+  flights_sample &lt;- sample_n(flights, n)
+  
+  tmpmbm &lt;-
+    microbenchmark(
+      bracket = flights_sample[which(flights_sample$dep_delay &gt; 0),],
+      filter = filter(flights_sample, dep_delay &gt; 0),
+      times = 10,
+      unit = &quot;ms&quot;
+    )
+  
+  mbm &lt;- rbind(mbm, summary(tmpmbm))
+  
+}
+
+# add the sample n as a column for plotting
+mbm$n &lt;- rep(sample_seq, each = 2)</code></pre>
+<p>The plot below shows the threshold (number of rows on y axis) at which <code>filter()</code> is faster (ratio &lt; 1 on x axis). It also demonstrates that the absolute amount of time starts leveling off as the datasets get bigger.</p>
+<pre class="r"><code>mbm %&gt;%
+  select(method = expr,
+         nrows = n,
+         time = median) %&gt;%
+  group_by(nrows) %&gt;%
+  mutate(ratio = time / lag(time)) %&gt;%
+  filter(!is.na(ratio)) %&gt;%
+  ggplot(aes(nrows, ratio, size = time)) +
+  geom_point() +
+  geom_hline(yintercept = 1, col = &quot;firebrick&quot;, lwd = 2) +
+  scale_x_reverse(breaks = sample_seq) +
+  xlab(&quot;number of rows&quot;) +
+  ylab(&quot;ratio of time\ndplyr::filter() / base&quot;) +
+  coord_flip() +
+  theme_minimal() +
+  guides(size = guide_legend(title = &quot;time\n(milliseconds)&quot;))</code></pre>
+<p><img src="/notes/filter-benchmark_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>

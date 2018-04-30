@@ -13,19 +13,31 @@
     
     
     <item>
+      <title>dplyr filter() Benchmark</title>
+      <link>/notes/filter-benchmark/</link>
+      <pubDate>Mon, 30 Apr 2018 14:50:23 +0000</pubDate>
+      
+      <guid>/notes/filter-benchmark/</guid>
+      <description>Last week I finished preparing new teaching material for a workshop on R optimization techniques. Some of the examples were motivated by benchmarking tests I ran on data manipulation methods with base vs dplyr vs data.table.
+Not surprisingly, data.table was generally most efficient in terms of speed when running the microbenchmark tests.
+One oddball result did creep up …
+When comparing dplyr::filter() versus a base method (using bracket indices and which()), I noticed that the former was quite a bit slower for a data frame with 5000 rows.</description>
+    </item>
+    
+    <item>
       <title>Expand Dates Between</title>
       <link>/notes/dates-between/</link>
-      <pubDate>Mon, 30 Apr 2018 08:38:31 -0400</pubDate>
+      <pubDate>Sun, 29 Apr 2018 08:38:31 -0400</pubDate>
       
       <guid>/notes/dates-between/</guid>
       <description>A few weeks ago I helped someone who needed to expand a data frame that included events (with a start and stop date for each) to one that had rows for every date in an event (including start and stop) … the code below gives a reproducible example of how to do that with dplyr:
-library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-01-22 1999-01-24  1999-10-16 1999-10-20  1999-01-23 1999-01-26  1999-12-22 1999-12-26  1999-09-21 1999-09-23    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
+library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-12-20 1999-12-22  1999-12-09 1999-12-13  1999-04-14 1999-04-16  1999-11-04 1999-11-06  1999-12-19 1999-12-21    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
     </item>
     
     <item>
       <title>Fixed Width Formats in R</title>
       <link>/notes/fixed-width-format-r/</link>
-      <pubDate>Sun, 29 Apr 2018 17:14:59 +0000</pubDate>
+      <pubDate>Sat, 28 Apr 2018 17:14:59 +0000</pubDate>
       
       <guid>/notes/fixed-width-format-r/</guid>
       <description>The Centers for Disease Control (CDC) collects vital statistics (mortality and natality) and hosts these for public use. These data can be accessed via a web-based query builder or by download. The files are available as zip archives, and when uncompressed contain tabular data with observations stored in fixed width format.

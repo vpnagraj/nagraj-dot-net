@@ -23,8 +23,17 @@
     
     <url>
     
+      <loc>/notes/filter-benchmark/</loc>
+      <lastmod>2018-04-30T14:50:23+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/notes/dates-between/</loc>
-      <lastmod>2018-04-30T08:38:31-04:00</lastmod>
+      <lastmod>2018-04-29T08:38:31-04:00</lastmod>
     </url>
     
   
@@ -33,7 +42,7 @@
     <url>
     
       <loc>/notes/fixed-width-format-r/</loc>
-      <lastmod>2018-04-29T17:14:59+00:00</lastmod>
+      <lastmod>2018-04-28T17:14:59+00:00</lastmod>
     </url>
     
   
@@ -424,6 +433,16 @@
     
     <url>
     
+      <loc>/tags/benchmark/</loc>
+      <lastmod>2018-04-30T14:50:23+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/categories/</loc>
       <priority>0</priority>
     </url>
@@ -474,7 +493,7 @@
     <url>
     
       <loc>/tags/dplyr/</loc>
-      <lastmod>2018-04-30T08:38:31-04:00</lastmod>
+      <lastmod>2018-04-30T14:50:23+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -484,7 +503,7 @@
     <url>
     
       <loc>/tags/epi/</loc>
-      <lastmod>2018-04-29T17:14:59+00:00</lastmod>
+      <lastmod>2018-04-28T17:14:59+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -614,7 +633,7 @@
     <url>
     
       <loc>/categories/notes/</loc>
-      <lastmod>2018-04-30T08:38:31-04:00</lastmod>
+      <lastmod>2018-04-30T14:50:23+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -734,7 +753,7 @@
     <url>
     
       <loc>/tags/r/</loc>
-      <lastmod>2018-04-30T08:38:31-04:00</lastmod>
+      <lastmod>2018-04-30T14:50:23+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -784,7 +803,7 @@
     <url>
     
       <loc>/tags/readr/</loc>
-      <lastmod>2018-04-29T17:14:59+00:00</lastmod>
+      <lastmod>2018-04-28T17:14:59+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -804,7 +823,7 @@
     <url>
     
       <loc>/tags/shiny/</loc>
-      <lastmod>2016-02-29T12:03:12-05:00</lastmod>
+      <lastmod>2016-01-06T13:18:39-05:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -814,7 +833,7 @@
     <url>
     
       <loc>/tags/shiny/</loc>
-      <lastmod>2016-01-06T13:18:39-05:00</lastmod>
+      <lastmod>2016-02-29T12:03:12-05:00</lastmod>
       <priority>0</priority>
     </url>
     
