@@ -6,12 +6,11 @@ tags: ["leaflet", "R", "plants"]
 summary: "exploring the botanical information and ecology network database (BIEN) with R"
 ---
 
-As a side project I recently helped a *friend* use an [R package](https://CRAN.R-project.org/package=BIEN) for retrieving data from the Botantical Information and Ecology Network Database (BIEN). The code / output for that exploration is documented below.
+As a side project I recently helped a friend use an [R package](https://CRAN.R-project.org/package=BIEN) for retrieving data from the Botantical Information and Ecology Network Database (BIEN). The code for that exploration is documented below.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
-
 
 ```{r, eval = FALSE}
 install.packages("BIEN")
@@ -37,7 +36,7 @@ library(knitr)
 
 BIEN includes occurence data on the species level. The code below queries the database for Western Sumac (*Rhus copallanium*) and returns an interactive map with markers for all of the places where the species has been documented.
 
-```{r}
+```{r, eval = FALSE}
 # retrieve occurrenc data for western sumac
 wsumac <- BIEN_occurrence_species(species = "Rhus copallinum")
 
@@ -79,7 +78,7 @@ system(command = "rm -rf shp")
 
 In terms of metadata, BIEN provides trait information. In the example below, these were measured multiple times and averaged to be reported in a table.
 
-```{r}
+```{r, eval = FALSE}
 # read in trait data
 wsumac_traits <- BIEN_trait_species("Rhus copallinum")
 
@@ -99,7 +98,7 @@ kable(summarised)
 
 BIEN has species lists on state level as well. After retrieving lists of species for each of the states in the USA ... we can count the number of species, and map the distribution of counts by State. This might provide a visual idea of plant diversity across the country.
 
-```{r}
+```{r, eval = FALSE}
 # by states
 # query BIEN for lists of species
 state_species <- BIEN_list_state(country="United States", state=state.name)

@@ -32,6 +32,7 @@ math = false
 
 ### School of Medicine Research Computing Series (University of Virginia)
 
+- Optimizing R Code
 - R Package Development Tools
 - Writing Functions in R
 - Conditional Logic in R
