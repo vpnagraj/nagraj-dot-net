@@ -28,7 +28,7 @@ results &lt;- entrez_search(&quot;pubmed&quot;, term = &quot;zika&quot;, retmax 
 esummaries &lt;- entrez_summary(&quot;pubmed&quot;, id = results$ids)
 
 journals &lt;- extract_from_esummary(esummaries, elements = &quot;fulljournalname&quot;)</code></pre>
-<p>Unfortunately for a query that returns a large number of results (i.e. “zika”) the <code>entrez_summary()</code> command will fail with something like:</p>
+<p>Unfortunately for a query that returns a large number of results (i.e. “zika”) the <code>entrez_summary()</code> command will fail with something like:</p>
 <blockquote>
 <p>Error in entrez_check(response) : HTTP failure 414, the request is too large. For large requests, try using web history as described in the tutorial</p>
 </blockquote>

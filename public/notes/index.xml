@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>Data-Based Labels</title>
+      <link>/notes/data-based-labels/</link>
+      <pubDate>Mon, 28 Jan 2019 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/data-based-labels/</guid>
+      <description>Chapter 7 of Edward Tufte’s The Visual Display of Quantitative Information presents advantages of “multifunctioning graphical elements” in data visualiztions. The idea is that features like the shape of points on the plot, grid lines, or even data labels can serve multiple purposes in communicating information.
+For example, take the shape of a stem plot:
+library(ggplot2) library(dplyr) glimpse(starwars) ## Observations: 87 ## Variables: 13 ## $ name &amp;lt;chr&amp;gt; &amp;quot;Luke Skywalker&amp;quot;, &amp;quot;C-3PO&amp;quot;, &amp;quot;R2-D2&amp;quot;, &amp;quot;Darth Vader&amp;quot;, .</description>
+    </item>
+    
+    <item>
       <title>dplyr filter() Benchmark</title>
       <link>/notes/filter-benchmark/</link>
       <pubDate>Mon, 30 Apr 2018 14:50:23 +0000</pubDate>
@@ -31,7 +42,7 @@ When comparing dplyr::filter() versus a base method (using bracket indices and w
       
       <guid>/notes/dates-between/</guid>
       <description>A few weeks ago I helped someone who needed to expand a data frame that included events (with a start and stop date for each) to one that had rows for every date in an event (including start and stop) … the code below gives a reproducible example of how to do that with dplyr:
-library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-09-15 1999-09-18  1999-09-19 1999-09-21  1999-12-11 1999-12-15  1999-05-22 1999-05-24  1999-11-06 1999-11-09    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
+library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-07-23 1999-07-26  1999-12-02 1999-12-04  1999-01-30 1999-02-02  1999-11-30 1999-12-02  1999-02-05 1999-02-09    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
     </item>
     
     <item>
@@ -116,7 +127,7 @@ What about just looking at a single one of those smaller chunks?</description>
       
       <guid>/notes/installing-r-packages-from-source/</guid>
       <description>I upgraded to R version 3.2.2 several months ago and have pretty much reloaded all my packages.
-But today I tried running a script that uses the caret package’s implementation of glm() for a logistic regression model. There was a problem … caret wasn’t installed. And when I ran install.packages(&amp;quot;caret&amp;quot;) I got this message:
+But today I tried running a script that uses the caret package’s implementation of glm() for a logistic regression model. There was a problem … caret wasn’t installed. And when I ran install.packages(&#34;caret&#34;) I got this message:
  Error in loadNamespace(j &amp;lt;- i[[1L]], c(lib.loc, .libPaths()), versionCheck = vI[[j]]) : there is no package called ‘pbkrtest’</description>
     </item>
     

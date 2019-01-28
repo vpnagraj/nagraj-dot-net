@@ -17,11 +17,12 @@
       
     
   
-  <meta name="description" content="Until recently I had yet to run into a scenario where I needed to use R Markdown to produce a “templated” set of reports. That is, a group of PDFs or HTML files with common R code (and therefore common report features, like figures, tables, summary statistics, etc.) executed dynamically on different data sets.
-I encountered this problem when I was trying to automate a workflow for generating reports on publication data.">
+  <meta name="description" content="Chapter 7 of Edward Tufte’s The Visual Display of Quantitative Information presents advantages of “multifunctioning graphical elements” in data visualiztions. The idea is that features like the shape of points on the plot, grid lines, or even data labels can serve multiple purposes in communicating information.
+For example, take the shape of a stem plot:
+library(ggplot2) library(dplyr) glimpse(starwars) ## Observations: 87 ## Variables: 13 ## $ name &lt;chr&gt; &quot;Luke Skywalker&quot;, &quot;C-3PO&quot;, &quot;R2-D2&quot;, &quot;Darth Vader&quot;, .">
 
   
-  <link rel="alternate" hreflang="en-us" href="/notes/multiple-rmarkdown-reports/">
+  <link rel="alternate" hreflang="en-us" href="/notes/data-based-labels/">
 
   
 
@@ -70,7 +71,7 @@ I encountered this problem when I was trying to automate a workflow for generati
   <link rel="icon" type="image/png" href="/img/icon.png">
   <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
 
-  <link rel="canonical" href="/notes/multiple-rmarkdown-reports/">
+  <link rel="canonical" href="/notes/data-based-labels/">
 
   <meta property="twitter:card" content="summary_large_image">
   
@@ -78,20 +79,21 @@ I encountered this problem when I was trying to automate a workflow for generati
   <meta property="twitter:creator" content="@vpnagraj">
   
   <meta property="og:site_name" content="VP Nagraj">
-  <meta property="og:url" content="/notes/multiple-rmarkdown-reports/">
-  <meta property="og:title" content="Multiple RMarkdown Reports, Multiple Data Sets, Single File | VP Nagraj">
-  <meta property="og:description" content="Until recently I had yet to run into a scenario where I needed to use R Markdown to produce a “templated” set of reports. That is, a group of PDFs or HTML files with common R code (and therefore common report features, like figures, tables, summary statistics, etc.) executed dynamically on different data sets.
-I encountered this problem when I was trying to automate a workflow for generating reports on publication data.">
+  <meta property="og:url" content="/notes/data-based-labels/">
+  <meta property="og:title" content="Data-Based Labels | VP Nagraj">
+  <meta property="og:description" content="Chapter 7 of Edward Tufte’s The Visual Display of Quantitative Information presents advantages of “multifunctioning graphical elements” in data visualiztions. The idea is that features like the shape of points on the plot, grid lines, or even data labels can serve multiple purposes in communicating information.
+For example, take the shape of a stem plot:
+library(ggplot2) library(dplyr) glimpse(starwars) ## Observations: 87 ## Variables: 13 ## $ name &lt;chr&gt; &quot;Luke Skywalker&quot;, &quot;C-3PO&quot;, &quot;R2-D2&quot;, &quot;Darth Vader&quot;, .">
   <meta property="og:locale" content="en-us">
   
-  <meta property="article:published_time" content="2016-07-21T08:38:31-04:00">
+  <meta property="article:published_time" content="2019-01-28T17:14:59&#43;00:00">
   
-  <meta property="article:modified_time" content="2016-07-21T08:38:31-04:00">
-  
-
+  <meta property="article:modified_time" content="2019-01-28T17:14:59&#43;00:00">
   
 
-  <title>Multiple RMarkdown Reports, Multiple Data Sets, Single File | VP Nagraj</title>
+  
+
+  <title>Data-Based Labels | VP Nagraj</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -210,14 +212,14 @@ I encountered this problem when I was trying to automate a workflow for generati
 
 
   <div class="article-container">
-    <h1 itemprop="name">Multiple RMarkdown Reports, Multiple Data Sets, Single File</h1>
+    <h1 itemprop="name">Data-Based Labels</h1>
 
 <div class="article-metadata">
 
   <span class="article-date">
     
-    <time datetime="2016-07-21 08:38:31 -0400 EDT" itemprop="datePublished dateModified">
-      Jul 21, 2016
+    <time datetime="2019-01-28 17:14:59 &#43;0000 &#43;0000" itemprop="datePublished dateModified">
+      Jan 28, 2019
     </time>
   </span>
   <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
@@ -251,105 +253,90 @@ I encountered this problem when I was trying to automate a workflow for generati
 </div>
 
     <div class="article-style" itemprop="articleBody">
-      <p>Until recently I had yet to run into a scenario where I needed to use R Markdown to produce a “templated” set of reports. That is, a group of PDFs or HTML files with common R code (and therefore common report features, like figures, tables, summary statistics, etc.) executed dynamically on different data sets.</p>
-<p>I encountered this problem when I was trying to automate a workflow for generating reports on publication data. The datasets are compiled individually for each department (Neurology, Pathology, etc.) but the final product (a PDF) features a common set of plots based on the input data set.</p>
-<p>The <em>brute force</em> GUI solution here would be to:</p>
-<ol style="list-style-type: decimal">
-<li>Open up RStudio</li>
-<li>Write an RMarkdown report that reads in the first data set</li>
-<li>Click “Knit PDF”</li>
-<li>Point the <code>read_csv()</code> in the RMarkdown file to the second data set</li>
-<li>Click “Knit PDF”</li>
-<li>Repeat steps 4 &amp; 5 until all reports have been generated</li>
-</ol>
-<p>I could have potentially &gt; 50 data sets. So the process above wasn’t going to work for me.</p>
-<p>Instead I started looking around for ways to loop through a list of files and generate multiple PDF reports. Each PDF would be based on data from each file.</p>
-<p>Stack Overflow features posts that speak to this issue. One post describes a similar problem, but in terms of <a href="http://stackoverflow.com/questions/15396755/using-loops-with-knitr-to-produce-multiple-pdf-reports-need-a-little-help-to"><strong>knitr</strong> with Sweave</a>. Another seems more relavent to my workflow (since I’m using RMarkdown rather than Sweave) but explains <a href="http://stackoverflow.com/questions/26304576/how-to-best-generate-multiple-html-files-from-rmarkdown-based-on-one-dataset">how to create multiple reports from a <em>single</em> data set</a>.</p>
-<p>My solution borrows from the posts above. The basic premise here is that you can use a single R script to “drive” the rendering of your R Markdown file. <a href="http://brooksandrew.github.io/simpleblog/articles/render-reports-directly-from-R-scripts/">Another piece of documentation</a> I found does a great job detailing this idea.</p>
-<p>All that said … here’s the workflow that works for me:</p>
-<ol style="list-style-type: decimal">
-<li>Move all data files to a “data” subdirectory of my project root</li>
-</ol>
-<pre class="r"><code>library(gapminder)
-library(dplyr)
-library(readr)
-
-gapminder %&gt;%
-  filter(continent == &quot;Asia&quot;) %&gt;%
-  write_csv(&quot;data/asia.csv&quot;)
-
-gapminder %&gt;%
-  filter(continent == &quot;Americas&quot;) %&gt;%
-  write_csv(&quot;data/americas.csv&quot;)
-
-gapminder %&gt;%
-  filter(continent == &quot;Africa&quot;) %&gt;%
-  write_csv(&quot;data/africa.csv&quot;)
-
-gapminder %&gt;%
-  filter(continent == &quot;Europe&quot;) %&gt;%
-  write_csv(&quot;data/europe.csv&quot;)
-
-gapminder %&gt;%
-  filter(continent == &quot;Oceania&quot;) %&gt;%
-  write_csv(&quot;data/oceania.csv&quot;)</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li><p>Check that data is prepared correctly (i.e. all columns are named the same, missing values are represented consistently)</p></li>
-<li><p>Write an RMarkdown file that is generic enough to work for each data set … and the title of in the YAML header for the Rmd can include data specific to the file being processed</p></li>
-</ol>
-<p>
-<hr />
-title: ‘<code>r unique(cont$continent)</code>’ output: pdf_document —
-</p>
-<pre><code> ```{r} 
- library(ggplot2) 
- library(dplyr) 
-  
- cont %&gt;% 
-   # average life expectancy and gdp per capita 
-   group_by(country) %&gt;% 
-   summarise(lifeExp = mean(lifeExp), gdpPercap = mean(gdpPercap)) %&gt;% 
-   # scatterplot of life expectancy by gdp per capita 
-   ggplot(aes(lifeExp, gdpPercap, label = country)) + 
-   geom_text() + 
-   theme_minimal() 
- ``` </code></pre>
-<ol start="4" style="list-style-type: decimal">
-<li><p>Write an R script that:</p>
-<ol style="list-style-type: decimal">
-<li>Loops through the data folder</li>
-<li>Creates an individual object (<code>pubs</code>) based on the given file in the loop</li>
-<li>Renders a PDF (using <code>rmarkdown::render()</code>) that is named according to the raw data file.</li>
-</ol></li>
-</ol>
-<pre class="r"><code>library(knitr)
-library(readr)
-library(dplyr)
-
-filelist &lt;- list.files(&quot;data&quot;)
-
-# loop through the file list to read in data and clean it up
-
-for (file in filelist) {
-  
-  fp &lt;- paste(&quot;data/&quot;, file, sep=&quot;&quot;)
-  
-  # read in continents
-  cont &lt;- 
-    read_csv(fp) %&gt;%
-    # look only at data since 1980
-    filter(year &gt;= 1980)
-  
-  rmarkdown::render(input = &quot;multireport.Rmd&quot;, 
-                    output_format = &quot;pdf_document&quot;,
-                    output_file = paste0(gsub(&quot;.csv&quot;,&quot;&quot;, file), &quot;.pdf&quot;),
-                    output_dir = &quot;reports&quot;)
-  
-}</code></pre>
-<ol start="5" style="list-style-type: decimal">
-<li>Run the R script</li>
-</ol>
-<pre class="r"><code>source(&quot;multireports.R&quot;)</code></pre>
+      <p>Chapter 7 of Edward Tufte’s <strong>The Visual Display of Quantitative Information</strong> presents advantages of “multifunctioning graphical elements” in data visualiztions. The idea is that features like the shape of points on the plot, grid lines, or even data labels can serve multiple purposes in communicating information.</p>
+<p>For example, take the shape of a stem plot:</p>
+<pre class="r"><code>library(ggplot2)
+library(dplyr)</code></pre>
+<pre class="r"><code>glimpse(starwars)</code></pre>
+<pre><code>## Observations: 87
+## Variables: 13
+## $ name       &lt;chr&gt; &quot;Luke Skywalker&quot;, &quot;C-3PO&quot;, &quot;R2-D2&quot;, &quot;Darth Vader&quot;, ...
+## $ height     &lt;int&gt; 172, 167, 96, 202, 150, 178, 165, 97, 183, 182, 188...
+## $ mass       &lt;dbl&gt; 77.0, 75.0, 32.0, 136.0, 49.0, 120.0, 75.0, 32.0, 8...
+## $ hair_color &lt;chr&gt; &quot;blond&quot;, NA, NA, &quot;none&quot;, &quot;brown&quot;, &quot;brown, grey&quot;, &quot;b...
+## $ skin_color &lt;chr&gt; &quot;fair&quot;, &quot;gold&quot;, &quot;white, blue&quot;, &quot;white&quot;, &quot;light&quot;, &quot;l...
+## $ eye_color  &lt;chr&gt; &quot;blue&quot;, &quot;yellow&quot;, &quot;red&quot;, &quot;yellow&quot;, &quot;brown&quot;, &quot;blue&quot;,...
+## $ birth_year &lt;dbl&gt; 19.0, 112.0, 33.0, 41.9, 19.0, 52.0, 47.0, NA, 24.0...
+## $ gender     &lt;chr&gt; &quot;male&quot;, NA, NA, &quot;male&quot;, &quot;female&quot;, &quot;male&quot;, &quot;female&quot;,...
+## $ homeworld  &lt;chr&gt; &quot;Tatooine&quot;, &quot;Tatooine&quot;, &quot;Naboo&quot;, &quot;Tatooine&quot;, &quot;Alder...
+## $ species    &lt;chr&gt; &quot;Human&quot;, &quot;Droid&quot;, &quot;Droid&quot;, &quot;Human&quot;, &quot;Human&quot;, &quot;Human...
+## $ films      &lt;list&gt; [&lt;&quot;Revenge of the Sith&quot;, &quot;Return of the Jedi&quot;, &quot;Th...
+## $ vehicles   &lt;list&gt; [&lt;&quot;Snowspeeder&quot;, &quot;Imperial Speeder Bike&quot;&gt;, &lt;&gt;, &lt;&gt;,...
+## $ starships  &lt;list&gt; [&lt;&quot;X-wing&quot;, &quot;Imperial shuttle&quot;&gt;, &lt;&gt;, &lt;&gt;, &quot;TIE Adva...</code></pre>
+<pre class="r"><code>starwars %&gt;%
+  mutate(bmi = mass/((height/100)^2)) %&gt;%
+  # no jabba ...
+  filter(!grepl(&quot;Jabba&quot;, name)) %&gt;%
+  pull(bmi) %&gt;%
+  stem(.)</code></pre>
+<pre><code>## 
+##   The decimal point is 1 digit(s) to the right of the |
+## 
+##   1 | 3
+##   1 | 556777788999
+##   2 | 1122233334444444
+##   2 | 555555566666667778
+##   3 | 123444
+##   3 | 5589
+##   4 | 
+##   4 | 
+##   5 | 1</code></pre>
+<p>Tufte includes as another example a design originally published in Walter Herdeg’s <strong>Graphis/Diagrams</strong> (not shown here), which uses data-based labels as a multifunction element. Below is a plot that recreates that concept using the built-in mammalian sleep data from <code>ggplot2</code>:</p>
+<pre class="r"><code>glimpse(msleep)</code></pre>
+<pre><code>## Observations: 83
+## Variables: 11
+## $ name         &lt;chr&gt; &quot;Cheetah&quot;, &quot;Owl monkey&quot;, &quot;Mountain beaver&quot;, &quot;Grea...
+## $ genus        &lt;chr&gt; &quot;Acinonyx&quot;, &quot;Aotus&quot;, &quot;Aplodontia&quot;, &quot;Blarina&quot;, &quot;Bo...
+## $ vore         &lt;chr&gt; &quot;carni&quot;, &quot;omni&quot;, &quot;herbi&quot;, &quot;omni&quot;, &quot;herbi&quot;, &quot;herbi...
+## $ order        &lt;chr&gt; &quot;Carnivora&quot;, &quot;Primates&quot;, &quot;Rodentia&quot;, &quot;Soricomorph...
+## $ conservation &lt;chr&gt; &quot;lc&quot;, NA, &quot;nt&quot;, &quot;lc&quot;, &quot;domesticated&quot;, NA, &quot;vu&quot;, N...
+## $ sleep_total  &lt;dbl&gt; 12.1, 17.0, 14.4, 14.9, 4.0, 14.4, 8.7, 7.0, 10.1...
+## $ sleep_rem    &lt;dbl&gt; NA, 1.8, 2.4, 2.3, 0.7, 2.2, 1.4, NA, 2.9, NA, 0....
+## $ sleep_cycle  &lt;dbl&gt; NA, NA, NA, 0.1333333, 0.6666667, 0.7666667, 0.38...
+## $ awake        &lt;dbl&gt; 11.9, 7.0, 9.6, 9.1, 20.0, 9.6, 15.3, 17.0, 13.9,...
+## $ brainwt      &lt;dbl&gt; NA, 0.01550, NA, 0.00029, 0.42300, NA, NA, NA, 0....
+## $ bodywt       &lt;dbl&gt; 50.000, 0.480, 1.350, 0.019, 600.000, 3.850, 20.4...</code></pre>
+<pre class="r"><code>animals &lt;- c(&quot;Asian elephant&quot;, 
+             &quot;Little brown bat&quot;,
+             &quot;Three-toed sloth&quot;, 
+             &quot;Rabbit&quot;, 
+             &quot;Giant armadillo&quot;, 
+             &quot;Tiger&quot;,
+             &quot;Chimpanzee&quot;,
+             &quot;Potoroo&quot;,
+             &quot;Lion&quot;,
+             &quot;Domestic cat&quot;,
+             &quot;Pilot whale&quot;,
+             &quot;Goat&quot;,
+             &quot;Gray seal&quot;)</code></pre>
+<pre class="r"><code>msleep %&gt;%
+  filter(name %in% animals) %&gt;%
+  ggplot(aes(reorder(name,sleep_total), sleep_total)) +
+  geom_col(width=0.5, fill = &quot;snow1&quot;) +
+  geom_text(aes(x = -1.5, y = sleep_total + 0.5, label =  paste0(name, &quot; (&quot;, sleep_total, &quot;)&quot;)), 
+            color = &quot;snow1&quot;, 
+            hjust = 0, 
+            vjust  = 1) +
+  geom_segment(aes(x = -1.5, xend = name, y = sleep_total, yend = sleep_total), 
+               color = &quot;snow1&quot;, 
+               lty = &quot;dotted&quot;) +
+  labs(x = &quot;&quot;, y = &quot;&quot;, title = &quot;Total Sleep (Hours)&quot;) +
+  theme(panel.background = element_rect(fill = &quot;black&quot;),
+        plot.background = element_rect(fill = &quot;black&quot;),
+        panel.grid = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank())</code></pre>
+<p><img src="/notes/data-based-labels_files/figure-html/unnamed-chunk-6-1.png" width="960" /></p>
 
     </div>
 
@@ -358,7 +345,7 @@ for (file in filelist) {
 
 <div class="article-tags">
   
-  <a class="btn btn-primary btn-outline" href="/tags/r-markdown">R Markdown</a>
+  <a class="btn btn-primary btn-outline" href="/tags/ggplot2">ggplot2</a>
   
   <a class="btn btn-primary btn-outline" href="/tags/r">R</a>
   
@@ -374,15 +361,15 @@ for (file in filelist) {
       <h3>Related</h3>
       <ul>
         
-        <li><a href="/notes/pandoc-latex-markdown/">LaTeX Symbols Inside Pandoc Table Column Headings Inside RMarkdown Documents</a></li>
+        <li><a href="/notes/transparent-background-with-ggplot2/">Transparent ggplot2 Plot Backgrounds</a></li>
         
-        <li><a href="/notes/chunking/">Chunking in R</a></li>
+        <li><a href="/notes/filter-benchmark/">dplyr filter() Benchmark</a></li>
         
-        <li><a href="/notes/how-to-create-small-random-sample-from-large-csv-file/">How To Create Small Random Sample From Large CSV File</a></li>
+        <li><a href="/notes/dates-between/">Expand Dates Between</a></li>
         
-        <li><a href="/notes/installing-r-packages-from-source/">Installing R Packages From Source</a></li>
+        <li><a href="/notes/fixed-width-format-r/">Fixed Width Formats in R</a></li>
         
-        <li><a href="/notes/networkd3/">networkD3</a></li>
+        <li><a href="/notes/bien/">BIEN</a></li>
         
       </ul>
     </div>

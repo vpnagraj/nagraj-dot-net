@@ -55,10 +55,8 @@ gapminder %&gt;%
 <li><p>Write an RMarkdown file that is generic enough to work for each data set … and the title of in the YAML header for the Rmd can include data specific to the file being processed</p></li>
 </ol>
 <p>
-<pre><code> --- 
- title: &#39;`r unique(cont$continent)`&#39; 
- output: pdf_document 
- --- </code></pre>
+<hr />
+title: ‘<code>r unique(cont$continent)</code>’ output: pdf_document —
 </p>
 <pre><code> ```{r} 
  library(ggplot2) 

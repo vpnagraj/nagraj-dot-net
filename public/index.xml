@@ -11,6 +11,99 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Data-Based Labels</title>
+      <link>/notes/data-based-labels/</link>
+      <pubDate>Mon, 28 Jan 2019 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/data-based-labels/</guid>
+      <description>&lt;p&gt;Chapter 7 of Edward Tufte’s &lt;strong&gt;The Visual Display of Quantitative Information&lt;/strong&gt; presents advantages of “multifunctioning graphical elements” in data visualiztions. The idea is that features like the shape of points on the plot, grid lines, or even data labels can serve multiple purposes in communicating information.&lt;/p&gt;
+&lt;p&gt;For example, take the shape of a stem plot:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+library(dplyr)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;glimpse(starwars)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Observations: 87
+## Variables: 13
+## $ name       &amp;lt;chr&amp;gt; &amp;quot;Luke Skywalker&amp;quot;, &amp;quot;C-3PO&amp;quot;, &amp;quot;R2-D2&amp;quot;, &amp;quot;Darth Vader&amp;quot;, ...
+## $ height     &amp;lt;int&amp;gt; 172, 167, 96, 202, 150, 178, 165, 97, 183, 182, 188...
+## $ mass       &amp;lt;dbl&amp;gt; 77.0, 75.0, 32.0, 136.0, 49.0, 120.0, 75.0, 32.0, 8...
+## $ hair_color &amp;lt;chr&amp;gt; &amp;quot;blond&amp;quot;, NA, NA, &amp;quot;none&amp;quot;, &amp;quot;brown&amp;quot;, &amp;quot;brown, grey&amp;quot;, &amp;quot;b...
+## $ skin_color &amp;lt;chr&amp;gt; &amp;quot;fair&amp;quot;, &amp;quot;gold&amp;quot;, &amp;quot;white, blue&amp;quot;, &amp;quot;white&amp;quot;, &amp;quot;light&amp;quot;, &amp;quot;l...
+## $ eye_color  &amp;lt;chr&amp;gt; &amp;quot;blue&amp;quot;, &amp;quot;yellow&amp;quot;, &amp;quot;red&amp;quot;, &amp;quot;yellow&amp;quot;, &amp;quot;brown&amp;quot;, &amp;quot;blue&amp;quot;,...
+## $ birth_year &amp;lt;dbl&amp;gt; 19.0, 112.0, 33.0, 41.9, 19.0, 52.0, 47.0, NA, 24.0...
+## $ gender     &amp;lt;chr&amp;gt; &amp;quot;male&amp;quot;, NA, NA, &amp;quot;male&amp;quot;, &amp;quot;female&amp;quot;, &amp;quot;male&amp;quot;, &amp;quot;female&amp;quot;,...
+## $ homeworld  &amp;lt;chr&amp;gt; &amp;quot;Tatooine&amp;quot;, &amp;quot;Tatooine&amp;quot;, &amp;quot;Naboo&amp;quot;, &amp;quot;Tatooine&amp;quot;, &amp;quot;Alder...
+## $ species    &amp;lt;chr&amp;gt; &amp;quot;Human&amp;quot;, &amp;quot;Droid&amp;quot;, &amp;quot;Droid&amp;quot;, &amp;quot;Human&amp;quot;, &amp;quot;Human&amp;quot;, &amp;quot;Human...
+## $ films      &amp;lt;list&amp;gt; [&amp;lt;&amp;quot;Revenge of the Sith&amp;quot;, &amp;quot;Return of the Jedi&amp;quot;, &amp;quot;Th...
+## $ vehicles   &amp;lt;list&amp;gt; [&amp;lt;&amp;quot;Snowspeeder&amp;quot;, &amp;quot;Imperial Speeder Bike&amp;quot;&amp;gt;, &amp;lt;&amp;gt;, &amp;lt;&amp;gt;,...
+## $ starships  &amp;lt;list&amp;gt; [&amp;lt;&amp;quot;X-wing&amp;quot;, &amp;quot;Imperial shuttle&amp;quot;&amp;gt;, &amp;lt;&amp;gt;, &amp;lt;&amp;gt;, &amp;quot;TIE Adva...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;starwars %&amp;gt;%
+  mutate(bmi = mass/((height/100)^2)) %&amp;gt;%
+  # no jabba ...
+  filter(!grepl(&amp;quot;Jabba&amp;quot;, name)) %&amp;gt;%
+  pull(bmi) %&amp;gt;%
+  stem(.)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##   The decimal point is 1 digit(s) to the right of the |
+## 
+##   1 | 3
+##   1 | 556777788999
+##   2 | 1122233334444444
+##   2 | 555555566666667778
+##   3 | 123444
+##   3 | 5589
+##   4 | 
+##   4 | 
+##   5 | 1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Tufte includes as another example a design originally published in Walter Herdeg’s &lt;strong&gt;Graphis/Diagrams&lt;/strong&gt; (not shown here), which uses data-based labels as a multifunction element. Below is a plot that recreates that concept using the built-in mammalian sleep data from &lt;code&gt;ggplot2&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;glimpse(msleep)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Observations: 83
+## Variables: 11
+## $ name         &amp;lt;chr&amp;gt; &amp;quot;Cheetah&amp;quot;, &amp;quot;Owl monkey&amp;quot;, &amp;quot;Mountain beaver&amp;quot;, &amp;quot;Grea...
+## $ genus        &amp;lt;chr&amp;gt; &amp;quot;Acinonyx&amp;quot;, &amp;quot;Aotus&amp;quot;, &amp;quot;Aplodontia&amp;quot;, &amp;quot;Blarina&amp;quot;, &amp;quot;Bo...
+## $ vore         &amp;lt;chr&amp;gt; &amp;quot;carni&amp;quot;, &amp;quot;omni&amp;quot;, &amp;quot;herbi&amp;quot;, &amp;quot;omni&amp;quot;, &amp;quot;herbi&amp;quot;, &amp;quot;herbi...
+## $ order        &amp;lt;chr&amp;gt; &amp;quot;Carnivora&amp;quot;, &amp;quot;Primates&amp;quot;, &amp;quot;Rodentia&amp;quot;, &amp;quot;Soricomorph...
+## $ conservation &amp;lt;chr&amp;gt; &amp;quot;lc&amp;quot;, NA, &amp;quot;nt&amp;quot;, &amp;quot;lc&amp;quot;, &amp;quot;domesticated&amp;quot;, NA, &amp;quot;vu&amp;quot;, N...
+## $ sleep_total  &amp;lt;dbl&amp;gt; 12.1, 17.0, 14.4, 14.9, 4.0, 14.4, 8.7, 7.0, 10.1...
+## $ sleep_rem    &amp;lt;dbl&amp;gt; NA, 1.8, 2.4, 2.3, 0.7, 2.2, 1.4, NA, 2.9, NA, 0....
+## $ sleep_cycle  &amp;lt;dbl&amp;gt; NA, NA, NA, 0.1333333, 0.6666667, 0.7666667, 0.38...
+## $ awake        &amp;lt;dbl&amp;gt; 11.9, 7.0, 9.6, 9.1, 20.0, 9.6, 15.3, 17.0, 13.9,...
+## $ brainwt      &amp;lt;dbl&amp;gt; NA, 0.01550, NA, 0.00029, 0.42300, NA, NA, NA, 0....
+## $ bodywt       &amp;lt;dbl&amp;gt; 50.000, 0.480, 1.350, 0.019, 600.000, 3.850, 20.4...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animals &amp;lt;- c(&amp;quot;Asian elephant&amp;quot;, 
+             &amp;quot;Little brown bat&amp;quot;,
+             &amp;quot;Three-toed sloth&amp;quot;, 
+             &amp;quot;Rabbit&amp;quot;, 
+             &amp;quot;Giant armadillo&amp;quot;, 
+             &amp;quot;Tiger&amp;quot;,
+             &amp;quot;Chimpanzee&amp;quot;,
+             &amp;quot;Potoroo&amp;quot;,
+             &amp;quot;Lion&amp;quot;,
+             &amp;quot;Domestic cat&amp;quot;,
+             &amp;quot;Pilot whale&amp;quot;,
+             &amp;quot;Goat&amp;quot;,
+             &amp;quot;Gray seal&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;msleep %&amp;gt;%
+  filter(name %in% animals) %&amp;gt;%
+  ggplot(aes(reorder(name,sleep_total), sleep_total)) +
+  geom_col(width=0.5, fill = &amp;quot;snow1&amp;quot;) +
+  geom_text(aes(x = -1.5, y = sleep_total + 0.5, label =  paste0(name, &amp;quot; (&amp;quot;, sleep_total, &amp;quot;)&amp;quot;)), 
+            color = &amp;quot;snow1&amp;quot;, 
+            hjust = 0, 
+            vjust  = 1) +
+  geom_segment(aes(x = -1.5, xend = name, y = sleep_total, yend = sleep_total), 
+               color = &amp;quot;snow1&amp;quot;, 
+               lty = &amp;quot;dotted&amp;quot;) +
+  labs(x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;, title = &amp;quot;Total Sleep (Hours)&amp;quot;) +
+  theme(panel.background = element_rect(fill = &amp;quot;black&amp;quot;),
+        plot.background = element_rect(fill = &amp;quot;black&amp;quot;),
+        panel.grid = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/notes/data-based-labels_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;960&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>LOLAweb: a containerized web server for interactive genomic locus overlap enrichment analysis</title>
       <link>/publication/lolaweb/</link>
       <pubDate>Wed, 06 Jun 2018 00:00:00 +0000</pubDate>
@@ -153,24 +246,24 @@ end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace =
 &lt;/thead&gt;
 &lt;tbody&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-15&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-18&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-07-23&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-07-26&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-19&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-21&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-02&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-04&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-11&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-15&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-30&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-02&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-05-22&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-05-24&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-11-30&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-02&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-06&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-09&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-05&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-09&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -188,79 +281,79 @@ end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace =
 &lt;tbody&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-15&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-07-23&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-16&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-07-24&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-17&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-07-25&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-18&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-07-26&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-19&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-02&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-20&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-03&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-09-21&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-04&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-11&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-30&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-12&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-31&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-13&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-01&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-14&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-15&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-05-22&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-02&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-05-23&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-11-30&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-05-24&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-01&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-06&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-02&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-07&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-05&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-08&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-06&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-09&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-07&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-08&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-09&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -952,68 +1045,6 @@ hist(si, col = &amp;quot;grey&amp;quot;, border = &amp;quot;white&amp;quot;, ncl
 &lt;p&gt;Please note that this project is released with a &lt;a href=&#34;CONDUCT.md&#34; target=&#34;_blank&#34;&gt;Contributor Code of Conduct&lt;/a&gt;. By participating in this project you agree to abide by its terms.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Maintainer:&lt;/strong&gt; VP Nagraj (vpnagraj@virginia.edu)&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>hei</title>
-      <link>/project/hei/</link>
-      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/project/hei/</guid>
-      <description>
-
-&lt;h3 id=&#34;overview&#34;&gt;Overview&lt;/h3&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;The goal of &lt;strong&gt;hei&lt;/strong&gt; is to calculate Healthy Eating Index (HEI) scores from National Health and Nutrition Examination Survey (NHANES) data for use in dietary analyses. The HEI is a dietary metric designed by the USDA and NCI to gauge adherence to the US Dietary Guidelines.&lt;/p&gt;
-
-&lt;h3 id=&#34;installation&#34;&gt;Installation&lt;/h3&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;hei&lt;/strong&gt; is available on &lt;a href=&#34;https://cran.r-project.org/package=hei&#34; target=&#34;_blank&#34;&gt;CRAN&lt;/a&gt;, and can be installed as follows:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;install.packages(&amp;quot;hei&amp;quot;)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;To install the development version hosted on this repository, use the &lt;strong&gt;devtools&lt;/strong&gt; package and the following:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# install.packages(&amp;quot;devtools&amp;quot;)
-devtools::install_github(&amp;quot;timfolsom/hei&amp;quot;)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;getting-started&#34;&gt;Getting Started&lt;/h3&gt;
-
-&lt;hr /&gt;
-
-&lt;pre&gt;&lt;code&gt;library(hei)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The &lt;strong&gt;hei&lt;/strong&gt; package contains one key function:&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;code&gt;hei()&lt;/code&gt; takes as its arguments three data sets: an FPED data set, a NHANES dietary data set, and an NHANES demographic data set, returning a HEI score for each individual in the NHANES study being analyzed.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;strong&gt;hei&lt;/strong&gt; also includes &lt;code&gt;get_fped()&lt;/code&gt; &lt;code&gt;get_diet()&lt;/code&gt; and &lt;code&gt;get_demo()&lt;/code&gt; for retrieving data from the Food Patterns Equivalents Database (FPED) and the NHANES dietary and demographic databases, respectively. The FPED data sets (in the public domain) retrieved by &lt;code&gt;get_fped()&lt;/code&gt; are built into the package and have been converted to .csv files from the SAS data format in which they were originally published by their creators. &lt;code&gt;get_diet()&lt;/code&gt; and &lt;code&gt;get_demo()&lt;/code&gt; require the R package &lt;code&gt;nhanesA&lt;/code&gt; which is employed to retrieve NHANES data sets directly from the web.&lt;/p&gt;
-
-&lt;h3 id=&#34;related-work&#34;&gt;Related Work&lt;/h3&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;hei&lt;/strong&gt; is intended as a tool to aid in the analysis of NHANES data. It is important to be familiar with NHANES and its complex survey design as well as the FPED, which is derived from NHANES, before beginning any analyses involving the HEI.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://wwwn.cdc.gov/nchs/nhanes/analyticguidelines.aspx&#34; target=&#34;_blank&#34;&gt;NHANES survey methods and analytical guidelines&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.ars.usda.gov/northeast-area/beltsville-md/beltsville-human-nutrition-research-center/food-surveys-research-group/docs/fped-methodology/&#34; target=&#34;_blank&#34;&gt;FPED methodology and user guides&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;contributing&#34;&gt;Contributing&lt;/h3&gt;
-
-&lt;p&gt;&lt;strong&gt;hei&lt;/strong&gt; is licensed under the &lt;a href=&#34;https://www.gnu.org/licenses/gpl-3.0.txt&#34; target=&#34;_blank&#34;&gt;GNU General Public License Version 3&lt;/a&gt;. Questions, feature requests and bug reports are welcome via the &lt;a href=&#34;https://github.com/vpnagraj/hei/issues&#34; target=&#34;_blank&#34;&gt;issue queue&lt;/a&gt;. The maintainer will review pull requests and incorporate contributions at his discretion.&lt;/p&gt;
 </description>
     </item>
     

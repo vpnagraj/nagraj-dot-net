@@ -1,0 +1,75 @@
+---
+title: "Data-Based Labels"
+date: 2019-01-28T17:14:59+00:00
+categories: ["notes"]
+tags: ["ggplot2", "R"]
+summary: "incorporating 'multifunctioning' plot elements"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+Chapter 7 of Edward Tufte's **The Visual Display of Quantitative Information** presents advantages of "multifunctioning graphical elements" in data visualiztions. The idea is that features like the shape of points on the plot, grid lines, or even data labels can serve multiple purposes in communicating information.
+
+For example, take the shape of a stem plot:
+
+```{r}
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+glimpse(starwars)
+```
+
+```{r}
+starwars %>%
+  mutate(bmi = mass/((height/100)^2)) %>%
+  # no jabba ...
+  filter(!grepl("Jabba", name)) %>%
+  pull(bmi) %>%
+  stem(.)
+```
+
+Tufte includes as another example a design originally published in Walter Herdeg's **Graphis/Diagrams** (not shown here), which uses data-based labels as a multifunction element. Below is a plot that recreates that concept using the built-in mammalian sleep data from `ggplot2`:
+
+```{r}
+glimpse(msleep)
+```
+
+```{r}
+animals <- c("Asian elephant", 
+             "Little brown bat",
+             "Three-toed sloth", 
+             "Rabbit", 
+             "Giant armadillo", 
+             "Tiger",
+             "Chimpanzee",
+             "Potoroo",
+             "Lion",
+             "Domestic cat",
+             "Pilot whale",
+             "Goat",
+             "Gray seal")
+```
+
+```{r, fig.width=10, fig.height=8}
+msleep %>%
+  filter(name %in% animals) %>%
+  ggplot(aes(reorder(name,sleep_total), sleep_total)) +
+  geom_col(width=0.5, fill = "snow1") +
+  geom_text(aes(x = -1.5, y = sleep_total + 0.5, label =  paste0(name, " (", sleep_total, ")")), 
+            color = "snow1", 
+            hjust = 0, 
+            vjust  = 1) +
+  geom_segment(aes(x = -1.5, xend = name, y = sleep_total, yend = sleep_total), 
+               color = "snow1", 
+               lty = "dotted") +
+  labs(x = "", y = "", title = "Total Sleep (Hours)") +
+  theme(panel.background = element_rect(fill = "black"),
+        plot.background = element_rect(fill = "black"),
+        panel.grid = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank())
+```
