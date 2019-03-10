@@ -154,7 +154,9 @@ The package name comes from the German word “Ungewissheit”, which means unce
 
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/visualizing-uncertainty-with-hypothetical-outcomes-plots?wvideo=8m9hzvc38u">Visualizing uncertainty with hypothetical outcomes plots - Claus Wilke</a></p>
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/visualizing-uncertainty-with-hypothetical-outcomes-plots?wvideo=8m9hzvc38u"><img src="https://embedwistia-a.akamaihd.net/deliveries/8b966c08ac6371481bdfa04f1efe09d859c1dc5b.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
+
 ---
+
 #### `tidymodels`
 
 <https://github.com/tidymodels/tidymodels>
@@ -162,11 +164,14 @@ The package name comes from the German word “Ungewissheit”, which means unce
 > tidymodels is a "meta-package" for modeling and statistical analysis that share the underlying design philosophy, grammar, and data structures of the tidyverse.
 
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/solving-the-model-representation-problem-with-broom?wvideo=silfkxh9is">Solving the model representation problem with broom - Alex Hayes</a></p>
+
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/solving-the-model-representation-problem-with-broom?wvideo=silfkxh9is"><img src="https://embedwistia-a.akamaihd.net/deliveries/832c41240142f36a8084d511730cf28a9c5baea8.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
 
-<p><a href="https://resources.rstudio.com/rstudio-conf-2019/parsnip-a-tidy-model-interface?wvideo=xs5oz0b7p2">parsnip A tidy model interface - Max Kuhn</a></p>s
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/parsnip-a-tidy-model-interface?wvideo=xs5oz0b7p2">parsnip A tidy model interface - Max Kuhn</a></p>
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/parsnip-a-tidy-model-interface?wvideo=xs5oz0b7p2"><img src="https://embedwistia-a.akamaihd.net/deliveries/7283540419338367c2732f4a2d4c434c5cdefaed.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
+
 ---
+
 #### `gt`
 
 <https://github.com/rstudio/gt>
