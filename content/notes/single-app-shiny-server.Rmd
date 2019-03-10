@@ -1,0 +1,53 @@
+---
+title: "Hosting a Single App with Shiny Server"
+date: 2019-03-08T11:26:40-05:00
+categories: ["notes"]
+tags: ["R", "Shiny"]
+summary: "shiny server for a single app"
+---
+
+If you've written a Shiny app and have reached a point where you would like to share it with others ... you have a few options:
+
+<https://shiny.rstudio.com/deploy/>
+
+Given that you have hardware (or a cloud setup) to install a server, [Shiny Server Open Source](https://www.rstudio.com/products/shiny/download-server/) may be a good solution.
+
+I've deployed dozens of apps on different Shiny servers. In some cases, I may need a single server that hosts an entire directory of apps. With this configuration (the default for Shiny Server Open Source) each app is available at {url}/{app-name}. 
+
+However, I occassionally want a server to host a single application that will be available at {url}. In this case, I just need to adjust a few parameters in server configuration. Below is an example `shiny-server.conf` file for an app called "prod" that lives in `/srv/shiny-server/prod` on the host machine:
+
+```
+# Define the user we should use when spawning R Shiny processes
+run_as shiny;
+
+# disable idle timeout to retain connection
+app_idle_timeout 0;
+
+# Define a top-level server which will listen on a port
+server {
+  # Instruct this server to listen on port 80. The app at dokku-alt need expose PORT 80, or 500 e etc. See the docs
+  listen 80;
+
+  # Define the location available at the base URL
+  location / {
+
+    # Run this location in 'site_dir' mode, which hosts the entire directory
+    # tree at '/srv/shiny-server'
+    app_dir /srv/shiny-server/prod;
+    
+    # Define where we should put the log files for this location
+    log_dir /var/log/shiny-server;
+    
+    # Should we list the contents of a (non-Shiny-App) directory when the user 
+    # visits the corresponding URL?
+    directory_index on;
+  }
+}
+```
+
+Note that the parameters of interest for this post are:
+
+- `listen` ... explicitly tell the server to `listen 80` so that apps are served at port 80 ... otherwise you'll need to specify the port number after the url (i.e. {url}:3737)
+- `location` ... we don't want to pass any special location to the base URL since we're defining an `app_dir` (see below) ... so `location /` should work fine
+- `app_dir` ... rather than serving up an entire directory of apps, we just have one ... make sure the `app_dir` specifies the directory where the app is on the host machine (usually `/srv/shiny-server/{app-name}`)
+

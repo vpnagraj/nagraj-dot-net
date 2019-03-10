@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37.1" />
+  <meta name="author" content="VP Nagraj">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="This past January I was able to attend rstudio::conf 2019 in Austin. I was there for the full week, taking the Building Tidy Tools workshop and attending as many of the main conference program sessions as possible.
+Here is a collection of highlights/takeaways from the conference …
+ Shortcuts RStudio 1.2 features Tidy eval separate_rows .Rmd to .pptx New packages  Shortcuts Coming into rstudio::conf I had a few keyboard shortcuts memorized.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/notes/rstudioconf2019/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#0095eb">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.1/css/academicons.min.css" integrity="sha512-NThgw3XKQ1absAahW6to7Ey42uycrVvfNfyjqcFNgCmOCQ5AR4AO0SiXrN+8ZtYeappp56lk1WtvjVmEa+VR6A==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="VP Nagraj">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="VP Nagraj">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/notes/rstudioconf2019/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@vpnagraj">
+  <meta property="twitter:creator" content="@vpnagraj">
+  
+  <meta property="og:site_name" content="VP Nagraj">
+  <meta property="og:url" content="/notes/rstudioconf2019/">
+  <meta property="og:title" content="rstudio::conf 2019 | VP Nagraj">
+  <meta property="og:description" content="This past January I was able to attend rstudio::conf 2019 in Austin. I was there for the full week, taking the Building Tidy Tools workshop and attending as many of the main conference program sessions as possible.
+Here is a collection of highlights/takeaways from the conference …
+ Shortcuts RStudio 1.2 features Tidy eval separate_rows .Rmd to .pptx New packages  Shortcuts Coming into rstudio::conf I had a few keyboard shortcuts memorized.">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2019-02-11T17:14:59&#43;00:00">
+  
+  <meta property="article:modified_time" content="2019-02-11T17:14:59&#43;00:00">
+  
+
+  
+
+  <title>rstudio::conf 2019 | VP Nagraj</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">VP Nagraj</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/about/bio">
+            
+            <span>About</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/notes">
+            
+            <span>Notes</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/publication">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">rstudio::conf 2019</h1>
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2019-02-11 17:14:59 &#43;0000 &#43;0000" itemprop="datePublished dateModified">
+      Feb 11, 2019
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="VP Nagraj">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    5 min read
+  </span>
+  
+
+  
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/notes">notes</a
+    >
+    
+  </span>
+  
+  
+
+</div>
+
+    <div class="article-style" itemprop="articleBody">
+      <p>This past January I was able to attend <a href="https://resources.rstudio.com/rstudio-conf-2019">rstudio::conf 2019</a> in Austin. I was there for the full week, taking the <em>Building Tidy Tools</em> workshop and attending as many of the main conference program sessions as possible.</p>
+<p>Here is a collection of highlights/takeaways from the conference …</p>
+<ul>
+<li><a href="#shortcuts">Shortcuts</a></li>
+<li><a href="#rstudio12">RStudio 1.2 features</a></li>
+<li><a href="#tidyeval">Tidy eval</a></li>
+<li><a href="#separaterows"><code>separate_rows</code></a></li>
+<li><a href="#rmdpp">.Rmd to .pptx</a></li>
+<li><a href="#newpkgs">New packages</a></li>
+</ul>
+<div id="shortcuts" class="section level3">
+<h3><a name="shortcuts"></a>Shortcuts</h3>
+<p>Coming into <strong>rstudio::conf</strong> I had a few keyboard shortcuts memorized. Things like copying a line of code down (<code>CMD + SHIFT + DOWN ARROW</code>) … inserting the pipe operator (<code>CMD + SHIFT + M</code>) … and inserting a code chunk (<code>CMD + OPTION + I</code>).</p>
+<p>But there are so many more … a few handy ones that I picked up:</p>
+<ul>
+<li>Maximize an Rstudio pane: <code>SHIFT + CTRL + 1</code> (1,2,3,4 for each pane clockwise)</li>
+<li>Build a package: <code>SHIFT + CMD + B</code></li>
+<li>Load functions from package after building: <code>SHIFT + CMD + L</code></li>
+</ul>
+<p>My friends (and fellow <a href="https://www.meetup.com/UVa-R-Users-Group/">Charlottesville R Users</a>) Jeff Boichuk and Steve Mortimer have also developed an R package (<a href="https://github.com/jeffboichuk/crossr"><code>CrossR</code></a>) that includes a data frame with all Rstudio shortcuts:</p>
+<pre class="r"><code>devtools::install_github(&quot;jeffboichuk/CrossR&quot;)
+library(CrossR)
+
+shortcuts</code></pre>
+<pre><code>## # A tibble: 122 x 4
+##    category description        mac             windows         
+##    &lt;chr&gt;    &lt;chr&gt;              &lt;chr&gt;           &lt;chr&gt;           
+##  1 Build    Build All          Shift + Cmd + B Ctrl + Shift + B
+##  2 Build    Check Package      Shift + Cmd + E Ctrl + Shift + E
+##  3 Build    Compile PDF        Shift + Cmd + K Ctrl + Shift + K
+##  4 Build    Devtools Load All  Shift + Cmd + L Ctrl + Shift + L
+##  5 Build    Knit Document      Shift + Cmd + K Ctrl + Shift + K
+##  6 Build    Preview HTML       Shift + Cmd + K Ctrl + Shift + K
+##  7 Build    Roxygenize Package Shift + Cmd + D Ctrl + Shift + D
+##  8 Build    Test Package       Shift + Cmd + T Ctrl + Shift + T
+##  9 Console  Console Clear      Ctrl + L        Ctrl + L        
+## 10 Debug    Debug Breakpoint   Shift + F9      Shift + F9      
+## # ... with 112 more rows</code></pre>
+<pre class="r"><code>find_shortcuts(&quot;roxygen&quot;)</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   category      description             mac                  
+##   &lt;chr&gt;         &lt;chr&gt;                   &lt;chr&gt;                
+## 1 Build         Roxygenize Package      Shift + Cmd + D      
+## 2 Source Editor Insert Roxygen Skeleton Shift + Alt + Cmd + R</code></pre>
+</div>
+<div id="rstudio-1.2-features" class="section level3">
+<h3><a name="rstudio12"></a>RStudio 1.2 features</h3>
+<p>The RStudio team is working to make the RStudio IDE an even more comprehensive data science toolkit. Version 1.2 introduces features to support multiple languages, including python, SQL and D3. Jonathan McPherson gave a tour of the new multilingual support:</p>
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio" class="uri">https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio</a></p>
+<p>I put together a trival example of what this looks workflow looks like for passing R objects to python (and vice versa) from chunk-to-chunk in an R markdown document:</p>
+<pre class="python"><code>```{r setup}
+  library(reticulate)
+  use_python(&quot;/usr/bin/python&quot;, required = TRUE)
+```
+
+```{python}
+  import random
+  x = random.randint(1,99)
+  print x
+```
+
+```{r}
+  # access the object &#39;x&#39; from python environment with py$x
+  py$x
+
+  y &lt;- py$x^2
+
+  y
+```
+
+```{python}
+  # access the object &#39;y&#39; from r environment with r.y
+  print r.y
+
+  import math
+  z = math.sqrt(r.y)
+
+  print z
+```</code></pre>
+<p>For a more complete example (including D3 and SQL chunks), take a look at the <code>spenders.Rmd</code> example:</p>
+<p><a href="https://github.com/jmcphers/rstudio-1.2-features/blob/master/spenders.Rmd" class="uri">https://github.com/jmcphers/rstudio-1.2-features/blob/master/spenders.Rmd</a></p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio?wvideo=86143vxqwr">New language features in RStudio - Jonathan McPherson</a>
+</p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio?wvideo=86143vxqwr"><img src="https://embedwistia-a.akamaihd.net/deliveries/96f8273424b64b06534e9828ebddc37e.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a>
+</p>
+</div>
+<div id="tidy-eval" class="section level3">
+<h3><a name="tidyeval"></a>Tidy eval</h3>
+<p>Programming with <a href="https://tidyeval.tidyverse.org/"><code>tidy eval</code></a> can seem daunting. One of the sessions of the <code>Building Tidy Tools</code> workshop focused on tidy eval. That talk demystified the quoting/unquoting workflow. Maybe more importantly for me, I found out that Rstudio is compiling a list of use-cases/examples of tidy eval in the wild:</p>
+<p><a href="https://community.rstudio.com/t/interesting-tidy-eval-use-cases/21121" class="uri">https://community.rstudio.com/t/interesting-tidy-eval-use-cases/21121</a></p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2019/working-with-names-and-expressions-in-your-tidy-eval-code?wvideo=ebj7te6m65">Working with names and expressions in your tidy eval code - Lionel Henry</a>
+</p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2019/working-with-names-and-expressions-in-your-tidy-eval-code?wvideo=ebj7te6m65"><img src="https://embedwistia-a.akamaihd.net/deliveries/b866337a304ea75d56f980cdf8cbe125.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a>
+</p>
+</div>
+<div id="separate_rows" class="section level3">
+<h3><a name="separaterows"></a><code>separate_rows()</code></h3>
+<p>The <code>tidyr</code> <code>separate_rows()</code> function isn’t a new by any means, but it’s one that I picked up during a demo at the conference. This will be handy “wide-to-long” transformations on data that is packed into a single column (and separated by a common delimiter):</p>
+<pre class="r"><code>library(tidyr)
+
+
+dat &lt;-
+  data.frame(
+    id = 1:5,
+    diagnosis = c(NA, &quot;A,B,C&quot;, &quot;D&quot;, &quot;B,E,F&quot;, &quot;A&quot;)
+  )
+
+dat</code></pre>
+<pre><code>##   id diagnosis
+## 1  1      &lt;NA&gt;
+## 2  2     A,B,C
+## 3  3         D
+## 4  4     B,E,F
+## 5  5         A</code></pre>
+<pre class="r"><code>separate_rows(dat, diagnosis, sep = &quot;,&quot;)</code></pre>
+<pre><code>##   id diagnosis
+## 1  1      &lt;NA&gt;
+## 2  2         A
+## 3  2         B
+## 4  2         C
+## 5  3         D
+## 6  4         B
+## 7  4         E
+## 8  4         F
+## 9  5         A</code></pre>
+</div>
+<div id="rmd-to-.pptx" class="section level3">
+<h3><a name="rmdpp"></a> .Rmd to .pptx</h3>
+<p>Again … not a new feature, but new to me:</p>
+<p><a href="https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html" class="uri">https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html</a></p>
+<p>You can convert R markdown to PowerPoint by specifying <code>powerpoint_presentation</code> as the output format in the YAML header:</p>
+<pre><code>---
+title: &quot;Figs&quot;
+author: &quot;VP Nagraj&quot;
+date: &quot;3/10/2019&quot;
+output: powerpoint_presentation
+---</code></pre>
+<p><strong>nb</strong> this output format requires Pandoc 2.x</p>
+</div>
+<div id="new-packages" class="section level3">
+<h3><a name="newpkgs"></a>New packages</h3>
+<p>There were a ton of new (or at least new-ish) packages introduced at <strong>rstudio::conf</strong>.</p>
+<div id="ungeviz" class="section level4">
+<h4><code>ungeviz</code></h4>
+<p><a href="https://github.com/wilkelab/ungeviz" class="uri">https://github.com/wilkelab/ungeviz</a></p>
+<blockquote>
+<p>Tools for visualizing uncertainty with ggplot2. This package is meant to provide helpful add-on functionality for ggplot2 to visualize uncertainty. The package is particularly focused on hypothetical outcome plots (HOPs) and provides bootstrapping and sampling functionality that integrates well with the ggplot2 API. The package name comes from the German word “Ungewissheit”, which means uncertainty.</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/wilkelab/ungeviz/master/man/figures/README-cacao-samples-anim-1.gif" /></p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2019/visualizing-uncertainty-with-hypothetical-outcomes-plots?wvideo=8m9hzvc38u">Visualizing uncertainty with hypothetical outcomes plots - Claus Wilke</a>
+</p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2019/visualizing-uncertainty-with-hypothetical-outcomes-plots?wvideo=8m9hzvc38u"><img src="https://embedwistia-a.akamaihd.net/deliveries/8b966c08ac6371481bdfa04f1efe09d859c1dc5b.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a>
+</p>
+</div>
+<div id="gt" class="section level4">
+<h4><code>gt</code></h4>
+<p><a href="https://github.com/rstudio/gt" class="uri">https://github.com/rstudio/gt</a></p>
+<blockquote>
+<p>With the gt package, anyone can make wonderful-looking tables using the R programming language. The gt philosophy: we can construct a wide variety of useful tables with a cohesive set of table parts. These include the table header, the stub, the stub head, the column labels, the table body, and the table footer.</p>
+</blockquote>
+<p><img src="https://github.com/rstudio/gt/raw/master/man/figures/gt_parts_of_a_table.svg?sanitize=true" /></p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2019/introducing-the-gt-package?wvideo=d38rerkbwb">Introducing the gt package - Rich Iannone</a>
+</p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2019/introducing-the-gt-package?wvideo=d38rerkbwb"><img src="https://embedwistia-a.akamaihd.net/deliveries/f54d2b6ffcb5dcf913e67031d060ea98.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a>
+</p>
+<hr />
+</div>
+<div id="pagedown" class="section level4">
+<h4><code>pagedown</code></h4>
+<p><a href="https://github.com/rstudio/pagedown" class="uri">https://github.com/rstudio/pagedown</a></p>
+<blockquote>
+<p>Paginate the HTML Output of R Markdown with CSS for Print. You only need a modern web browser (e.g., Google Chrome) to generate PDF. No need to install LaTeX to get beautiful PDFs.</p>
+</blockquote>
+<p><img src="https://user-images.githubusercontent.com/163582/46879762-7a34a500-ce0c-11e8-87e3-496f3577ff05.png" /></p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2019/pagedown-creating-beautiful-pdfs-with-r-markdown-and-css?wvideo=oxxk6afhtz">pagedown Creating beautiful PDFs with R Markdown and CSS - Yihui Xie</a>
+</p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2019/pagedown-creating-beautiful-pdfs-with-r-markdown-and-css?wvideo=oxxk6afhtz"><img src="https://embedwistia-a.akamaihd.net/deliveries/77d268f4eb298d5f472a509610ee3fcf.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a>
+</p>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/r">R</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/notes/data-based-labels/">Data-Based Labels</a></li>
+        
+        <li><a href="/notes/filter-benchmark/">dplyr filter() Benchmark</a></li>
+        
+        <li><a href="/notes/dates-between/">Expand Dates Between</a></li>
+        
+        <li><a href="/notes/fixed-width-format-r/">Fixed Width Formats in R</a></li>
+        
+        <li><a href="/notes/bien/">BIEN</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+
+    
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+
+  </body>
+</html>
+

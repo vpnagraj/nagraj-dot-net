@@ -1,0 +1,190 @@
+---
+title: "rstudio::conf 2019"
+date: 2019-02-11T17:14:59+00:00
+categories: ["notes"]
+tags: ["R"]
+summary: "highlights from rstudio::conf 2019"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+This past January I was able to attend [rstudio::conf 2019](https://resources.rstudio.com/rstudio-conf-2019) in Austin. I was there for the full week, taking the *Building Tidy Tools* workshop and attending as many of the main conference program sessions as possible.
+
+Here is a collection of highlights/takeaways from the conference ...
+
+- [Shortcuts](#shortcuts)
+- [RStudio 1.2 features](#rstudio12)
+- [Tidy eval](#tidyeval)
+- [`separate_rows`](#separaterows)
+- [.Rmd to .pptx](#rmdpp)
+- [New packages](#newpkgs)
+
+### <a name="shortcuts"></a>Shortcuts
+
+Coming into **rstudio::conf** I had a few keyboard shortcuts memorized. Things like copying a line of code down (`CMD + SHIFT + DOWN ARROW`) ... inserting the pipe operator (`CMD + SHIFT + M`) ... and inserting a code chunk (`CMD + OPTION + I`). 
+
+But there are so many more ... a few handy ones that I picked up:
+
+- Maximize an Rstudio pane: `SHIFT + CTRL + 1` (1,2,3,4 for each pane clockwise)
+- Build a package: `SHIFT + CMD + B`
+- Load functions from package after building: `SHIFT + CMD + L`
+
+My friends (and fellow [Charlottesville R Users](https://www.meetup.com/UVa-R-Users-Group/)) Jeff Boichuk and Steve Mortimer have also developed an R package ([`CrossR`](https://github.com/jeffboichuk/crossr)) that includes a data frame with all Rstudio shortcuts:
+
+```{r}
+devtools::install_github("jeffboichuk/CrossR")
+library(CrossR)
+
+shortcuts
+
+find_shortcuts("roxygen")
+```
+
+### <a name="rstudio12"></a>RStudio 1.2 features
+
+The RStudio team is working to make the RStudio IDE an even more comprehensive data science toolkit. Version 1.2 introduces features to support multiple languages, including python, SQL and D3. Jonathan McPherson gave a tour of the new multilingual support:
+
+<https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio>
+
+I put together a trival example of what this looks workflow looks like for passing R objects to python (and vice versa) from chunk-to-chunk in an R markdown document:
+
+
+````python
+`r ''````{r setup}
+  library(reticulate)
+  use_python("/usr/bin/python", required = TRUE)
+```
+
+`r ''````{python}
+  import random
+  x = random.randint(1,99)
+  print x
+```
+
+`r ''````{r}
+  # access the object 'x' from python environment with py$x
+  py$x
+
+  y <- py$x^2
+
+  y
+```
+
+`r ''````{python}
+  # access the object 'y' from r environment with r.y
+  print r.y
+
+  import math
+  z = math.sqrt(r.y)
+
+  print z
+```
+````
+
+
+For a more complete example (including D3 and SQL chunks), take a look at the `spenders.Rmd` example:
+
+<https://github.com/jmcphers/rstudio-1.2-features/blob/master/spenders.Rmd>
+
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio?wvideo=86143vxqwr">New language features in RStudio - Jonathan McPherson</a></p>
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio?wvideo=86143vxqwr"><img src="https://embedwistia-a.akamaihd.net/deliveries/96f8273424b64b06534e9828ebddc37e.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
+
+### <a name="tidyeval"></a>Tidy eval
+
+Programming with [`tidy eval`](https://tidyeval.tidyverse.org/) can seem daunting. One of the sessions of the `Building Tidy Tools` workshop focused on tidy eval. That talk demystified the quoting/unquoting workflow. Maybe more importantly for me, I found out that Rstudio is compiling a list of use-cases/examples of tidy eval in the wild:
+
+<https://community.rstudio.com/t/interesting-tidy-eval-use-cases/21121>
+
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/working-with-names-and-expressions-in-your-tidy-eval-code?wvideo=ebj7te6m65">Working with names and expressions in your tidy eval code - Lionel Henry</a></p>
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/working-with-names-and-expressions-in-your-tidy-eval-code?wvideo=ebj7te6m65"><img src="https://embedwistia-a.akamaihd.net/deliveries/b866337a304ea75d56f980cdf8cbe125.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
+
+### <a name="separaterows"></a>`separate_rows()`
+
+The `tidyr` `separate_rows()` function isn't a new by any means, but it's one that I picked up during a demo at the conference. This will be handy "wide-to-long" transformations on data that is packed into a single column (and separated by a common delimiter):
+
+```{r}
+library(tidyr)
+
+
+dat <-
+  data.frame(
+    id = 1:5,
+    diagnosis = c(NA, "A,B,C", "D", "B,E,F", "A")
+  )
+
+dat
+
+separate_rows(dat, diagnosis, sep = ",")
+```
+
+### <a name="rmdpp"></a> .Rmd to .pptx
+
+Again ... not a new feature, but new to me:
+
+<https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html>
+
+You can convert R markdown to PowerPoint by specifying `powerpoint_presentation` as the output format in the YAML header:
+
+```
+---
+title: "Figs"
+author: "VP Nagraj"
+date: "3/10/2019"
+output: powerpoint_presentation
+---
+```
+
+**nb** this output format requires Pandoc 2.x
+
+### <a name="newpkgs"></a>New packages
+
+There were a ton of new (or at least new-ish) packages introduced at **rstudio::conf**.
+
+#### `ungeviz`
+
+<https://github.com/wilkelab/ungeviz>
+
+> Tools for visualizing uncertainty with ggplot2. 
+This package is meant to provide helpful add-on functionality for ggplot2 to visualize uncertainty. The package is particularly focused on hypothetical outcome plots (HOPs) and provides bootstrapping and sampling functionality that integrates well with the ggplot2 API.
+The package name comes from the German word “Ungewissheit”, which means uncertainty.
+
+![](https://raw.githubusercontent.com/wilkelab/ungeviz/master/man/figures/README-cacao-samples-anim-1.gif)
+
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/visualizing-uncertainty-with-hypothetical-outcomes-plots?wvideo=8m9hzvc38u">Visualizing uncertainty with hypothetical outcomes plots - Claus Wilke</a></p>
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/visualizing-uncertainty-with-hypothetical-outcomes-plots?wvideo=8m9hzvc38u"><img src="https://embedwistia-a.akamaihd.net/deliveries/8b966c08ac6371481bdfa04f1efe09d859c1dc5b.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
+---
+#### `tidymodels`
+
+<https://github.com/tidymodels/tidymodels>
+
+> tidymodels is a "meta-package" for modeling and statistical analysis that share the underlying design philosophy, grammar, and data structures of the tidyverse.
+
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/solving-the-model-representation-problem-with-broom?wvideo=silfkxh9is">Solving the model representation problem with broom - Alex Hayes</a></p>
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/solving-the-model-representation-problem-with-broom?wvideo=silfkxh9is"><img src="https://embedwistia-a.akamaihd.net/deliveries/832c41240142f36a8084d511730cf28a9c5baea8.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
+
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/parsnip-a-tidy-model-interface?wvideo=xs5oz0b7p2">parsnip A tidy model interface - Max Kuhn</a></p>s
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/parsnip-a-tidy-model-interface?wvideo=xs5oz0b7p2"><img src="https://embedwistia-a.akamaihd.net/deliveries/7283540419338367c2732f4a2d4c434c5cdefaed.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
+---
+#### `gt`
+
+<https://github.com/rstudio/gt>
+
+> With the gt package, anyone can make wonderful-looking tables using the R programming language. The gt philosophy: we can construct a wide variety of useful tables with a cohesive set of table parts. These include the table header, the stub, the stub head, the column labels, the table body, and the table footer.
+
+![](https://github.com/rstudio/gt/raw/master/man/figures/gt_parts_of_a_table.svg?sanitize=true)
+
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/introducing-the-gt-package?wvideo=d38rerkbwb">Introducing the gt package - Rich Iannone</a></p>
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/introducing-the-gt-package?wvideo=d38rerkbwb"><img src="https://embedwistia-a.akamaihd.net/deliveries/f54d2b6ffcb5dcf913e67031d060ea98.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
+---
+#### `pagedown`
+
+<https://github.com/rstudio/pagedown>
+
+> Paginate the HTML Output of R Markdown with CSS for Print. You only need a modern web browser (e.g., Google Chrome) to generate PDF. No need to install LaTeX to get beautiful PDFs.
+
+![](https://user-images.githubusercontent.com/163582/46879762-7a34a500-ce0c-11e8-87e3-496f3577ff05.png)
+
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/pagedown-creating-beautiful-pdfs-with-r-markdown-and-css?wvideo=oxxk6afhtz">pagedown Creating beautiful PDFs with R Markdown and CSS - Yihui Xie</a></p>
+<p><a href="https://resources.rstudio.com/rstudio-conf-2019/pagedown-creating-beautiful-pdfs-with-r-markdown-and-css?wvideo=oxxk6afhtz"><img src="https://embedwistia-a.akamaihd.net/deliveries/77d268f4eb298d5f472a509610ee3fcf.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>

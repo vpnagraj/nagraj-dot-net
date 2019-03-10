@@ -11,6 +11,251 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Hosting a Single App with Shiny Server</title>
+      <link>/notes/single-app-shiny-server/</link>
+      <pubDate>Fri, 08 Mar 2019 11:26:40 -0500</pubDate>
+      
+      <guid>/notes/single-app-shiny-server/</guid>
+      <description>&lt;p&gt;If you’ve written a Shiny app and have reached a point where you would like to share it with others … you have a few options:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://shiny.rstudio.com/deploy/&#34; class=&#34;uri&#34;&gt;https://shiny.rstudio.com/deploy/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Given that you have hardware (or a cloud setup) to install a server, &lt;a href=&#34;https://www.rstudio.com/products/shiny/download-server/&#34;&gt;Shiny Server Open Source&lt;/a&gt; may be a good solution.&lt;/p&gt;
+&lt;p&gt;I’ve deployed dozens of apps on different Shiny servers. In some cases, I may need a single server that hosts an entire directory of apps. With this configuration (the default for Shiny Server Open Source) each app is available at {url}/{app-name}.&lt;/p&gt;
+&lt;p&gt;However, I occassionally want a server to host a single application that will be available at {url}. In this case, I just need to adjust a few parameters in server configuration. Below is an example &lt;code&gt;shiny-server.conf&lt;/code&gt; file for an app called “prod” that lives in &lt;code&gt;/srv/shiny-server/prod&lt;/code&gt; on the host machine:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# Define the user we should use when spawning R Shiny processes
+run_as shiny;
+
+# disable idle timeout to retain connection
+app_idle_timeout 0;
+
+# Define a top-level server which will listen on a port
+server {
+  # Instruct this server to listen on port 80. The app at dokku-alt need expose PORT 80, or 500 e etc. See the docs
+  listen 80;
+
+  # Define the location available at the base URL
+  location / {
+
+    # Run this location in &amp;#39;site_dir&amp;#39; mode, which hosts the entire directory
+    # tree at &amp;#39;/srv/shiny-server&amp;#39;
+    app_dir /srv/shiny-server/prod;
+    
+    # Define where we should put the log files for this location
+    log_dir /var/log/shiny-server;
+    
+    # Should we list the contents of a (non-Shiny-App) directory when the user 
+    # visits the corresponding URL?
+    directory_index on;
+  }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note that the parameters of interest for this post are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;listen&lt;/code&gt; … explicitly tell the server to &lt;code&gt;listen 80&lt;/code&gt; so that apps are served at port 80 … otherwise you’ll need to specify the port number after the url (i.e. {url}:3737)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;location&lt;/code&gt; … we don’t want to pass any special location to the base URL since we’re defining an &lt;code&gt;app_dir&lt;/code&gt; (see below) … so &lt;code&gt;location /&lt;/code&gt; should work fine&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;app_dir&lt;/code&gt; … rather than serving up an entire directory of apps, we just have one … make sure the &lt;code&gt;app_dir&lt;/code&gt; specifies the directory where the app is on the host machine (usually &lt;code&gt;/srv/shiny-server/{app-name}&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>rstudio::conf 2019</title>
+      <link>/notes/rstudioconf2019/</link>
+      <pubDate>Mon, 11 Feb 2019 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/rstudioconf2019/</guid>
+      <description>&lt;p&gt;This past January I was able to attend &lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019&#34;&gt;rstudio::conf 2019&lt;/a&gt; in Austin. I was there for the full week, taking the &lt;em&gt;Building Tidy Tools&lt;/em&gt; workshop and attending as many of the main conference program sessions as possible.&lt;/p&gt;
+&lt;p&gt;Here is a collection of highlights/takeaways from the conference …&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#shortcuts&#34;&gt;Shortcuts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#rstudio12&#34;&gt;RStudio 1.2 features&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#tidyeval&#34;&gt;Tidy eval&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#separaterows&#34;&gt;&lt;code&gt;separate_rows&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#rmdpp&#34;&gt;.Rmd to .pptx&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#newpkgs&#34;&gt;New packages&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;shortcuts&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;shortcuts&#34;&gt;&lt;/a&gt;Shortcuts&lt;/h3&gt;
+&lt;p&gt;Coming into &lt;strong&gt;rstudio::conf&lt;/strong&gt; I had a few keyboard shortcuts memorized. Things like copying a line of code down (&lt;code&gt;CMD + SHIFT + DOWN ARROW&lt;/code&gt;) … inserting the pipe operator (&lt;code&gt;CMD + SHIFT + M&lt;/code&gt;) … and inserting a code chunk (&lt;code&gt;CMD + OPTION + I&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;But there are so many more … a few handy ones that I picked up:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Maximize an Rstudio pane: &lt;code&gt;SHIFT + CTRL + 1&lt;/code&gt; (1,2,3,4 for each pane clockwise)&lt;/li&gt;
+&lt;li&gt;Build a package: &lt;code&gt;SHIFT + CMD + B&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Load functions from package after building: &lt;code&gt;SHIFT + CMD + L&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;My friends (and fellow &lt;a href=&#34;https://www.meetup.com/UVa-R-Users-Group/&#34;&gt;Charlottesville R Users&lt;/a&gt;) Jeff Boichuk and Steve Mortimer have also developed an R package (&lt;a href=&#34;https://github.com/jeffboichuk/crossr&#34;&gt;&lt;code&gt;CrossR&lt;/code&gt;&lt;/a&gt;) that includes a data frame with all Rstudio shortcuts:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;devtools::install_github(&amp;quot;jeffboichuk/CrossR&amp;quot;)
+library(CrossR)
+
+shortcuts&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 122 x 4
+##    category description        mac             windows         
+##    &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;              &amp;lt;chr&amp;gt;           &amp;lt;chr&amp;gt;           
+##  1 Build    Build All          Shift + Cmd + B Ctrl + Shift + B
+##  2 Build    Check Package      Shift + Cmd + E Ctrl + Shift + E
+##  3 Build    Compile PDF        Shift + Cmd + K Ctrl + Shift + K
+##  4 Build    Devtools Load All  Shift + Cmd + L Ctrl + Shift + L
+##  5 Build    Knit Document      Shift + Cmd + K Ctrl + Shift + K
+##  6 Build    Preview HTML       Shift + Cmd + K Ctrl + Shift + K
+##  7 Build    Roxygenize Package Shift + Cmd + D Ctrl + Shift + D
+##  8 Build    Test Package       Shift + Cmd + T Ctrl + Shift + T
+##  9 Console  Console Clear      Ctrl + L        Ctrl + L        
+## 10 Debug    Debug Breakpoint   Shift + F9      Shift + F9      
+## # ... with 112 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;find_shortcuts(&amp;quot;roxygen&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 3
+##   category      description             mac                  
+##   &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;                   &amp;lt;chr&amp;gt;                
+## 1 Build         Roxygenize Package      Shift + Cmd + D      
+## 2 Source Editor Insert Roxygen Skeleton Shift + Alt + Cmd + R&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;rstudio-1.2-features&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;rstudio12&#34;&gt;&lt;/a&gt;RStudio 1.2 features&lt;/h3&gt;
+&lt;p&gt;The RStudio team is working to make the RStudio IDE an even more comprehensive data science toolkit. Version 1.2 introduces features to support multiple languages, including python, SQL and D3. Jonathan McPherson gave a tour of the new multilingual support:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio&#34; class=&#34;uri&#34;&gt;https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;I put together a trival example of what this looks workflow looks like for passing R objects to python (and vice versa) from chunk-to-chunk in an R markdown document:&lt;/p&gt;
+&lt;pre class=&#34;python&#34;&gt;&lt;code&gt;```{r setup}
+  library(reticulate)
+  use_python(&amp;quot;/usr/bin/python&amp;quot;, required = TRUE)
+```
+
+```{python}
+  import random
+  x = random.randint(1,99)
+  print x
+```
+
+```{r}
+  # access the object &amp;#39;x&amp;#39; from python environment with py$x
+  py$x
+
+  y &amp;lt;- py$x^2
+
+  y
+```
+
+```{python}
+  # access the object &amp;#39;y&amp;#39; from r environment with r.y
+  print r.y
+
+  import math
+  z = math.sqrt(r.y)
+
+  print z
+```&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For a more complete example (including D3 and SQL chunks), take a look at the &lt;code&gt;spenders.Rmd&lt;/code&gt; example:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/jmcphers/rstudio-1.2-features/blob/master/spenders.Rmd&#34; class=&#34;uri&#34;&gt;https://github.com/jmcphers/rstudio-1.2-features/blob/master/spenders.Rmd&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio?wvideo=86143vxqwr&#34;&gt;New language features in RStudio - Jonathan McPherson&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio?wvideo=86143vxqwr&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/96f8273424b64b06534e9828ebddc37e.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;tidy-eval&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;tidyeval&#34;&gt;&lt;/a&gt;Tidy eval&lt;/h3&gt;
+&lt;p&gt;Programming with &lt;a href=&#34;https://tidyeval.tidyverse.org/&#34;&gt;&lt;code&gt;tidy eval&lt;/code&gt;&lt;/a&gt; can seem daunting. One of the sessions of the &lt;code&gt;Building Tidy Tools&lt;/code&gt; workshop focused on tidy eval. That talk demystified the quoting/unquoting workflow. Maybe more importantly for me, I found out that Rstudio is compiling a list of use-cases/examples of tidy eval in the wild:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://community.rstudio.com/t/interesting-tidy-eval-use-cases/21121&#34; class=&#34;uri&#34;&gt;https://community.rstudio.com/t/interesting-tidy-eval-use-cases/21121&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/working-with-names-and-expressions-in-your-tidy-eval-code?wvideo=ebj7te6m65&#34;&gt;Working with names and expressions in your tidy eval code - Lionel Henry&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/working-with-names-and-expressions-in-your-tidy-eval-code?wvideo=ebj7te6m65&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/b866337a304ea75d56f980cdf8cbe125.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;separate_rows&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;separaterows&#34;&gt;&lt;/a&gt;&lt;code&gt;separate_rows()&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;The &lt;code&gt;tidyr&lt;/code&gt; &lt;code&gt;separate_rows()&lt;/code&gt; function isn’t a new by any means, but it’s one that I picked up during a demo at the conference. This will be handy “wide-to-long” transformations on data that is packed into a single column (and separated by a common delimiter):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyr)
+
+
+dat &amp;lt;-
+  data.frame(
+    id = 1:5,
+    diagnosis = c(NA, &amp;quot;A,B,C&amp;quot;, &amp;quot;D&amp;quot;, &amp;quot;B,E,F&amp;quot;, &amp;quot;A&amp;quot;)
+  )
+
+dat&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   id diagnosis
+## 1  1      &amp;lt;NA&amp;gt;
+## 2  2     A,B,C
+## 3  3         D
+## 4  4     B,E,F
+## 5  5         A&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;separate_rows(dat, diagnosis, sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   id diagnosis
+## 1  1      &amp;lt;NA&amp;gt;
+## 2  2         A
+## 3  2         B
+## 4  2         C
+## 5  3         D
+## 6  4         B
+## 7  4         E
+## 8  4         F
+## 9  5         A&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;rmd-to-.pptx&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;rmdpp&#34;&gt;&lt;/a&gt; .Rmd to .pptx&lt;/h3&gt;
+&lt;p&gt;Again … not a new feature, but new to me:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html&#34; class=&#34;uri&#34;&gt;https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;You can convert R markdown to PowerPoint by specifying &lt;code&gt;powerpoint_presentation&lt;/code&gt; as the output format in the YAML header:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;---
+title: &amp;quot;Figs&amp;quot;
+author: &amp;quot;VP Nagraj&amp;quot;
+date: &amp;quot;3/10/2019&amp;quot;
+output: powerpoint_presentation
+---&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;nb&lt;/strong&gt; this output format requires Pandoc 2.x&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;new-packages&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;newpkgs&#34;&gt;&lt;/a&gt;New packages&lt;/h3&gt;
+&lt;p&gt;There were a ton of new (or at least new-ish) packages introduced at &lt;strong&gt;rstudio::conf&lt;/strong&gt;.&lt;/p&gt;
+&lt;div id=&#34;ungeviz&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;&lt;code&gt;ungeviz&lt;/code&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/wilkelab/ungeviz&#34; class=&#34;uri&#34;&gt;https://github.com/wilkelab/ungeviz&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Tools for visualizing uncertainty with ggplot2. This package is meant to provide helpful add-on functionality for ggplot2 to visualize uncertainty. The package is particularly focused on hypothetical outcome plots (HOPs) and provides bootstrapping and sampling functionality that integrates well with the ggplot2 API. The package name comes from the German word “Ungewissheit”, which means uncertainty.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/wilkelab/ungeviz/master/man/figures/README-cacao-samples-anim-1.gif&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/visualizing-uncertainty-with-hypothetical-outcomes-plots?wvideo=8m9hzvc38u&#34;&gt;Visualizing uncertainty with hypothetical outcomes plots - Claus Wilke&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/visualizing-uncertainty-with-hypothetical-outcomes-plots?wvideo=8m9hzvc38u&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/8b966c08ac6371481bdfa04f1efe09d859c1dc5b.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;gt&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;&lt;code&gt;gt&lt;/code&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/gt&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/gt&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;With the gt package, anyone can make wonderful-looking tables using the R programming language. The gt philosophy: we can construct a wide variety of useful tables with a cohesive set of table parts. These include the table header, the stub, the stub head, the column labels, the table body, and the table footer.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/rstudio/gt/raw/master/man/figures/gt_parts_of_a_table.svg?sanitize=true&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/introducing-the-gt-package?wvideo=d38rerkbwb&#34;&gt;Introducing the gt package - Rich Iannone&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/introducing-the-gt-package?wvideo=d38rerkbwb&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/f54d2b6ffcb5dcf913e67031d060ea98.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
+&lt;/p&gt;
+&lt;hr /&gt;
+&lt;/div&gt;
+&lt;div id=&#34;pagedown&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;&lt;code&gt;pagedown&lt;/code&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/pagedown&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/pagedown&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Paginate the HTML Output of R Markdown with CSS for Print. You only need a modern web browser (e.g., Google Chrome) to generate PDF. No need to install LaTeX to get beautiful PDFs.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;https://user-images.githubusercontent.com/163582/46879762-7a34a500-ce0c-11e8-87e3-496f3577ff05.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/pagedown-creating-beautiful-pdfs-with-r-markdown-and-css?wvideo=oxxk6afhtz&#34;&gt;pagedown Creating beautiful PDFs with R Markdown and CSS - Yihui Xie&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/pagedown-creating-beautiful-pdfs-with-r-markdown-and-css?wvideo=oxxk6afhtz&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/77d268f4eb298d5f472a509610ee3fcf.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Data-Based Labels</title>
       <link>/notes/data-based-labels/</link>
       <pubDate>Mon, 28 Jan 2019 17:14:59 +0000</pubDate>
@@ -255,24 +500,24 @@ end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace =
 &lt;/thead&gt;
 &lt;tbody&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-07-23&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-07-26&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-22&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-26&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-02&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-04&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-21&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-24&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-01-30&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-02&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-07-09&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-07-11&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-30&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-02&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-05-18&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-05-22&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-05&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-09&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-20&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-22&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -290,79 +535,83 @@ end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace =
 &lt;tbody&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-07-23&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-22&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-07-24&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-23&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-07-25&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-24&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-07-26&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-25&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-02&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-26&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-03&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-21&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-04&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-22&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-23&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-24&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-01-30&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-07-09&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-01-31&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-07-10&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-01&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-07-11&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-02&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-05-18&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-30&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-05-19&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-01&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-05-20&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-02&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-05-21&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-05&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-05-22&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-06&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-20&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-07&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-21&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-08&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-09&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-22&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -608,124 +857,6 @@ mkdir cache
       
       <guid>/project/somrc/</guid>
       <description></description>
-    </item>
-    
-    <item>
-      <title>UVa R Users Group</title>
-      <link>/project/rug/</link>
-      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/project/rug/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Workshops</title>
-      <link>/project/workshops/</link>
-      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/project/workshops/</guid>
-      <description>
-
-&lt;h2 id=&#34;spring-2018&#34;&gt;Spring 2018&lt;/h2&gt;
-
-&lt;h3 id=&#34;school-of-medicine-research-computing-series-university-of-virginia&#34;&gt;School of Medicine Research Computing Series (University of Virginia)&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Optimizing R Code&lt;/li&gt;
-&lt;li&gt;R Package Development Tools&lt;/li&gt;
-&lt;li&gt;Writing Functions in R&lt;/li&gt;
-&lt;li&gt;Conditional Logic in R&lt;/li&gt;
-&lt;li&gt;Introduction to R&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;health-sciences-library-workshop-series-university-of-virginia&#34;&gt;Health Sciences Library Workshop Series (University of Virginia)&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Interactive Visualization with Javascript and R&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;fall-2017&#34;&gt;Fall 2017&lt;/h2&gt;
-
-&lt;h3 id=&#34;school-of-medicine-research-computing-series-university-of-virginia-1&#34;&gt;School of Medicine Research Computing Series (University of Virginia)&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;R Package Development Tools&lt;/li&gt;
-&lt;li&gt;Advanced Data Visualization with R&lt;/li&gt;
-&lt;li&gt;Introduction to Ivy Secure Computing Environment&lt;/li&gt;
-&lt;li&gt;R For Beginners&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;statlab-workshop-series-university-of-virginia&#34;&gt;StatLab Workshop Series (University of Virginia)&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Interactive Visualization with Javascript and R&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;spring-2017&#34;&gt;Spring 2017&lt;/h2&gt;
-
-&lt;h3 id=&#34;bioconnector-workshop-series-university-of-virginia&#34;&gt;BioConnector Workshop Series (University of Virginia)&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Introduction to the Command Line&lt;/li&gt;
-&lt;li&gt;Advanced Data Visualization with R&lt;/li&gt;
-&lt;li&gt;Advanced Data Manipulation with R&lt;/li&gt;
-&lt;li&gt;Building Shiny Web Applications In R&lt;/li&gt;
-&lt;li&gt;R For Beginners&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;statlab-workshop-series-university-of-virginia-1&#34;&gt;StatLab Workshop Series (University of Virginia)&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Advanced Data Visualization with R&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;fall-2016&#34;&gt;Fall 2016&lt;/h2&gt;
-
-&lt;h3 id=&#34;bioconnector-workshop-series-university-of-virginia-1&#34;&gt;BioConnector Workshop Series (University of Virginia)&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Harvesting Data from NCBI&lt;/li&gt;
-&lt;li&gt;Reproducible Reporting: Generating Dynamic Documents with R+RStudio&lt;/li&gt;
-&lt;li&gt;Advanced Data Visualization with R&lt;/li&gt;
-&lt;li&gt;Advanced Data Manipulation with R&lt;/li&gt;
-&lt;li&gt;Building Shiny Web Applications In R&lt;/li&gt;
-&lt;li&gt;R For Beginners&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;statlab-workshop-series-university-of-virginia-2&#34;&gt;StatLab Workshop Series (University of Virginia)&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Manipulating List Objects in R&lt;/li&gt;
-&lt;li&gt;Interactive Visualization with Javascript and R&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;summer-2016&#34;&gt;Summer 2016&lt;/h2&gt;
-
-&lt;h3 id=&#34;bioconnector-workshop-series-university-of-virginia-2&#34;&gt;BioConnector Workshop Series (University of Virginia)&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Advanced Data Visualization with R&lt;/li&gt;
-&lt;li&gt;Advanced Data Manipulation with R&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;spring-2016&#34;&gt;Spring 2016&lt;/h2&gt;
-
-&lt;h3 id=&#34;bioconnector-workshop-series-university-of-virginia-3&#34;&gt;BioConnector Workshop Series (University of Virginia)&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Building Shiny Web Applications In R&lt;/li&gt;
-&lt;li&gt;R For Beginners&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;fall-2015&#34;&gt;Fall 2015&lt;/h2&gt;
-
-&lt;h3 id=&#34;statlab-workshop-series-university-of-virginia-3&#34;&gt;StatLab Workshop Series (University of Virginia)&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Building Shiny Web Applications In R&lt;/li&gt;
-&lt;/ul&gt;
-</description>
     </item>
     
   </channel>

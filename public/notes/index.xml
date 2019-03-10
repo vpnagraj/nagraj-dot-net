@@ -13,6 +13,29 @@
     
     
     <item>
+      <title>Hosting a Single App with Shiny Server</title>
+      <link>/notes/single-app-shiny-server/</link>
+      <pubDate>Fri, 08 Mar 2019 11:26:40 -0500</pubDate>
+      
+      <guid>/notes/single-app-shiny-server/</guid>
+      <description>If you’ve written a Shiny app and have reached a point where you would like to share it with others … you have a few options:
+https://shiny.rstudio.com/deploy/
+Given that you have hardware (or a cloud setup) to install a server, Shiny Server Open Source may be a good solution.
+I’ve deployed dozens of apps on different Shiny servers. In some cases, I may need a single server that hosts an entire directory of apps.</description>
+    </item>
+    
+    <item>
+      <title>rstudio::conf 2019</title>
+      <link>/notes/rstudioconf2019/</link>
+      <pubDate>Mon, 11 Feb 2019 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/rstudioconf2019/</guid>
+      <description>This past January I was able to attend rstudio::conf 2019 in Austin. I was there for the full week, taking the Building Tidy Tools workshop and attending as many of the main conference program sessions as possible.
+Here is a collection of highlights/takeaways from the conference …
+ Shortcuts RStudio 1.2 features Tidy eval separate_rows .Rmd to .pptx New packages  Shortcuts Coming into rstudio::conf I had a few keyboard shortcuts memorized.</description>
+    </item>
+    
+    <item>
       <title>Data-Based Labels</title>
       <link>/notes/data-based-labels/</link>
       <pubDate>Mon, 28 Jan 2019 17:14:59 +0000</pubDate>
@@ -42,7 +65,7 @@ When comparing dplyr::filter() versus a base method (using bracket indices and w
       
       <guid>/notes/dates-between/</guid>
       <description>A few weeks ago I helped someone who needed to expand a data frame that included events (with a start and stop date for each) to one that had rows for every date in an event (including start and stop) … the code below gives a reproducible example of how to do that with dplyr:
-library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-07-23 1999-07-26  1999-12-02 1999-12-04  1999-01-30 1999-02-02  1999-11-30 1999-12-02  1999-02-05 1999-02-09    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
+library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-10-22 1999-10-26  1999-12-21 1999-12-24  1999-07-09 1999-07-11  1999-05-18 1999-05-22  1999-04-20 1999-04-22    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
     </item>
     
     <item>
