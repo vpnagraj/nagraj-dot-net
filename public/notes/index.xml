@@ -65,7 +65,7 @@ When comparing dplyr::filter() versus a base method (using bracket indices and w
       
       <guid>/notes/dates-between/</guid>
       <description>A few weeks ago I helped someone who needed to expand a data frame that included events (with a start and stop date for each) to one that had rows for every date in an event (including start and stop) … the code below gives a reproducible example of how to do that with dplyr:
-library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-10-22 1999-10-26  1999-12-21 1999-12-24  1999-07-09 1999-07-11  1999-05-18 1999-05-22  1999-04-20 1999-04-22    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
+library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-03-22 1999-03-25  1999-08-24 1999-08-28  1999-08-13 1999-08-15  1999-04-07 1999-04-10  1999-11-02 1999-11-06    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
     </item>
     
     <item>

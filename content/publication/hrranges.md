@@ -1,6 +1,6 @@
 +++
 title = "Heart rate ranges in premature neonates using high resolution physiologic data"
-date = "2018-9-1"
+date = "2018-09-01"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
 authors = ["CJ Alonzo", "VP Nagraj", "JV Zschaebitz", "DE Lake", "JR Moorman", "MC Spaeder"]
