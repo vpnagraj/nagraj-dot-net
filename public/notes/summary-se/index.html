@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.37.1" />
+  <meta name="author" content="VP Nagraj">
+
+  
+  
+  
+  
+    
+      
+    
+  
+  <meta name="description" content="I’ve found myself on Winston Chang’s cookbook-r website a number of times before. My most recent visit was to refresh my memory on the strategy for plotting means with error bars with ggplot2:
+http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)
+The recipe makes use of summarySE() a function that is described in detail in another post that details strategies for summarizing data.
+summarySE() is a custom function that computes the mean, standard deviation, count, standard error, confidence interval for a variable (“measurevar”) within defined grouping variables (“groupvars”).">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/notes/summary-se/">
+
+  
+
+
+  
+
+  
+  
+  <meta name="theme-color" content="#0095eb">
+  
+  
+  
+  
+    
+  
+  
+    
+    
+      
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+      
+    
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.1/css/academicons.min.css" integrity="sha512-NThgw3XKQ1absAahW6to7Ey42uycrVvfNfyjqcFNgCmOCQ5AR4AO0SiXrN+8ZtYeappp56lk1WtvjVmEa+VR6A==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700%7cRoboto:400,400italic,700%7cRoboto&#43;Mono">
+  
+  <link rel="stylesheet" href="/styles.css">
+  
+
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="VP Nagraj">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="VP Nagraj">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/notes/summary-se/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@vpnagraj">
+  <meta property="twitter:creator" content="@vpnagraj">
+  
+  <meta property="og:site_name" content="VP Nagraj">
+  <meta property="og:url" content="/notes/summary-se/">
+  <meta property="og:title" content="summary_se() | VP Nagraj">
+  <meta property="og:description" content="I’ve found myself on Winston Chang’s cookbook-r website a number of times before. My most recent visit was to refresh my memory on the strategy for plotting means with error bars with ggplot2:
+http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)
+The recipe makes use of summarySE() a function that is described in detail in another post that details strategies for summarizing data.
+summarySE() is a custom function that computes the mean, standard deviation, count, standard error, confidence interval for a variable (“measurevar”) within defined grouping variables (“groupvars”).">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2019-05-08T17:14:59&#43;00:00">
+  
+  <meta property="article:modified_time" content="2019-05-08T17:14:59&#43;00:00">
+  
+
+  
+
+  <title>summary_se() | VP Nagraj</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/">VP Nagraj</a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/about/bio">
+            
+            <span>About</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/notes">
+            
+            <span>Notes</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/publication">
+            
+            <span>Publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+  <div class="article-container">
+    <h1 itemprop="name">summary_se()</h1>
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    
+    <time datetime="2019-05-08 17:14:59 &#43;0000 &#43;0000" itemprop="datePublished dateModified">
+      May 8, 2019
+    </time>
+  </span>
+  <span itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="VP Nagraj">
+  </span>
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    4 min read
+  </span>
+  
+
+  
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/categories/notes">notes</a
+    >
+    
+  </span>
+  
+  
+
+</div>
+
+    <div class="article-style" itemprop="articleBody">
+      <p>I’ve found myself on Winston Chang’s <a href="http://www.cookbook-r.com/">cookbook-r website</a> a number of times before. My most recent visit was to refresh my memory on the strategy for plotting means with error bars with <code>ggplot2</code>:</p>
+<p><a href="http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)" class="uri">http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)</a></p>
+<p>The recipe makes use of <code>summarySE()</code> a function that is described in detail in <a href="http://www.cookbook-r.com/Manipulating_data/Summarizing_data/">another post that details strategies for summarizing data</a>.</p>
+<p><code>summarySE()</code> is a custom function that computes the mean, standard deviation, count, standard error, confidence interval for a variable (“measurevar”) within defined grouping variables (“groupvars”).</p>
+<p>Below is the code for the function, along with a working example of how to use it with the built-in “ToothGrowth” dataset (<code>?ToothGrowth</code>).</p>
+<pre class="r"><code>## Summarizes data.
+## Gives count, mean, standard deviation, standard error of the mean, and confidence interval (default 95%).
+##   data: a data frame.
+##   measurevar: the name of a column that contains the variable to be summariezed
+##   groupvars: a vector containing names of columns that contain grouping variables
+##   na.rm: a boolean that indicates whether to ignore NA&#39;s
+##   conf.interval: the percent range of the confidence interval (default is 95%)
+summarySE &lt;- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
+                      conf.interval=.95, .drop=TRUE) {
+    library(plyr)
+
+    # New version of length which can handle NA&#39;s: if na.rm==T, don&#39;t count them
+    length2 &lt;- function (x, na.rm=FALSE) {
+        if (na.rm) sum(!is.na(x))
+        else       length(x)
+    }
+
+    # This does the summary. For each group&#39;s data frame, return a vector with
+    # N, mean, and sd
+    datac &lt;- ddply(data, groupvars, .drop=.drop,
+      .fun = function(xx, col) {
+        c(N    = length2(xx[[col]], na.rm=na.rm),
+          mean = mean   (xx[[col]], na.rm=na.rm),
+          sd   = sd     (xx[[col]], na.rm=na.rm)
+        )
+      },
+      measurevar
+    )
+
+    # Rename the &quot;mean&quot; column    
+    datac &lt;- rename(datac, c(&quot;mean&quot; = measurevar))
+
+    datac$se &lt;- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+
+    # Confidence interval multiplier for standard error
+    # Calculate t-statistic for confidence interval: 
+    # e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+    ciMult &lt;- qt(conf.interval/2 + .5, datac$N-1)
+    datac$ci &lt;- datac$se * ciMult
+
+    return(datac)
+}</code></pre>
+<pre class="r"><code>head(ToothGrowth)</code></pre>
+<pre><code>##    len supp dose
+## 1  4.2   VC  0.5
+## 2 11.5   VC  0.5
+## 3  7.3   VC  0.5
+## 4  5.8   VC  0.5
+## 5  6.4   VC  0.5
+## 6 10.0   VC  0.5</code></pre>
+<pre class="r"><code>summarySE(ToothGrowth, 
+          measurevar=&quot;len&quot;, 
+          groupvars=c(&quot;supp&quot;,&quot;dose&quot;),
+          conf.interval = 0.9)</code></pre>
+<pre><code>##   supp dose  N   len       sd        se       ci
+## 1   OJ  0.5 10 13.23 4.459709 1.4102837 2.585209
+## 2   OJ  1.0 10 22.70 3.910953 1.2367520 2.267106
+## 3   OJ  2.0 10 26.06 2.655058 0.8396031 1.539087
+## 4   VC  0.5 10  7.98 2.746634 0.8685620 1.592172
+## 5   VC  1.0 10 16.77 2.515309 0.7954104 1.458077
+## 6   VC  2.0 10 26.14 4.797731 1.5171757 2.781154</code></pre>
+<div id="tidyeval-approach" class="section level3">
+<h3><code>tidyeval</code> approach</h3>
+<p>The cookbook-r site includes several solutions to the “Summary SE” problem. The <code>summarySE()</code> function (above) works well, and includes comments explaining each parameter. However, given my inexperience with <code>plyr</code> I find the code a little hard to understand … or at least harder than if it were written with <code>dplyr</code>. I decided to try to translate <code>summarySE()</code> into a syntax that I could use in a pipline with <code>%&gt;%</code>. To do so, I needed to learn a little about the <a href="https://tidyeval.tidyverse.org/"><code>tidyeval</code> framework</a> and its programming paradigm.</p>
+<p>The code for the new function (<code>summary_se()</code>) is below, along with the same ToothGrowth example as above.</p>
+<p>A few notes from my exploration:</p>
+<ul>
+<li><code>enquo()</code> caputures the bare variable name, and <code>!!</code> in a subsequent <code>dplyr</code> call will reference that variable</li>
+<li><code>enquos()</code> and <code>!!!</code> work in a similar matter but can capture multiple variable names passed in via <code>...</code></li>
+<li>It’s good practice to prefix argument names with <code>.</code> when writing functions that use <code>tidyeval</code> … the reason being that it is not likely that a user would have an existing column name that starts with <code>.</code></li>
+</ul>
+<pre class="r"><code>summary_se &lt;- function(.data, measure_var, ..., .ci = 0.95, na.rm = FALSE) {
+  
+  measure_var &lt;- dplyr::enquo(measure_var)
+  group_var &lt;- dplyr::enquos(...)
+  
+  .data %&gt;%
+    group_by(!!! group_var) %&gt;%
+    summarise(mean = mean(!! measure_var, na.rm = na.rm),
+              sd = sd(!! measure_var, na.rm = na.rm),
+              n = n(),
+              se = sd/sqrt(n),
+              ci = se * qt(.ci/2 + 0.5, n-1)) %&gt;%
+    ungroup()
+  
+}</code></pre>
+<pre class="r"><code>library(dplyr)
+library(ggplot2)
+
+ToothGrowth %&gt;%
+  summary_se(len, supp, dose, .ci = 0.9)</code></pre>
+<pre><code>## # A tibble: 6 x 7
+##   supp   dose  mean    sd     n    se    ci
+##   &lt;fct&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 OJ      0.5 13.2   4.46    10 1.41   2.59
+## 2 OJ      1   22.7   3.91    10 1.24   2.27
+## 3 OJ      2   26.1   2.66    10 0.840  1.54
+## 4 VC      0.5  7.98  2.75    10 0.869  1.59
+## 5 VC      1   16.8   2.52    10 0.795  1.46
+## 6 VC      2   26.1   4.80    10 1.52   2.78</code></pre>
+<pre class="r"><code>ToothGrowth %&gt;%
+  summary_se(len, supp, dose, .ci = 0.9) %&gt;%
+  mutate(dose = paste0(&quot;Dose: &quot;, dose, &quot; (mg/day)&quot;)) %&gt;%
+  ggplot(aes(supp,mean)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - ci, 
+                    ymax = mean + ci),
+                width = 0.2) +
+  labs(x = &quot;Vitamin C delivery method&quot;, y = &quot;Mean length of odontoblasts (95% CI)&quot;) +
+  coord_flip() +
+  facet_wrap(~ dose, ncol = 1) +
+  theme_minimal()</code></pre>
+<p><img src="/notes/summary-se_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="btn btn-primary btn-outline" href="/tags/dplyr">dplyr</a>
+  
+  <a class="btn btn-primary btn-outline" href="/tags/r">R</a>
+  
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/notes/filter-benchmark/">dplyr filter() Benchmark</a></li>
+        
+        <li><a href="/notes/dates-between/">Expand Dates Between</a></li>
+        
+        <li><a href="/notes/single-app-shiny-server/">Hosting a Single App with Shiny Server</a></li>
+        
+        <li><a href="/notes/rstudioconf2019/">rstudio::conf 2019</a></li>
+        
+        <li><a href="/notes/data-based-labels/">Data-Based Labels</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+
+    
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="powered-by">
+
+      &copy; 2018 &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+    
+    
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+      
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+      
+
+      
+
+      
+
+      <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+
+  </body>
+</html>
+

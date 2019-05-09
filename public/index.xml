@@ -11,6 +11,134 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>summary_se()</title>
+      <link>/notes/summary-se/</link>
+      <pubDate>Wed, 08 May 2019 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/summary-se/</guid>
+      <description>&lt;p&gt;I’ve found myself on Winston Chang’s &lt;a href=&#34;http://www.cookbook-r.com/&#34;&gt;cookbook-r website&lt;/a&gt; a number of times before. My most recent visit was to refresh my memory on the strategy for plotting means with error bars with &lt;code&gt;ggplot2&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)&#34; class=&#34;uri&#34;&gt;http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The recipe makes use of &lt;code&gt;summarySE()&lt;/code&gt; a function that is described in detail in &lt;a href=&#34;http://www.cookbook-r.com/Manipulating_data/Summarizing_data/&#34;&gt;another post that details strategies for summarizing data&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;summarySE()&lt;/code&gt; is a custom function that computes the mean, standard deviation, count, standard error, confidence interval for a variable (“measurevar”) within defined grouping variables (“groupvars”).&lt;/p&gt;
+&lt;p&gt;Below is the code for the function, along with a working example of how to use it with the built-in “ToothGrowth” dataset (&lt;code&gt;?ToothGrowth&lt;/code&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## Summarizes data.
+## Gives count, mean, standard deviation, standard error of the mean, and confidence interval (default 95%).
+##   data: a data frame.
+##   measurevar: the name of a column that contains the variable to be summariezed
+##   groupvars: a vector containing names of columns that contain grouping variables
+##   na.rm: a boolean that indicates whether to ignore NA&amp;#39;s
+##   conf.interval: the percent range of the confidence interval (default is 95%)
+summarySE &amp;lt;- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
+                      conf.interval=.95, .drop=TRUE) {
+    library(plyr)
+
+    # New version of length which can handle NA&amp;#39;s: if na.rm==T, don&amp;#39;t count them
+    length2 &amp;lt;- function (x, na.rm=FALSE) {
+        if (na.rm) sum(!is.na(x))
+        else       length(x)
+    }
+
+    # This does the summary. For each group&amp;#39;s data frame, return a vector with
+    # N, mean, and sd
+    datac &amp;lt;- ddply(data, groupvars, .drop=.drop,
+      .fun = function(xx, col) {
+        c(N    = length2(xx[[col]], na.rm=na.rm),
+          mean = mean   (xx[[col]], na.rm=na.rm),
+          sd   = sd     (xx[[col]], na.rm=na.rm)
+        )
+      },
+      measurevar
+    )
+
+    # Rename the &amp;quot;mean&amp;quot; column    
+    datac &amp;lt;- rename(datac, c(&amp;quot;mean&amp;quot; = measurevar))
+
+    datac$se &amp;lt;- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+
+    # Confidence interval multiplier for standard error
+    # Calculate t-statistic for confidence interval: 
+    # e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+    ciMult &amp;lt;- qt(conf.interval/2 + .5, datac$N-1)
+    datac$ci &amp;lt;- datac$se * ciMult
+
+    return(datac)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(ToothGrowth)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    len supp dose
+## 1  4.2   VC  0.5
+## 2 11.5   VC  0.5
+## 3  7.3   VC  0.5
+## 4  5.8   VC  0.5
+## 5  6.4   VC  0.5
+## 6 10.0   VC  0.5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;summarySE(ToothGrowth, 
+          measurevar=&amp;quot;len&amp;quot;, 
+          groupvars=c(&amp;quot;supp&amp;quot;,&amp;quot;dose&amp;quot;),
+          conf.interval = 0.9)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   supp dose  N   len       sd        se       ci
+## 1   OJ  0.5 10 13.23 4.459709 1.4102837 2.585209
+## 2   OJ  1.0 10 22.70 3.910953 1.2367520 2.267106
+## 3   OJ  2.0 10 26.06 2.655058 0.8396031 1.539087
+## 4   VC  0.5 10  7.98 2.746634 0.8685620 1.592172
+## 5   VC  1.0 10 16.77 2.515309 0.7954104 1.458077
+## 6   VC  2.0 10 26.14 4.797731 1.5171757 2.781154&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;tidyeval-approach&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;code&gt;tidyeval&lt;/code&gt; approach&lt;/h3&gt;
+&lt;p&gt;The cookbook-r site includes several solutions to the “Summary SE” problem. The &lt;code&gt;summarySE()&lt;/code&gt; function (above) works well, and includes comments explaining each parameter. However, given my inexperience with &lt;code&gt;plyr&lt;/code&gt; I find the code a little hard to understand … or at least harder than if it were written with &lt;code&gt;dplyr&lt;/code&gt;. I decided to try to translate &lt;code&gt;summarySE()&lt;/code&gt; into a syntax that I could use in a pipline with &lt;code&gt;%&amp;gt;%&lt;/code&gt;. To do so, I needed to learn a little about the &lt;a href=&#34;https://tidyeval.tidyverse.org/&#34;&gt;&lt;code&gt;tidyeval&lt;/code&gt; framework&lt;/a&gt; and its programming paradigm.&lt;/p&gt;
+&lt;p&gt;The code for the new function (&lt;code&gt;summary_se()&lt;/code&gt;) is below, along with the same ToothGrowth example as above.&lt;/p&gt;
+&lt;p&gt;A few notes from my exploration:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;enquo()&lt;/code&gt; caputures the bare variable name, and &lt;code&gt;!!&lt;/code&gt; in a subsequent &lt;code&gt;dplyr&lt;/code&gt; call will reference that variable&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;enquos()&lt;/code&gt; and &lt;code&gt;!!!&lt;/code&gt; work in a similar matter but can capture multiple variable names passed in via &lt;code&gt;...&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;It’s good practice to prefix argument names with &lt;code&gt;.&lt;/code&gt; when writing functions that use &lt;code&gt;tidyeval&lt;/code&gt; … the reason being that it is not likely that a user would have an existing column name that starts with &lt;code&gt;.&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;summary_se &amp;lt;- function(.data, measure_var, ..., .ci = 0.95, na.rm = FALSE) {
+  
+  measure_var &amp;lt;- dplyr::enquo(measure_var)
+  group_var &amp;lt;- dplyr::enquos(...)
+  
+  .data %&amp;gt;%
+    group_by(!!! group_var) %&amp;gt;%
+    summarise(mean = mean(!! measure_var, na.rm = na.rm),
+              sd = sd(!! measure_var, na.rm = na.rm),
+              n = n(),
+              se = sd/sqrt(n),
+              ci = se * qt(.ci/2 + 0.5, n-1)) %&amp;gt;%
+    ungroup()
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(ggplot2)
+
+ToothGrowth %&amp;gt;%
+  summary_se(len, supp, dose, .ci = 0.9)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 7
+##   supp   dose  mean    sd     n    se    ci
+##   &amp;lt;fct&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+## 1 OJ      0.5 13.2   4.46    10 1.41   2.59
+## 2 OJ      1   22.7   3.91    10 1.24   2.27
+## 3 OJ      2   26.1   2.66    10 0.840  1.54
+## 4 VC      0.5  7.98  2.75    10 0.869  1.59
+## 5 VC      1   16.8   2.52    10 0.795  1.46
+## 6 VC      2   26.1   4.80    10 1.52   2.78&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ToothGrowth %&amp;gt;%
+  summary_se(len, supp, dose, .ci = 0.9) %&amp;gt;%
+  mutate(dose = paste0(&amp;quot;Dose: &amp;quot;, dose, &amp;quot; (mg/day)&amp;quot;)) %&amp;gt;%
+  ggplot(aes(supp,mean)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - ci, 
+                    ymax = mean + ci),
+                width = 0.2) +
+  labs(x = &amp;quot;Vitamin C delivery method&amp;quot;, y = &amp;quot;Mean length of odontoblasts (95% CI)&amp;quot;) +
+  coord_flip() +
+  facet_wrap(~ dose, ncol = 1) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/notes/summary-se_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Hosting a Single App with Shiny Server</title>
       <link>/notes/single-app-shiny-server/</link>
       <pubDate>Fri, 08 Mar 2019 11:26:40 -0500</pubDate>
@@ -99,7 +227,7 @@ shortcuts&lt;/code&gt;&lt;/pre&gt;
 ##  8 Build    Test Package       Shift + Cmd + T Ctrl + Shift + T
 ##  9 Console  Console Clear      Ctrl + L        Ctrl + L        
 ## 10 Debug    Debug Breakpoint   Shift + F9      Shift + F9      
-## # ... with 112 more rows&lt;/code&gt;&lt;/pre&gt;
+## # … with 112 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;find_shortcuts(&amp;quot;roxygen&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 3
 ##   category      description             mac                  
@@ -212,7 +340,9 @@ output: powerpoint_presentation
 &lt;h4&gt;&lt;code&gt;ungeviz&lt;/code&gt;&lt;/h4&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/wilkelab/ungeviz&#34; class=&#34;uri&#34;&gt;https://github.com/wilkelab/ungeviz&lt;/a&gt;&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;Tools for visualizing uncertainty with ggplot2. This package is meant to provide helpful add-on functionality for ggplot2 to visualize uncertainty. The package is particularly focused on hypothetical outcome plots (HOPs) and provides bootstrapping and sampling functionality that integrates well with the ggplot2 API. The package name comes from the German word “Ungewissheit”, which means uncertainty.&lt;/p&gt;
+&lt;p&gt;Tools for visualizing uncertainty with ggplot2.
+This package is meant to provide helpful add-on functionality for ggplot2 to visualize uncertainty. The package is particularly focused on hypothetical outcome plots (HOPs) and provides bootstrapping and sampling functionality that integrates well with the ggplot2 API.
+The package name comes from the German word “Ungewissheit”, which means uncertainty.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/wilkelab/ungeviz/master/man/figures/README-cacao-samples-anim-1.gif&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;
@@ -289,19 +419,19 @@ library(dplyr)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;glimpse(starwars)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Observations: 87
 ## Variables: 13
-## $ name       &amp;lt;chr&amp;gt; &amp;quot;Luke Skywalker&amp;quot;, &amp;quot;C-3PO&amp;quot;, &amp;quot;R2-D2&amp;quot;, &amp;quot;Darth Vader&amp;quot;, ...
-## $ height     &amp;lt;int&amp;gt; 172, 167, 96, 202, 150, 178, 165, 97, 183, 182, 188...
-## $ mass       &amp;lt;dbl&amp;gt; 77.0, 75.0, 32.0, 136.0, 49.0, 120.0, 75.0, 32.0, 8...
-## $ hair_color &amp;lt;chr&amp;gt; &amp;quot;blond&amp;quot;, NA, NA, &amp;quot;none&amp;quot;, &amp;quot;brown&amp;quot;, &amp;quot;brown, grey&amp;quot;, &amp;quot;b...
-## $ skin_color &amp;lt;chr&amp;gt; &amp;quot;fair&amp;quot;, &amp;quot;gold&amp;quot;, &amp;quot;white, blue&amp;quot;, &amp;quot;white&amp;quot;, &amp;quot;light&amp;quot;, &amp;quot;l...
-## $ eye_color  &amp;lt;chr&amp;gt; &amp;quot;blue&amp;quot;, &amp;quot;yellow&amp;quot;, &amp;quot;red&amp;quot;, &amp;quot;yellow&amp;quot;, &amp;quot;brown&amp;quot;, &amp;quot;blue&amp;quot;,...
-## $ birth_year &amp;lt;dbl&amp;gt; 19.0, 112.0, 33.0, 41.9, 19.0, 52.0, 47.0, NA, 24.0...
-## $ gender     &amp;lt;chr&amp;gt; &amp;quot;male&amp;quot;, NA, NA, &amp;quot;male&amp;quot;, &amp;quot;female&amp;quot;, &amp;quot;male&amp;quot;, &amp;quot;female&amp;quot;,...
-## $ homeworld  &amp;lt;chr&amp;gt; &amp;quot;Tatooine&amp;quot;, &amp;quot;Tatooine&amp;quot;, &amp;quot;Naboo&amp;quot;, &amp;quot;Tatooine&amp;quot;, &amp;quot;Alder...
-## $ species    &amp;lt;chr&amp;gt; &amp;quot;Human&amp;quot;, &amp;quot;Droid&amp;quot;, &amp;quot;Droid&amp;quot;, &amp;quot;Human&amp;quot;, &amp;quot;Human&amp;quot;, &amp;quot;Human...
-## $ films      &amp;lt;list&amp;gt; [&amp;lt;&amp;quot;Revenge of the Sith&amp;quot;, &amp;quot;Return of the Jedi&amp;quot;, &amp;quot;Th...
-## $ vehicles   &amp;lt;list&amp;gt; [&amp;lt;&amp;quot;Snowspeeder&amp;quot;, &amp;quot;Imperial Speeder Bike&amp;quot;&amp;gt;, &amp;lt;&amp;gt;, &amp;lt;&amp;gt;,...
-## $ starships  &amp;lt;list&amp;gt; [&amp;lt;&amp;quot;X-wing&amp;quot;, &amp;quot;Imperial shuttle&amp;quot;&amp;gt;, &amp;lt;&amp;gt;, &amp;lt;&amp;gt;, &amp;quot;TIE Adva...&lt;/code&gt;&lt;/pre&gt;
+## $ name       &amp;lt;chr&amp;gt; &amp;quot;Luke Skywalker&amp;quot;, &amp;quot;C-3PO&amp;quot;, &amp;quot;R2-D2&amp;quot;, &amp;quot;Darth Vader&amp;quot;, &amp;quot;L…
+## $ height     &amp;lt;int&amp;gt; 172, 167, 96, 202, 150, 178, 165, 97, 183, 182, 188, …
+## $ mass       &amp;lt;dbl&amp;gt; 77.0, 75.0, 32.0, 136.0, 49.0, 120.0, 75.0, 32.0, 84.…
+## $ hair_color &amp;lt;chr&amp;gt; &amp;quot;blond&amp;quot;, NA, NA, &amp;quot;none&amp;quot;, &amp;quot;brown&amp;quot;, &amp;quot;brown, grey&amp;quot;, &amp;quot;bro…
+## $ skin_color &amp;lt;chr&amp;gt; &amp;quot;fair&amp;quot;, &amp;quot;gold&amp;quot;, &amp;quot;white, blue&amp;quot;, &amp;quot;white&amp;quot;, &amp;quot;light&amp;quot;, &amp;quot;lig…
+## $ eye_color  &amp;lt;chr&amp;gt; &amp;quot;blue&amp;quot;, &amp;quot;yellow&amp;quot;, &amp;quot;red&amp;quot;, &amp;quot;yellow&amp;quot;, &amp;quot;brown&amp;quot;, &amp;quot;blue&amp;quot;, &amp;quot;…
+## $ birth_year &amp;lt;dbl&amp;gt; 19.0, 112.0, 33.0, 41.9, 19.0, 52.0, 47.0, NA, 24.0, …
+## $ gender     &amp;lt;chr&amp;gt; &amp;quot;male&amp;quot;, NA, NA, &amp;quot;male&amp;quot;, &amp;quot;female&amp;quot;, &amp;quot;male&amp;quot;, &amp;quot;female&amp;quot;, N…
+## $ homeworld  &amp;lt;chr&amp;gt; &amp;quot;Tatooine&amp;quot;, &amp;quot;Tatooine&amp;quot;, &amp;quot;Naboo&amp;quot;, &amp;quot;Tatooine&amp;quot;, &amp;quot;Alderaa…
+## $ species    &amp;lt;chr&amp;gt; &amp;quot;Human&amp;quot;, &amp;quot;Droid&amp;quot;, &amp;quot;Droid&amp;quot;, &amp;quot;Human&amp;quot;, &amp;quot;Human&amp;quot;, &amp;quot;Human&amp;quot;,…
+## $ films      &amp;lt;list&amp;gt; [&amp;lt;&amp;quot;Revenge of the Sith&amp;quot;, &amp;quot;Return of the Jedi&amp;quot;, &amp;quot;The …
+## $ vehicles   &amp;lt;list&amp;gt; [&amp;lt;&amp;quot;Snowspeeder&amp;quot;, &amp;quot;Imperial Speeder Bike&amp;quot;&amp;gt;, &amp;lt;&amp;gt;, &amp;lt;&amp;gt;, &amp;lt;…
+## $ starships  &amp;lt;list&amp;gt; [&amp;lt;&amp;quot;X-wing&amp;quot;, &amp;quot;Imperial shuttle&amp;quot;&amp;gt;, &amp;lt;&amp;gt;, &amp;lt;&amp;gt;, &amp;quot;TIE Advanc…&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;starwars %&amp;gt;%
   mutate(bmi = mass/((height/100)^2)) %&amp;gt;%
   # no jabba ...
@@ -324,17 +454,17 @@ library(dplyr)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;glimpse(msleep)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Observations: 83
 ## Variables: 11
-## $ name         &amp;lt;chr&amp;gt; &amp;quot;Cheetah&amp;quot;, &amp;quot;Owl monkey&amp;quot;, &amp;quot;Mountain beaver&amp;quot;, &amp;quot;Grea...
-## $ genus        &amp;lt;chr&amp;gt; &amp;quot;Acinonyx&amp;quot;, &amp;quot;Aotus&amp;quot;, &amp;quot;Aplodontia&amp;quot;, &amp;quot;Blarina&amp;quot;, &amp;quot;Bo...
-## $ vore         &amp;lt;chr&amp;gt; &amp;quot;carni&amp;quot;, &amp;quot;omni&amp;quot;, &amp;quot;herbi&amp;quot;, &amp;quot;omni&amp;quot;, &amp;quot;herbi&amp;quot;, &amp;quot;herbi...
-## $ order        &amp;lt;chr&amp;gt; &amp;quot;Carnivora&amp;quot;, &amp;quot;Primates&amp;quot;, &amp;quot;Rodentia&amp;quot;, &amp;quot;Soricomorph...
-## $ conservation &amp;lt;chr&amp;gt; &amp;quot;lc&amp;quot;, NA, &amp;quot;nt&amp;quot;, &amp;quot;lc&amp;quot;, &amp;quot;domesticated&amp;quot;, NA, &amp;quot;vu&amp;quot;, N...
-## $ sleep_total  &amp;lt;dbl&amp;gt; 12.1, 17.0, 14.4, 14.9, 4.0, 14.4, 8.7, 7.0, 10.1...
-## $ sleep_rem    &amp;lt;dbl&amp;gt; NA, 1.8, 2.4, 2.3, 0.7, 2.2, 1.4, NA, 2.9, NA, 0....
-## $ sleep_cycle  &amp;lt;dbl&amp;gt; NA, NA, NA, 0.1333333, 0.6666667, 0.7666667, 0.38...
-## $ awake        &amp;lt;dbl&amp;gt; 11.9, 7.0, 9.6, 9.1, 20.0, 9.6, 15.3, 17.0, 13.9,...
-## $ brainwt      &amp;lt;dbl&amp;gt; NA, 0.01550, NA, 0.00029, 0.42300, NA, NA, NA, 0....
-## $ bodywt       &amp;lt;dbl&amp;gt; 50.000, 0.480, 1.350, 0.019, 600.000, 3.850, 20.4...&lt;/code&gt;&lt;/pre&gt;
+## $ name         &amp;lt;chr&amp;gt; &amp;quot;Cheetah&amp;quot;, &amp;quot;Owl monkey&amp;quot;, &amp;quot;Mountain beaver&amp;quot;, &amp;quot;Greate…
+## $ genus        &amp;lt;chr&amp;gt; &amp;quot;Acinonyx&amp;quot;, &amp;quot;Aotus&amp;quot;, &amp;quot;Aplodontia&amp;quot;, &amp;quot;Blarina&amp;quot;, &amp;quot;Bos&amp;quot;…
+## $ vore         &amp;lt;chr&amp;gt; &amp;quot;carni&amp;quot;, &amp;quot;omni&amp;quot;, &amp;quot;herbi&amp;quot;, &amp;quot;omni&amp;quot;, &amp;quot;herbi&amp;quot;, &amp;quot;herbi&amp;quot;,…
+## $ order        &amp;lt;chr&amp;gt; &amp;quot;Carnivora&amp;quot;, &amp;quot;Primates&amp;quot;, &amp;quot;Rodentia&amp;quot;, &amp;quot;Soricomorpha&amp;quot;…
+## $ conservation &amp;lt;chr&amp;gt; &amp;quot;lc&amp;quot;, NA, &amp;quot;nt&amp;quot;, &amp;quot;lc&amp;quot;, &amp;quot;domesticated&amp;quot;, NA, &amp;quot;vu&amp;quot;, NA,…
+## $ sleep_total  &amp;lt;dbl&amp;gt; 12.1, 17.0, 14.4, 14.9, 4.0, 14.4, 8.7, 7.0, 10.1, …
+## $ sleep_rem    &amp;lt;dbl&amp;gt; NA, 1.8, 2.4, 2.3, 0.7, 2.2, 1.4, NA, 2.9, NA, 0.6,…
+## $ sleep_cycle  &amp;lt;dbl&amp;gt; NA, NA, NA, 0.1333333, 0.6666667, 0.7666667, 0.3833…
+## $ awake        &amp;lt;dbl&amp;gt; 11.9, 7.0, 9.6, 9.1, 20.0, 9.6, 15.3, 17.0, 13.9, 2…
+## $ brainwt      &amp;lt;dbl&amp;gt; NA, 0.01550, NA, 0.00029, 0.42300, NA, NA, NA, 0.07…
+## $ bodywt       &amp;lt;dbl&amp;gt; 50.000, 0.480, 1.350, 0.019, 600.000, 3.850, 20.490…&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animals &amp;lt;- c(&amp;quot;Asian elephant&amp;quot;, 
              &amp;quot;Little brown bat&amp;quot;,
              &amp;quot;Three-toed sloth&amp;quot;, 
@@ -375,6 +505,15 @@ library(dplyr)&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Mon, 29 Oct 2018 00:00:00 +0000</pubDate>
       
       <guid>/publication/bd-bpd-pr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Heart rate ranges in premature neonates using high resolution physiologic data</title>
+      <link>/publication/hrranges/</link>
+      <pubDate>Sat, 01 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/hrranges/</guid>
       <description></description>
     </item>
     
@@ -521,24 +660,24 @@ end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace =
 &lt;/thead&gt;
 &lt;tbody&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-22&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-25&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-18&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-21&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-24&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-28&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-03&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-05&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-13&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-15&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-16&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-20&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-07&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-10&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-03-24&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-03-27&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-02&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-06&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-22&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-25&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -556,87 +695,83 @@ end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace =
 &lt;tbody&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-22&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-18&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-23&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-19&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-20&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-01-21&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-03&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-04&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-05&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-16&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-17&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-18&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-19&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-20&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;1999-03-24&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;1999-03-25&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-24&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-25&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-26&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-27&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-28&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-13&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-14&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-15&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-07&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-03-26&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-08&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-09&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-10&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-03-27&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-02&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-22&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-03&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-23&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-04&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-24&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-05&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-06&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-25&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -864,24 +999,6 @@ mkdir cache
 
 &lt;p&gt;With all of the above installed you can now launch the app with &lt;code&gt;shiny::runApp()&lt;/code&gt; from within R at the root of this directory.&lt;/p&gt;
 </description>
-    </item>
-    
-    <item>
-      <title>R Epidemics Consortium</title>
-      <link>/project/recon/</link>
-      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/project/recon/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>SOMRC</title>
-      <link>/project/somrc/</link>
-      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/project/somrc/</guid>
-      <description></description>
     </item>
     
   </channel>

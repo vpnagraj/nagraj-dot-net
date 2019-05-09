@@ -22,6 +22,15 @@
     </item>
     
     <item>
+      <title>Heart rate ranges in premature neonates using high resolution physiologic data</title>
+      <link>/publication/hrranges/</link>
+      <pubDate>Sat, 01 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/hrranges/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>LOLAweb: a containerized web server for interactive genomic locus overlap enrichment analysis</title>
       <link>/publication/lolaweb/</link>
       <pubDate>Wed, 06 Jun 2018 00:00:00 +0000</pubDate>
@@ -118,15 +127,6 @@
       
       <guid>/publication/exit-as-strategy/</guid>
       <description>Parker, A., Nagraj V.P. and Moody, D. (2014). Exit as Strategy: Web Services as the New Websites for Many Libraries In K. Varnum (Ed.), The Top Technologies Every Librarian Needs to Know: A LITA Guide (pp. 67-84). Chicago, IL: ALA TechSource.</description>
-    </item>
-    
-    <item>
-      <title>Heart rate ranges in premature neonates using high resolution physiologic data</title>
-      <link>/publication/hrranges/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/publication/hrranges/</guid>
-      <description></description>
     </item>
     
   </channel>

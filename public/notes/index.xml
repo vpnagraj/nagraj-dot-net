@@ -13,6 +13,18 @@
     
     
     <item>
+      <title>summary_se()</title>
+      <link>/notes/summary-se/</link>
+      <pubDate>Wed, 08 May 2019 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/summary-se/</guid>
+      <description>I’ve found myself on Winston Chang’s cookbook-r website a number of times before. My most recent visit was to refresh my memory on the strategy for plotting means with error bars with ggplot2:
+http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)
+The recipe makes use of summarySE() a function that is described in detail in another post that details strategies for summarizing data.
+summarySE() is a custom function that computes the mean, standard deviation, count, standard error, confidence interval for a variable (“measurevar”) within defined grouping variables (“groupvars”).</description>
+    </item>
+    
+    <item>
       <title>Hosting a Single App with Shiny Server</title>
       <link>/notes/single-app-shiny-server/</link>
       <pubDate>Fri, 08 Mar 2019 11:26:40 -0500</pubDate>
@@ -43,7 +55,7 @@ Here is a collection of highlights/takeaways from the conference …
       <guid>/notes/data-based-labels/</guid>
       <description>Chapter 7 of Edward Tufte’s The Visual Display of Quantitative Information presents advantages of “multifunctioning graphical elements” in data visualiztions. The idea is that features like the shape of points on the plot, grid lines, or even data labels can serve multiple purposes in communicating information.
 For example, take the shape of a stem plot:
-library(ggplot2) library(dplyr) glimpse(starwars) ## Observations: 87 ## Variables: 13 ## $ name &amp;lt;chr&amp;gt; &amp;quot;Luke Skywalker&amp;quot;, &amp;quot;C-3PO&amp;quot;, &amp;quot;R2-D2&amp;quot;, &amp;quot;Darth Vader&amp;quot;, .</description>
+library(ggplot2) library(dplyr) glimpse(starwars) ## Observations: 87 ## Variables: 13 ## $ name &amp;lt;chr&amp;gt; &amp;quot;Luke Skywalker&amp;quot;, &amp;quot;C-3PO&amp;quot;, &amp;quot;R2-D2&amp;quot;, &amp;quot;Darth Vader&amp;quot;, &amp;quot;L… ## $ height &amp;lt;int&amp;gt; 172, 167, 96, 202, 150, 178, 165, 97, 183, 182, 188, … ## $ mass &amp;lt;dbl&amp;gt; 77.</description>
     </item>
     
     <item>
@@ -65,7 +77,7 @@ When comparing dplyr::filter() versus a base method (using bracket indices and w
       
       <guid>/notes/dates-between/</guid>
       <description>A few weeks ago I helped someone who needed to expand a data frame that included events (with a start and stop date for each) to one that had rows for every date in an event (including start and stop) … the code below gives a reproducible example of how to do that with dplyr:
-library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-03-22 1999-03-25  1999-08-24 1999-08-28  1999-08-13 1999-08-15  1999-04-07 1999-04-10  1999-11-02 1999-11-06    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
+library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-01-18 1999-01-21  1999-10-03 1999-10-05  1999-04-16 1999-04-20  1999-03-24 1999-03-27  1999-12-22 1999-12-25    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
     </item>
     
     <item>
