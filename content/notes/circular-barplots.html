@@ -1,0 +1,158 @@
+---
+title: "Circular Barplots"
+date: 2019-06-16T17:14:59+00:00
+categories: ["notes"]
+tags: ["circlize", "R", "ggplot2"]
+summary: "barplots in barplots in barplots"
+---
+
+
+
+<p>While preparing figures for a manuscript recently, the first author proposed a plot to compare several phenotypes from every donor in the study. One suggestion was a series of circular barplots (normalized since each phenotype was on a different scale) side-by-side.</p>
+<p>Using <code>ggplot2</code> that might look something like this:</p>
+<pre class="r"><code>library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+msleep %&gt;%
+  select(name,sleep_total,brainwt,bodywt) %&gt;%
+  filter(complete.cases(.)) %&gt;%
+  gather(key,value, -name) %&gt;%
+  group_by(key) %&gt;%
+  mutate(value = percent_rank(value)) %&gt;%
+  ggplot(aes(name,value)) +
+  geom_col() +
+  coord_polar() +
+  facet_wrap(~ key, ncol = 3) +
+  labs(x = NULL,
+       y = &quot;Percentile&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="/notes/circular-barplots_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>The figure isn’t easy to interpret in this configuration. Even if the canvases of each of the facets were bigger, the labels would need to be rotated for legibility. With that done, it may still be hard to visually connect phenotypes across individuals. In this example, you have to squint at all three facets consecutively, and even do some jumping back and forth. Eventually you may see that some of the largest animals (in terms of both brain and body weight) actually rank quite low in terms of total sleep … and vice versa.</p>
+<p>One alternative is to plot the bars as concentric circles, with the bars for phenotypes lined up at each individual.</p>
+<p>This is where I stepped away from <code>ggplot2</code> and started using the <a href="https://cran.r-project.org/web/packages/circlize/index.html"><code>circlize</code> package</a>. The syntax took some getting used to … but overall I found the package to be quite useful. There was plenty of documentation in <a href="https://jokergoo.github.io/circlize_book/book/index.html">the <code>circlize</code> book</a>. And I was able to build on some of the examples to get where I needed to go:</p>
+<pre class="r"><code>library(circlize)
+library(ComplexHeatmap)
+library(gridBase)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+sleep_size &lt;-
+  msleep %&gt;%
+  select(name,sleep_total,brainwt,bodywt) %&gt;%
+  filter(complete.cases(.)) %&gt;%
+  mutate(sleep_total = percent_rank(sleep_total),
+         brainwt = percent_rank(brainwt),
+         bodywt = percent_rank(bodywt),
+         index = 1) %&gt;%
+  arrange(desc(sleep_total)) %&gt;%
+  mutate(name = factor(name))
+
+sleep_size$name &lt;- factor(sleep_size$name, 
+                          levels = as.character(sleep_size$name))</code></pre>
+<pre class="r"><code># barplot colors
+barcols  &lt;- c(&quot;firebrick&quot;,&quot;steelblue&quot;,&quot;goldenrod&quot;)
+
+# parameters for each of the concentric plots
+circos.par(cell.padding = c(0.02, 0, 0.02, 0),
+           gap.after = c(rep(1, nrow(sleep_size)-1), 20),
+           start.degree = 80,
+           track.height = 0.3)
+
+# initialize
+# at each level of the factor (in this case animal name) plot at index (x=1 for all animals)
+# make sure the limit is set to give room one either side of x for each plot
+circos.initialize(factors = sleep_size$name, 
+                  x = sleep_size$index, 
+                  xlim = c(0,2))</code></pre>
+<pre class="r"><code># create &quot;track&quot; region for and add lines for with y values for scaled sleep total
+circos.trackPlotRegion(factors = sleep_size$name, 
+                       y = sleep_size$sleep_total, 
+                       panel.fun = function(x, y) {
+  
+  name = get.cell.meta.data(&quot;sector.index&quot;)
+  i = get.cell.meta.data(&quot;sector.numeric.index&quot;)
+  xlim = get.cell.meta.data(&quot;xlim&quot;)
+  ylim = get.cell.meta.data(&quot;ylim&quot;)
+  
+  #text direction (dd) and adjusmtents (aa)
+  theta = circlize(mean(xlim), 1.3)[1, 1] %% 360
+  dd &lt;- ifelse(theta &lt; 90 || theta &gt; 270, &quot;clockwise&quot;, &quot;reverse.clockwise&quot;)
+  aa = c(1, 0.5)
+  if(theta &lt; 90 || theta &gt; 270)  aa = c(0, 0.5)
+  
+  #plot country labels
+  circos.text(x=mean(xlim), y=1.2, labels=name, facing = dd, cex=0.6,  adj = aa)
+  
+  #plot main sector
+  
+  circos.axis(labels=FALSE, major.tick=FALSE)
+  circos.yaxis(side = &quot;left&quot;, at = seq(0, 1, by = 0.25),
+               sector.index = get.all.sector.index()[1], labels.cex = 0.4, labels.niceFacing = FALSE)
+  
+})
+
+circos.trackLines(factors = sleep_size$name, 
+                  x = sleep_size$index, 
+                  y = sleep_size$sleep_total, 
+                  pch=20, 
+                  cex=2, 
+                  col = barcols[1],
+                  type=&quot;h&quot;, 
+                  lwd = 6)</code></pre>
+<pre class="r"><code># ... same as above but for body weight
+circos.trackPlotRegion(factors = sleep_size$name, 
+                       y = sleep_size$bodywt, 
+                       panel.fun = function(x, y) {
+                         
+  circos.axis(labels=FALSE, major.tick=FALSE)
+                         
+})
+
+circos.trackLines(factors = sleep_size$name, 
+                  x = sleep_size$index, 
+                  y = sleep_size$bodywt, 
+                  pch=20, 
+                  cex=2, 
+                  col = barcols[2],
+                  type=&quot;h&quot;, 
+                  lwd = 4)</code></pre>
+<pre class="r"><code># ... same as above but for brain weight
+circos.trackPlotRegion(factors = sleep_size$name, 
+                       y = sleep_size$brainwt, 
+                       panel.fun = function(x, y) {
+                         
+  circos.axis(labels=FALSE, major.tick=FALSE)
+                         
+})
+
+circos.trackLines(factors = sleep_size$name, 
+                  x = sleep_size$index, 
+                  y = sleep_size$brainwt, 
+                  pch=20, 
+                  cex=2, 
+                  col = barcols[3],
+                  type=&quot;h&quot;, 
+                  lwd = 2)</code></pre>
+<pre class="r"><code>circos.clear()</code></pre>
+<pre class="r"><code># add legend using complex heatmap
+# http://jokergoo.github.io/blog/html/add_legend_to_circlize.html
+lgd_lines = Legend(at = colnames(sleep_size)[2:4],
+                   type = &quot;lines&quot;,
+                   legend_gp = gpar(col = barcols, lwd = 2),
+                   title_position = &quot;topleft&quot;,
+                   labels_gp = gpar(fontsize = 14, lex = 4),
+                   title = &quot;Phenotype&quot;)
+
+lgd_list_vertical = packLegend(lgd_lines)
+
+
+pushViewport(viewport(x = unit(10, &quot;mm&quot;), y = unit(4, &quot;mm&quot;),
+                      width = grobWidth(lgd_list_vertical),
+                      height = grobHeight(lgd_list_vertical),
+                      just = c(&quot;left&quot;, &quot;bottom&quot;)))
+
+grid.draw(lgd_list_vertical)
+upViewport()</code></pre>
+<p><img src="/img/sleep_bar.png" /></p>

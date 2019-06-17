@@ -11,6 +11,163 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Circular Barplots</title>
+      <link>/notes/circular-barplots/</link>
+      <pubDate>Sun, 16 Jun 2019 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/circular-barplots/</guid>
+      <description>&lt;p&gt;While preparing figures for a manuscript recently, the first author proposed a plot to compare several phenotypes from every donor in the study. One suggestion was a series of circular barplots (normalized since each phenotype was on a different scale) side-by-side.&lt;/p&gt;
+&lt;p&gt;Using &lt;code&gt;ggplot2&lt;/code&gt; that might look something like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+msleep %&amp;gt;%
+  select(name,sleep_total,brainwt,bodywt) %&amp;gt;%
+  filter(complete.cases(.)) %&amp;gt;%
+  gather(key,value, -name) %&amp;gt;%
+  group_by(key) %&amp;gt;%
+  mutate(value = percent_rank(value)) %&amp;gt;%
+  ggplot(aes(name,value)) +
+  geom_col() +
+  coord_polar() +
+  facet_wrap(~ key, ncol = 3) +
+  labs(x = NULL,
+       y = &amp;quot;Percentile&amp;quot;) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/notes/circular-barplots_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The figure isn’t easy to interpret in this configuration. Even if the canvases of each of the facets were bigger, the labels would need to be rotated for legibility. With that done, it may still be hard to visually connect phenotypes across individuals. In this example, you have to squint at all three facets consecutively, and even do some jumping back and forth. Eventually you may see that some of the largest animals (in terms of both brain and body weight) actually rank quite low in terms of total sleep … and vice versa.&lt;/p&gt;
+&lt;p&gt;One alternative is to plot the bars as concentric circles, with the bars for phenotypes lined up at each individual.&lt;/p&gt;
+&lt;p&gt;This is where I stepped away from &lt;code&gt;ggplot2&lt;/code&gt; and started using the &lt;a href=&#34;https://cran.r-project.org/web/packages/circlize/index.html&#34;&gt;&lt;code&gt;circlize&lt;/code&gt; package&lt;/a&gt;. The syntax took some getting used to … but overall I found the package to be quite useful. There was plenty of documentation in &lt;a href=&#34;https://jokergoo.github.io/circlize_book/book/index.html&#34;&gt;the &lt;code&gt;circlize&lt;/code&gt; book&lt;/a&gt;. And I was able to build on some of the examples to get where I needed to go:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(circlize)
+library(ComplexHeatmap)
+library(gridBase)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+sleep_size &amp;lt;-
+  msleep %&amp;gt;%
+  select(name,sleep_total,brainwt,bodywt) %&amp;gt;%
+  filter(complete.cases(.)) %&amp;gt;%
+  mutate(sleep_total = percent_rank(sleep_total),
+         brainwt = percent_rank(brainwt),
+         bodywt = percent_rank(bodywt),
+         index = 1) %&amp;gt;%
+  arrange(desc(sleep_total)) %&amp;gt;%
+  mutate(name = factor(name))
+
+sleep_size$name &amp;lt;- factor(sleep_size$name, 
+                          levels = as.character(sleep_size$name))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# barplot colors
+barcols  &amp;lt;- c(&amp;quot;firebrick&amp;quot;,&amp;quot;steelblue&amp;quot;,&amp;quot;goldenrod&amp;quot;)
+
+# parameters for each of the concentric plots
+circos.par(cell.padding = c(0.02, 0, 0.02, 0),
+           gap.after = c(rep(1, nrow(sleep_size)-1), 20),
+           start.degree = 80,
+           track.height = 0.3)
+
+# initialize
+# at each level of the factor (in this case animal name) plot at index (x=1 for all animals)
+# make sure the limit is set to give room one either side of x for each plot
+circos.initialize(factors = sleep_size$name, 
+                  x = sleep_size$index, 
+                  xlim = c(0,2))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create &amp;quot;track&amp;quot; region for and add lines for with y values for scaled sleep total
+circos.trackPlotRegion(factors = sleep_size$name, 
+                       y = sleep_size$sleep_total, 
+                       panel.fun = function(x, y) {
+  
+  name = get.cell.meta.data(&amp;quot;sector.index&amp;quot;)
+  i = get.cell.meta.data(&amp;quot;sector.numeric.index&amp;quot;)
+  xlim = get.cell.meta.data(&amp;quot;xlim&amp;quot;)
+  ylim = get.cell.meta.data(&amp;quot;ylim&amp;quot;)
+  
+  #text direction (dd) and adjusmtents (aa)
+  theta = circlize(mean(xlim), 1.3)[1, 1] %% 360
+  dd &amp;lt;- ifelse(theta &amp;lt; 90 || theta &amp;gt; 270, &amp;quot;clockwise&amp;quot;, &amp;quot;reverse.clockwise&amp;quot;)
+  aa = c(1, 0.5)
+  if(theta &amp;lt; 90 || theta &amp;gt; 270)  aa = c(0, 0.5)
+  
+  #plot country labels
+  circos.text(x=mean(xlim), y=1.2, labels=name, facing = dd, cex=0.6,  adj = aa)
+  
+  #plot main sector
+  
+  circos.axis(labels=FALSE, major.tick=FALSE)
+  circos.yaxis(side = &amp;quot;left&amp;quot;, at = seq(0, 1, by = 0.25),
+               sector.index = get.all.sector.index()[1], labels.cex = 0.4, labels.niceFacing = FALSE)
+  
+})
+
+circos.trackLines(factors = sleep_size$name, 
+                  x = sleep_size$index, 
+                  y = sleep_size$sleep_total, 
+                  pch=20, 
+                  cex=2, 
+                  col = barcols[1],
+                  type=&amp;quot;h&amp;quot;, 
+                  lwd = 6)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# ... same as above but for body weight
+circos.trackPlotRegion(factors = sleep_size$name, 
+                       y = sleep_size$bodywt, 
+                       panel.fun = function(x, y) {
+                         
+  circos.axis(labels=FALSE, major.tick=FALSE)
+                         
+})
+
+circos.trackLines(factors = sleep_size$name, 
+                  x = sleep_size$index, 
+                  y = sleep_size$bodywt, 
+                  pch=20, 
+                  cex=2, 
+                  col = barcols[2],
+                  type=&amp;quot;h&amp;quot;, 
+                  lwd = 4)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# ... same as above but for brain weight
+circos.trackPlotRegion(factors = sleep_size$name, 
+                       y = sleep_size$brainwt, 
+                       panel.fun = function(x, y) {
+                         
+  circos.axis(labels=FALSE, major.tick=FALSE)
+                         
+})
+
+circos.trackLines(factors = sleep_size$name, 
+                  x = sleep_size$index, 
+                  y = sleep_size$brainwt, 
+                  pch=20, 
+                  cex=2, 
+                  col = barcols[3],
+                  type=&amp;quot;h&amp;quot;, 
+                  lwd = 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;circos.clear()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# add legend using complex heatmap
+# http://jokergoo.github.io/blog/html/add_legend_to_circlize.html
+lgd_lines = Legend(at = colnames(sleep_size)[2:4],
+                   type = &amp;quot;lines&amp;quot;,
+                   legend_gp = gpar(col = barcols, lwd = 2),
+                   title_position = &amp;quot;topleft&amp;quot;,
+                   labels_gp = gpar(fontsize = 14, lex = 4),
+                   title = &amp;quot;Phenotype&amp;quot;)
+
+lgd_list_vertical = packLegend(lgd_lines)
+
+
+pushViewport(viewport(x = unit(10, &amp;quot;mm&amp;quot;), y = unit(4, &amp;quot;mm&amp;quot;),
+                      width = grobWidth(lgd_list_vertical),
+                      height = grobHeight(lgd_list_vertical),
+                      just = c(&amp;quot;left&amp;quot;, &amp;quot;bottom&amp;quot;)))
+
+grid.draw(lgd_list_vertical)
+upViewport()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/img/sleep_bar.png&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>summary_se()</title>
       <link>/notes/summary-se/</link>
       <pubDate>Wed, 08 May 2019 17:14:59 +0000</pubDate>
@@ -660,24 +817,24 @@ end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace =
 &lt;/thead&gt;
 &lt;tbody&gt;
 &lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1999-08-10&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-08-14&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;1999-01-18&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;1999-01-21&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-10-03&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-10-05&lt;/td&gt;
-&lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-16&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-20&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-14&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-17&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-24&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-27&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-05-27&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-05-31&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-22&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-25&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-03-30&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-02&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -695,83 +852,91 @@ end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace =
 &lt;tbody&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-08-10&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-08-11&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-08-12&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-08-13&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-08-14&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;1999-01-18&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;1999-01-19&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;1999-01-20&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;1999-01-21&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-10-03&lt;/td&gt;
-&lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-10-04&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-14&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-10-05&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-15&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-16&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-16&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-17&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-18&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-19&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-20&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-24&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-10-17&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-25&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-05-27&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-26&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-05-28&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-27&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-05-29&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-05-30&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-05-31&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-22&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-03-30&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-23&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-03-31&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-24&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-01&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-25&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-04-02&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -934,70 +1099,6 @@ leaflet(states) %&amp;gt;%
             labFormat = labelFormat(digits = 0)) %&amp;gt;%
   setView(lat = 37, lng = -90, zoom = 3)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>LOLAweb</title>
-      <link>/project/lolaweb/</link>
-      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/project/lolaweb/</guid>
-      <description>&lt;p&gt;&lt;code&gt;LOLAweb&lt;/code&gt; is an interactive application that implements functions from the LOLA package in a web interface via the &lt;a href=&#34;https://shiny.rstudio.com/&#34; target=&#34;_blank&#34;&gt;Shiny&lt;/a&gt; framework.&lt;/p&gt;
-
-&lt;p&gt;The app is hosted and available for use at:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://lolaweb.databio.org&#34; target=&#34;_blank&#34;&gt;http://lolaweb.databio.org&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;To run the application locally, you&amp;rsquo;ll need to first clone this repository:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;git clone https://github.com/databio/LOLAweb.git
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The app requires R to be installed, as well as several packages. From within R run the following to install the dependencies:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;install.packages(c(&amp;quot;ggplot2&amp;quot;, &amp;quot;shiny&amp;quot;, &amp;quot;DT&amp;quot;, &amp;quot;shinyWidgets&amp;quot;, &amp;quot;shinyjs&amp;quot;, &amp;quot;sodium&amp;quot;, &amp;quot;devtools&amp;quot;, &amp;quot;shinyBS&amp;quot;))
-devtools::install_github(&amp;quot;databio/simpleCache&amp;quot;)
-devtools::install_github(&amp;quot;databio/GenomicDistributions&amp;quot;)
-
-source(&amp;quot;https://bioconductor.org/biocLite.R&amp;quot;)
-biocLite(c(&amp;quot;LOLA&amp;quot;, &amp;quot;GenomicRanges&amp;quot;))
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You&amp;rsquo;ll also need underlying data that is not available in this repository in order to establish the universes, example user sets and reference genome directories. Run the following from within the root of this folder to download the data and create the &lt;code&gt;universes/&lt;/code&gt;, &lt;code&gt;userSets/&lt;/code&gt;, &lt;code&gt;reference/&lt;/code&gt; and &lt;code&gt;cache/&lt;/code&gt; directories respectively:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# create universes dir
-mkdir universes
-mkdir userSets
-
-# example universe and user set
-curl http://cloud.databio.org.s3.amazonaws.com/vignettes/lola_vignette_data_150505.tgz | tar xvz
-
-mv lola_vignette_data/activeDHS_universe.bed universes/.
-mv lola_vignette_data/setB_100.bed userSets/.
-
-rm -rf lola_vignette_data
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code&gt;# create reference dir
-mkdir reference
-
-# core
-curl http://cloud.databio.org.s3.amazonaws.com/regiondb/LOLACoreCaches_170206.tgz | tar xvz
-mv scratch/ns5bc/resources/regions/LOLACore reference/Core
-rm -rf scratch
-
-# extended
-curl http://cloud.databio.org.s3.amazonaws.com/regiondb/LOLAExtCaches_170206.tgz | tar xvz
-mv scratch/ns5bc/resources/regions/LOLAExt reference/Extended
-rm -rf scratch
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code&gt;# create cache dir
-mkdir cache
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;With all of the above installed you can now launch the app with &lt;code&gt;shiny::runApp()&lt;/code&gt; from within R at the root of this directory.&lt;/p&gt;
 </description>
     </item>
     

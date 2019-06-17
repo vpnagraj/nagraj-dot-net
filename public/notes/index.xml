@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>Circular Barplots</title>
+      <link>/notes/circular-barplots/</link>
+      <pubDate>Sun, 16 Jun 2019 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/circular-barplots/</guid>
+      <description>While preparing figures for a manuscript recently, the first author proposed a plot to compare several phenotypes from every donor in the study. One suggestion was a series of circular barplots (normalized since each phenotype was on a different scale) side-by-side.
+Using ggplot2 that might look something like this:
+library(ggplot2) library(tidyr) library(dplyr) msleep %&amp;gt;% select(name,sleep_total,brainwt,bodywt) %&amp;gt;% filter(complete.cases(.)) %&amp;gt;% gather(key,value, -name) %&amp;gt;% group_by(key) %&amp;gt;% mutate(value = percent_rank(value)) %&amp;gt;% ggplot(aes(name,value)) + geom_col() + coord_polar() + facet_wrap(~ key, ncol = 3) + labs(x = NULL, y = &amp;quot;Percentile&amp;quot;) + theme_minimal() The figure isn’t easy to interpret in this configuration.</description>
+    </item>
+    
+    <item>
       <title>summary_se()</title>
       <link>/notes/summary-se/</link>
       <pubDate>Wed, 08 May 2019 17:14:59 +0000</pubDate>
@@ -77,7 +88,7 @@ When comparing dplyr::filter() versus a base method (using bracket indices and w
       
       <guid>/notes/dates-between/</guid>
       <description>A few weeks ago I helped someone who needed to expand a data frame that included events (with a start and stop date for each) to one that had rows for every date in an event (including start and stop) … the code below gives a reproducible example of how to do that with dplyr:
-library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-01-18 1999-01-21  1999-10-03 1999-10-05  1999-04-16 1999-04-20  1999-03-24 1999-03-27  1999-12-22 1999-12-25    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
+library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-08-10 1999-08-14  1999-01-18 1999-01-21  1999-10-14 1999-10-17  1999-05-27 1999-05-31  1999-03-30 1999-04-02    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
     </item>
     
     <item>
