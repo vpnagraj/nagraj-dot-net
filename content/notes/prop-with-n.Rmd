@@ -1,0 +1,40 @@
+---
+title: "Calculating Proportion with N"
+date: 2019-06-26T17:14:59+00:00
+categories: ["notes"]
+tags: ["R", "dplyr"]
+summary: "count and overall percentage in groups"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, eval = TRUE)
+```
+
+One of the more typical workflows I need to perform is calculating counts within groups. The **dplyr** `group_by() %>% summarise()` pipeline (or just `count()`) can easily get aggregated tallies. But occassionally it's helpful to get count within group along with the proportion overall. 
+
+Here's one way to do that:
+
+```{r}
+library(dplyr)
+
+# use the starwars dataset
+# one row per character
+# can be grouped by character species
+starwars
+```
+
+```{r}
+starwars %>%
+  # get the count in category with count()
+  count(species, name = "species_n", sort = TRUE) %>%
+  # add a column that gives you total of all ...
+  # calculate proportion ... 
+  # format n (%)
+  # keep in mind you won't be able to sort after formatting as character
+  mutate(n = sum(species_n),
+         prop = round(species_n/n * 100, digits = 0),
+         prop_with_n = paste0(species_n, " (", prop, "%)")) %>%
+  # return only columns of interest
+  select(species, prop_with_n)
+```
+

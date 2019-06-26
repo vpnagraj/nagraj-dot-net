@@ -1,0 +1,59 @@
+---
+title: "Calculating Proportion with N"
+date: 2019-06-26T17:14:59+00:00
+categories: ["notes"]
+tags: ["R", "dplyr"]
+summary: "count and overall percentage in groups"
+---
+
+
+
+<p>One of the more typical workflows I need to perform is calculating counts within groups. The <strong>dplyr</strong> <code>group_by() %&gt;% summarise()</code> pipeline (or just <code>count()</code>) can easily get aggregated tallies. But occassionally it’s helpful to get count within group along with the proportion overall.</p>
+<p>Here’s one way to do that:</p>
+<pre class="r"><code>library(dplyr)
+
+# use the starwars dataset
+# one row per character
+# can be grouped by character species
+starwars</code></pre>
+<pre><code>## # A tibble: 87 x 13
+##    name  height  mass hair_color skin_color eye_color birth_year gender
+##    &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; 
+##  1 Luke…    172    77 blond      fair       blue            19   male  
+##  2 C-3PO    167    75 &lt;NA&gt;       gold       yellow         112   &lt;NA&gt;  
+##  3 R2-D2     96    32 &lt;NA&gt;       white, bl… red             33   &lt;NA&gt;  
+##  4 Dart…    202   136 none       white      yellow          41.9 male  
+##  5 Leia…    150    49 brown      light      brown           19   female
+##  6 Owen…    178   120 brown, gr… light      blue            52   male  
+##  7 Beru…    165    75 brown      light      blue            47   female
+##  8 R5-D4     97    32 &lt;NA&gt;       white, red red             NA   &lt;NA&gt;  
+##  9 Bigg…    183    84 black      light      brown           24   male  
+## 10 Obi-…    182    77 auburn, w… fair       blue-gray       57   male  
+## # … with 77 more rows, and 5 more variables: homeworld &lt;chr&gt;,
+## #   species &lt;chr&gt;, films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+<pre class="r"><code>starwars %&gt;%
+  # get the count in category with count()
+  count(species, name = &quot;species_n&quot;, sort = TRUE) %&gt;%
+  # add a column that gives you total of all ...
+  # calculate proportion ... 
+  # format n (%)
+  # keep in mind you won&#39;t be able to sort after formatting as character
+  mutate(n = sum(species_n),
+         prop = round(species_n/n * 100, digits = 0),
+         prop_with_n = paste0(species_n, &quot; (&quot;, prop, &quot;%)&quot;)) %&gt;%
+  # return only columns of interest
+  select(species, prop_with_n)</code></pre>
+<pre><code>## # A tibble: 38 x 2
+##    species  prop_with_n
+##    &lt;chr&gt;    &lt;chr&gt;      
+##  1 Human    35 (40%)   
+##  2 &lt;NA&gt;     5 (6%)     
+##  3 Droid    5 (6%)     
+##  4 Gungan   3 (3%)     
+##  5 Kaminoan 2 (2%)     
+##  6 Mirialan 2 (2%)     
+##  7 Twi&#39;lek  2 (2%)     
+##  8 Wookiee  2 (2%)     
+##  9 Zabrak   2 (2%)     
+## 10 Aleena   1 (1%)     
+## # … with 28 more rows</code></pre>

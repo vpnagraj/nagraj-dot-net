@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>Calculating Proportion with N</title>
+      <link>/notes/prop-with-n/</link>
+      <pubDate>Wed, 26 Jun 2019 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/prop-with-n/</guid>
+      <description>One of the more typical workflows I need to perform is calculating counts within groups. The dplyr group_by() %&amp;gt;% summarise() pipeline (or just count()) can easily get aggregated tallies. But occassionally it’s helpful to get count within group along with the proportion overall.
+Here’s one way to do that:
+library(dplyr) # use the starwars dataset # one row per character # can be grouped by character species starwars ## # A tibble: 87 x 13 ## name height mass hair_color skin_color eye_color birth_year gender ## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; ## 1 Luke… 172 77 blond fair blue 19 male ## 2 C-3PO 167 75 &amp;lt;NA&amp;gt; gold yellow 112 &amp;lt;NA&amp;gt; ## 3 R2-D2 96 32 &amp;lt;NA&amp;gt; white, bl… red 33 &amp;lt;NA&amp;gt; ## 4 Dart… 202 136 none white yellow 41.</description>
+    </item>
+    
+    <item>
       <title>Circular Barplots</title>
       <link>/notes/circular-barplots/</link>
       <pubDate>Sun, 16 Jun 2019 17:14:59 +0000</pubDate>
@@ -88,7 +99,7 @@ When comparing dplyr::filter() versus a base method (using bracket indices and w
       
       <guid>/notes/dates-between/</guid>
       <description>A few weeks ago I helped someone who needed to expand a data frame that included events (with a start and stop date for each) to one that had rows for every date in an event (including start and stop) … the code below gives a reproducible example of how to do that with dplyr:
-library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-08-10 1999-08-14  1999-01-18 1999-01-21  1999-10-14 1999-10-17  1999-05-27 1999-05-31  1999-03-30 1999-04-02    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
+library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-02-13 1999-02-15  1999-04-12 1999-04-14  1999-07-21 1999-07-25  1999-05-18 1999-05-21  1999-03-31 1999-04-03    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
     </item>
     
     <item>
