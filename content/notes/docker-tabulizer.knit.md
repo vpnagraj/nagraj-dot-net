@@ -6,15 +6,14 @@ tags: ["R", "docker"]
 summary: "a containerized workflow with R"
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, eval = TRUE)
-```
+
 
 #### TL;DR
 
 The `tabulizer` R package allows you extract tables from PDFs. It requires Java dependencies. To use the package via a Docker container:
 
-```{bash eval = FALSE}
+
+```bash
 docker pull vpnagraj/tabulizer
 mkdir output
 # table of interest is on page 5 of some.pdf
@@ -60,7 +59,8 @@ ENTRYPOINT ["Rscript","--vanilla", "run.R"]
 
 The `run.R` script is copied into the Docker image when built. When the container is run, the script is executed. The code parses the two command line arguments (first is the location of the .pdf file, second is the page that contains the table). The code writes the parsed table to a `.csv` file.
 
-```{r, eval =  FALSE}
+
+```r
 library(tabulizer)
 
 arguments <- commandArgs(trailingOnly = TRUE)
@@ -101,26 +101,30 @@ if(is.null(res_out)) {
 
 To build the image first clone the GitHub repository that contains the image code:
 
-```{bash, eval = FALSE}
+
+```bash
 git clone https://github.com/vpnagraj/tabulizer-docker.git
 ```
 
 Make sure `run.R` has appropriate permissons to be executed:
 
-```{bash, eval = FALSE}
+
+```bash
 cd tabulizer-docker
 chmod+x run.R
 ```
 
 Build the image:
 
-```{bash, eval = FALSE}
+
+```bash
 docker build -t --no-cache vpnagraj/tabulizer .
 ```
 
 Alternatively you can pull the [existing image from DockerHub](https://cloud.docker.com/u/vpnagraj/repository/docker/vpnagraj/tabulizer):
 
-```{bash, eval = FALSE}
+
+```bash
 docker pull vpnagraj/tabulizer
 ```
 
@@ -128,20 +132,23 @@ docker pull vpnagraj/tabulizer
 
 To run the image you can first make sure you've created a directory for the output next to the `.pdf` file you'll parse:
 
-```{bash, eval = FALSE}
+
+```bash
 mkdir output
 ```
 
 
 Next (optionally) set a variable to the input file to parse (a PDF called `some.pdf` in this example):
 
-```{bash, eval = FALSE}
+
+```bash
 infile=some.pdf
 ```
 
 Now run the container ... in this case we want the table that's on page 5 of `some.pdf`
 
-```{bash, eval = FALSE}
+
+```bash
 docker run -ti -v $(pwd)/$infile:/$infile -v $(pwd)/output:/output vpnagraj/tabulizer $infile 5
 ```
 
@@ -159,18 +166,21 @@ Page 15 features a table of the rate of preterm birth by state.
 
 Assuming I have the PDF above downloaded and the `tabulizer` Docker container available, I could run the following (from the directory that holds the `.pdf`):
 
-```{bash, eval = FALSE}
+
+```bash
 mkdir output
 infile=vsrr-007-508.pdf
 ```
 
-```{bash, eval = FALSE}
+
+```bash
 docker run -ti \
 -v $(pwd)/$infile:/$infile \
 -v $(pwd)/output:/output vpnagraj/tabulizer $infile 15
 ```
 
-```{r, eval = FALSE}
+
+```r
 library(tidyverse)
 
 preterm <-
@@ -183,15 +193,25 @@ preterm %>%
   head(10)
 ```
 
-```{r, echo = FALSE, eval = TRUE}
-library(tidyverse)
-load("vsrr.rda")
 
-preterm %>%
-  head(10)
+```
+## # A tibble: 10 x 3
+##    State                `2018` `2017`
+##    <chr>                 <dbl>  <dbl>
+##  1 Alabama               12.5   12.0 
+##  2 Alaska                 9.26   8.98
+##  3 Arizona                9.51   9.27
+##  4 Arkansas              11.6   11.4 
+##  5 California             8.79   8.68
+##  6 Colorado               9.22   8.76
+##  7 Connecticut            9.36   9.48
+##  8 Delaware               9.55  10.2 
+##  9 District of Columbia  10.1   10.6 
+## 10 Florida               10.2   10.2
 ```
 
-```{r}
+
+```r
 preterm %>%
   # no dc ...
   filter(State != "District of Columbia") %>%
@@ -208,6 +228,8 @@ preterm %>%
   theme_bw() +
   theme(text = element_text(size = 7))
 ```
+
+<img src="docker-tabulizer_files/figure-html/unnamed-chunk-14-1.png" width="672" />
 
 The data above was acquired from the CDC National Center for Health Statistics. The report states that all material is in the public domain and may be reproduced or copied without comission.
 
