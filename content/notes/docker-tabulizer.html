@@ -1,0 +1,163 @@
+---
+title: "Docker Image for tabulizer"
+date: 2019-06-27T17:14:59+00:00
+categories: ["notes"]
+tags: ["R", "docker"]
+summary: "a containerized workflow with R"
+---
+
+
+
+<div id="tldr" class="section level4">
+<h4>TL;DR</h4>
+<p>The <code>tabulizer</code> R package allows you extract tables from PDFs. It requires Java dependencies. To use the package via a Docker container:</p>
+<pre class="bash"><code>docker pull vpnagraj/tabulizer
+mkdir output
+# table of interest is on page 5 of some.pdf
+infile=some.pdf
+docker run -ti \
+-v $(pwd)/$infile:/$infile \
+-v $(pwd)/output:/output vpnagraj/tabulizer $infile 5</code></pre>
+<hr />
+<p>Avoidance of dependency hell can motivate folks to move towards containerization. I recently experienced (admittedly minor) frustration with installing dependencies for an R workflow. I had read about the <a href="https://github.com/ropensci/tabulizer"><code>tabulizer</code> R package</a>, which serves as a set of bindings for the <a href="https://github.com/tabulapdf/tabula-java/"><code>tabula</code> PDF table extractor Java library</a>. The documentation for <code>tabulizer</code> explains that Mac OS users need a <a href="https://support.apple.com/kb/DL1572?locale=en_US">particular version of Java</a>. I wanted to try the package but preferred not to install the recommended (but deprecated) version of Java. So instead, I put together a workflow using Docker to:</p>
+<ol style="list-style-type: decimal">
+<li>Containerize all of the necessary software</li>
+<li>Script the container image to run R code that calls functions from the <code>tabulizer</code> package</li>
+<li>Specify the Docker “Entrypoint” such that I could pass in a <code>.pdf</code> file and page number with a table to be extracted</li>
+</ol>
+<p>The code below includes the <code>Dockerfile</code> and instructions to build the container. Alternatively the image is on <a href="https://hub.docker.com/r/vpnagraj/tabulizer">DockerHub</a>.</p>
+</div>
+<div id="dockerfile" class="section level4">
+<h4><code>Dockerfile</code></h4>
+<p>The Docker image first pulls the latest version of the <code>r-base</code> image, then installs Java dependencies and R package. The commands also make an <code>output/</code> directory (to be mapped to a local equivalent on the host during <code>docker run</code>) and copies the <code>run.R</code> script from the local machine into the container. Finally, the uses <a href="https://goinbigdata.com/docker-run-vs-cmd-vs-entrypoint/"><code>ENTRYPOINT</code> to run a command when the container is executed</a>.</p>
+<pre><code>FROM r-base:latest
+
+RUN apt-get -y update &amp;&amp; apt-get install -y \
+   default-jdk \
+   r-cran-rjava
+
+RUN Rscript -e &quot;install.packages(c(&#39;tabulizer&#39;), repos = &#39;http://cran.rstudio.com&#39;)&quot;
+
+# create output directory
+RUN mkdir output
+
+# move run script in
+COPY ./run.R /
+
+ENTRYPOINT [&quot;Rscript&quot;,&quot;--vanilla&quot;, &quot;run.R&quot;]                                          </code></pre>
+</div>
+<div id="run.r" class="section level4">
+<h4><code>run.R</code></h4>
+<p>The <code>run.R</code> script is copied into the Docker image when built. When the container is run, the script is executed. The code parses the two command line arguments (first is the location of the .pdf file, second is the page that contains the table). The code writes the parsed table to a <code>.csv</code> file.</p>
+<pre class="r"><code>library(tabulizer)
+
+arguments &lt;- commandArgs(trailingOnly = TRUE)
+
+f &lt;- arguments[1]
+p &lt;- arguments[2]
+
+tab &lt;- extract_tables(f,p)
+
+if(is.list(tab) &amp;&amp; !is.data.frame(tab)) {
+
+  tab &lt;- tab[[1]]
+
+}
+
+out_path &lt;- paste0(&quot;output/&quot;,tools::file_path_sans_ext(f), &quot;_&quot;, p, &quot;.csv&quot;)
+
+res_out &lt;- try(write.csv(tab, file = out_path, row.names = FALSE))
+
+if(is.null(res_out)) {
+
+  message(
+    sprintf(&quot;%s parsed and written to %s (%d)&quot;, 
+            f, 
+            out_path,
+            nrow(tab)
+            )
+    )
+
+} else {
+
+  message(res_out)
+
+}</code></pre>
+</div>
+<div id="building-the-image" class="section level4">
+<h4>Building the image</h4>
+<p>To build the image first clone the GitHub repository that contains the image code:</p>
+<pre class="bash"><code>git clone https://github.com/vpnagraj/tabulizer-docker.git</code></pre>
+<p>Make sure <code>run.R</code> has appropriate permissons to be executed:</p>
+<pre class="bash"><code>cd tabulizer-docker
+chmod+x run.R</code></pre>
+<p>Build the image:</p>
+<pre class="bash"><code>docker build -t --no-cache vpnagraj/tabulizer .</code></pre>
+<p>Alternatively you can pull the <a href="https://cloud.docker.com/u/vpnagraj/repository/docker/vpnagraj/tabulizer-docker">existing image from DockerHub</a>:</p>
+<pre class="bash"><code>docker pull vpnagraj/tabulizer</code></pre>
+</div>
+<div id="running" class="section level4">
+<h4>Running</h4>
+<p>To run the image you can first make sure you’ve created a directory for the output next to the <code>.pdf</code> file you’ll parse:</p>
+<pre class="bash"><code>mkdir output</code></pre>
+<p>Next (optionally) set a variable to the input file to parse (a PDF called <code>some.pdf</code> in this example):</p>
+<pre class="bash"><code>infile=some.pdf</code></pre>
+<p>Now run the container … in this case we want the table that’s on page 5 of <code>some.pdf</code></p>
+<pre class="bash"><code>docker run -ti -v $(pwd)/$infile:/$infile -v $(pwd)/output:/output vpnagraj/tabulizer $infile 5</code></pre>
+<p>If successful, the output will be in <code>.csv</code> format at <code>output/some_5.csv</code></p>
+</div>
+<div id="example" class="section level4">
+<h4>Example</h4>
+<p>Here is a scenario …</p>
+<p>The May 2019 CDC Vital Statistics Rapid Release includes data regarding births in the United States from 2017 and 2018:</p>
+<p><a href="https://www.cdc.gov/nchs/data/vsrr/vsrr-007-508.pdf" class="uri">https://www.cdc.gov/nchs/data/vsrr/vsrr-007-508.pdf</a></p>
+<p>Page 15 features a table of the rate of preterm birth by state.</p>
+<p>Assuming I have the PDF above downloaded and the <code>tabulizer</code> Docker container available, I could run the following (from the directory that holds the <code>.pdf</code>):</p>
+<pre class="bash"><code>mkdir output
+infile=vsrr-007-508.pdf</code></pre>
+<pre class="bash"><code>docker run -ti \
+-v $(pwd)/$infile:/$infile \
+-v $(pwd)/output:/output vpnagraj/tabulizer $infile 15</code></pre>
+<pre class="r"><code>library(tidyverse)
+preterm &lt;-
+  # skip mostly empty rows and ignore overall US values
+  read_csv(&quot;output/vsrr-007-508_15.csv&quot;, 
+           skip = 4) %&gt;%
+  select(State = 1, `2018` =  7, `2017` = 9)
+
+preterm %&gt;%
+  head(10)</code></pre>
+<pre><code>## # A tibble: 10 x 3
+##    State                `2018` `2017`
+##    &lt;chr&gt;                 &lt;dbl&gt;  &lt;dbl&gt;
+##  1 Alabama               12.5   12.0 
+##  2 Alaska                 9.26   8.98
+##  3 Arizona                9.51   9.27
+##  4 Arkansas              11.6   11.4 
+##  5 California             8.79   8.68
+##  6 Colorado               9.22   8.76
+##  7 Connecticut            9.36   9.48
+##  8 Delaware               9.55  10.2 
+##  9 District of Columbia  10.1   10.6 
+## 10 Florida               10.2   10.2</code></pre>
+<pre class="r"><code>preterm %&gt;%
+  # no dc ...
+  filter(State != &quot;District of Columbia&quot;) %&gt;%
+  gather(year,value,`2018`:`2017`) %&gt;%
+  mutate(value = value/100) %&gt;%
+  ggplot(aes(year, value, group = State)) +
+  geom_point()  +
+  geom_line() +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(x = NULL, 
+       y = &quot;% infants born preterm&quot;, 
+       title  = &quot;Rate of Preterm Birth by State&quot;) +
+  facet_wrap(~ State, ncol = 10) +
+  theme_bw() +
+  theme(text = element_text(size = 7))</code></pre>
+<p><img src="/notes/docker-tabulizer_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>The data above was acquired from the CDC National Center for Health Statistics. The report states that all material is in the public domain and may be reproduced or copied without comission.</p>
+<blockquote>
+<p>Hamilton BE, Martin JA, Osterman MJK, Rossen LM. Births: Provisional data for 2018. Vital Statistics Rapid Release; no 7. Hyattsville, MD: National Center for Health Statistics. May 2019.</p>
+</blockquote>
+</div>

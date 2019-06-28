@@ -11,6 +11,168 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Docker Image for tabulizer</title>
+      <link>/notes/docker-tabulizer/</link>
+      <pubDate>Thu, 27 Jun 2019 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/docker-tabulizer/</guid>
+      <description>&lt;div id=&#34;tldr&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;TL;DR&lt;/h4&gt;
+&lt;p&gt;The &lt;code&gt;tabulizer&lt;/code&gt; R package allows you extract tables from PDFs. It requires Java dependencies. To use the package via a Docker container:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;docker pull vpnagraj/tabulizer
+mkdir output
+# table of interest is on page 5 of some.pdf
+infile=some.pdf
+docker run -ti \
+-v $(pwd)/$infile:/$infile \
+-v $(pwd)/output:/output vpnagraj/tabulizer $infile 5&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;p&gt;Avoidance of dependency hell can motivate folks to move towards containerization. I recently experienced (admittedly minor) frustration with installing dependencies for an R workflow. I had read about the &lt;a href=&#34;https://github.com/ropensci/tabulizer&#34;&gt;&lt;code&gt;tabulizer&lt;/code&gt; R package&lt;/a&gt;, which serves as a set of bindings for the &lt;a href=&#34;https://github.com/tabulapdf/tabula-java/&#34;&gt;&lt;code&gt;tabula&lt;/code&gt; PDF table extractor Java library&lt;/a&gt;. The documentation for &lt;code&gt;tabulizer&lt;/code&gt; explains that Mac OS users need a &lt;a href=&#34;https://support.apple.com/kb/DL1572?locale=en_US&#34;&gt;particular version of Java&lt;/a&gt;. I wanted to try the package but preferred not to install the recommended (but deprecated) version of Java. So instead, I put together a workflow using Docker to:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Containerize all of the necessary software&lt;/li&gt;
+&lt;li&gt;Script the container image to run R code that calls functions from the &lt;code&gt;tabulizer&lt;/code&gt; package&lt;/li&gt;
+&lt;li&gt;Specify the Docker “Entrypoint” such that I could pass in a &lt;code&gt;.pdf&lt;/code&gt; file and page number with a table to be extracted&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The code below includes the &lt;code&gt;Dockerfile&lt;/code&gt; and instructions to build the container. Alternatively the image is on &lt;a href=&#34;https://hub.docker.com/r/vpnagraj/tabulizer&#34;&gt;DockerHub&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;dockerfile&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;&lt;code&gt;Dockerfile&lt;/code&gt;&lt;/h4&gt;
+&lt;p&gt;The Docker image first pulls the latest version of the &lt;code&gt;r-base&lt;/code&gt; image, then installs Java dependencies and R package. The commands also make an &lt;code&gt;output/&lt;/code&gt; directory (to be mapped to a local equivalent on the host during &lt;code&gt;docker run&lt;/code&gt;) and copies the &lt;code&gt;run.R&lt;/code&gt; script from the local machine into the container. Finally, the uses &lt;a href=&#34;https://goinbigdata.com/docker-run-vs-cmd-vs-entrypoint/&#34;&gt;&lt;code&gt;ENTRYPOINT&lt;/code&gt; to run a command when the container is executed&lt;/a&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;FROM r-base:latest
+
+RUN apt-get -y update &amp;amp;&amp;amp; apt-get install -y \
+   default-jdk \
+   r-cran-rjava
+
+RUN Rscript -e &amp;quot;install.packages(c(&amp;#39;tabulizer&amp;#39;), repos = &amp;#39;http://cran.rstudio.com&amp;#39;)&amp;quot;
+
+# create output directory
+RUN mkdir output
+
+# move run script in
+COPY ./run.R /
+
+ENTRYPOINT [&amp;quot;Rscript&amp;quot;,&amp;quot;--vanilla&amp;quot;, &amp;quot;run.R&amp;quot;]                                          &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;run.r&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;&lt;code&gt;run.R&lt;/code&gt;&lt;/h4&gt;
+&lt;p&gt;The &lt;code&gt;run.R&lt;/code&gt; script is copied into the Docker image when built. When the container is run, the script is executed. The code parses the two command line arguments (first is the location of the .pdf file, second is the page that contains the table). The code writes the parsed table to a &lt;code&gt;.csv&lt;/code&gt; file.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tabulizer)
+
+arguments &amp;lt;- commandArgs(trailingOnly = TRUE)
+
+f &amp;lt;- arguments[1]
+p &amp;lt;- arguments[2]
+
+tab &amp;lt;- extract_tables(f,p)
+
+if(is.list(tab) &amp;amp;&amp;amp; !is.data.frame(tab)) {
+
+  tab &amp;lt;- tab[[1]]
+
+}
+
+out_path &amp;lt;- paste0(&amp;quot;output/&amp;quot;,tools::file_path_sans_ext(f), &amp;quot;_&amp;quot;, p, &amp;quot;.csv&amp;quot;)
+
+res_out &amp;lt;- try(write.csv(tab, file = out_path, row.names = FALSE))
+
+if(is.null(res_out)) {
+
+  message(
+    sprintf(&amp;quot;%s parsed and written to %s (%d)&amp;quot;, 
+            f, 
+            out_path,
+            nrow(tab)
+            )
+    )
+
+} else {
+
+  message(res_out)
+
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;building-the-image&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Building the image&lt;/h4&gt;
+&lt;p&gt;To build the image first clone the GitHub repository that contains the image code:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;git clone https://github.com/vpnagraj/tabulizer-docker.git&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Make sure &lt;code&gt;run.R&lt;/code&gt; has appropriate permissons to be executed:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;cd tabulizer-docker
+chmod+x run.R&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Build the image:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;docker build -t --no-cache vpnagraj/tabulizer .&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Alternatively you can pull the &lt;a href=&#34;https://cloud.docker.com/u/vpnagraj/repository/docker/vpnagraj/tabulizer-docker&#34;&gt;existing image from DockerHub&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;docker pull vpnagraj/tabulizer&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;running&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Running&lt;/h4&gt;
+&lt;p&gt;To run the image you can first make sure you’ve created a directory for the output next to the &lt;code&gt;.pdf&lt;/code&gt; file you’ll parse:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;mkdir output&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next (optionally) set a variable to the input file to parse (a PDF called &lt;code&gt;some.pdf&lt;/code&gt; in this example):&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;infile=some.pdf&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now run the container … in this case we want the table that’s on page 5 of &lt;code&gt;some.pdf&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;docker run -ti -v $(pwd)/$infile:/$infile -v $(pwd)/output:/output vpnagraj/tabulizer $infile 5&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If successful, the output will be in &lt;code&gt;.csv&lt;/code&gt; format at &lt;code&gt;output/some_5.csv&lt;/code&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;example&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;p&gt;Here is a scenario …&lt;/p&gt;
+&lt;p&gt;The May 2019 CDC Vital Statistics Rapid Release includes data regarding births in the United States from 2017 and 2018:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.cdc.gov/nchs/data/vsrr/vsrr-007-508.pdf&#34; class=&#34;uri&#34;&gt;https://www.cdc.gov/nchs/data/vsrr/vsrr-007-508.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Page 15 features a table of the rate of preterm birth by state.&lt;/p&gt;
+&lt;p&gt;Assuming I have the PDF above downloaded and the &lt;code&gt;tabulizer&lt;/code&gt; Docker container available, I could run the following (from the directory that holds the &lt;code&gt;.pdf&lt;/code&gt;):&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;mkdir output
+infile=vsrr-007-508.pdf&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;docker run -ti \
+-v $(pwd)/$infile:/$infile \
+-v $(pwd)/output:/output vpnagraj/tabulizer $infile 15&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+preterm &amp;lt;-
+  # skip mostly empty rows and ignore overall US values
+  read_csv(&amp;quot;output/vsrr-007-508_15.csv&amp;quot;, 
+           skip = 4) %&amp;gt;%
+  select(State = 1, `2018` =  7, `2017` = 9)
+
+preterm %&amp;gt;%
+  head(10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 10 x 3
+##    State                `2018` `2017`
+##    &amp;lt;chr&amp;gt;                 &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;
+##  1 Alabama               12.5   12.0 
+##  2 Alaska                 9.26   8.98
+##  3 Arizona                9.51   9.27
+##  4 Arkansas              11.6   11.4 
+##  5 California             8.79   8.68
+##  6 Colorado               9.22   8.76
+##  7 Connecticut            9.36   9.48
+##  8 Delaware               9.55  10.2 
+##  9 District of Columbia  10.1   10.6 
+## 10 Florida               10.2   10.2&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;preterm %&amp;gt;%
+  # no dc ...
+  filter(State != &amp;quot;District of Columbia&amp;quot;) %&amp;gt;%
+  gather(year,value,`2018`:`2017`) %&amp;gt;%
+  mutate(value = value/100) %&amp;gt;%
+  ggplot(aes(year, value, group = State)) +
+  geom_point()  +
+  geom_line() +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(x = NULL, 
+       y = &amp;quot;% infants born preterm&amp;quot;, 
+       title  = &amp;quot;Rate of Preterm Birth by State&amp;quot;) +
+  facet_wrap(~ State, ncol = 10) +
+  theme_bw() +
+  theme(text = element_text(size = 7))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/notes/docker-tabulizer_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The data above was acquired from the CDC National Center for Health Statistics. The report states that all material is in the public domain and may be reproduced or copied without comission.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Hamilton BE, Martin JA, Osterman MJK, Rossen LM. Births: Provisional data for 2018. Vital Statistics Rapid Release; no 7. Hyattsville, MD: National Center for Health Statistics. May 2019.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Calculating Proportion with N</title>
       <link>/notes/prop-with-n/</link>
       <pubDate>Wed, 26 Jun 2019 17:14:59 +0000</pubDate>
@@ -875,24 +1037,24 @@ end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace =
 &lt;/thead&gt;
 &lt;tbody&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-13&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-15&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-09&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-12&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-12&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-14&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-03-04&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-03-08&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-07-21&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-07-25&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-08-28&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-08-30&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-05-18&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-05-21&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-11-06&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-11-10&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-31&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-03&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-10&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-12&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -910,113 +1072,87 @@ end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace =
 &lt;tbody&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-13&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-09&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-14&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-10&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-15&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-11&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-12&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-02-12&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-13&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-03-04&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-14&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-03-05&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-07-21&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-03-06&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-03-07&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-03-08&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-07-22&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-08-28&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-07-23&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-08-29&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-07-24&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-07-25&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-05-18&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-05-19&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-05-20&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-08-30&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-05-21&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-11-06&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-11-07&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-11-08&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-11-09&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-11-10&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-31&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-10&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-01&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-11&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-02&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-04-03&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1999-12-12&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;This borrows from a &lt;a href=&#34;https://stackoverflow.com/questions/24803361/expand-rows-by-date-range-using-start-and-end-date?answertab=votes#tab-top&#34;&gt;SO post&lt;/a&gt; that also includes a &lt;code&gt;data.table&lt;/code&gt; solution.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Fixed Width Formats in R</title>
-      <link>/notes/fixed-width-format-r/</link>
-      <pubDate>Sat, 28 Apr 2018 17:14:59 +0000</pubDate>
-      
-      <guid>/notes/fixed-width-format-r/</guid>
-      <description>&lt;p&gt;The Centers for Disease Control (CDC) collects &lt;a href=&#34;https://www.cdc.gov/nchs/data_access/vitalstatsonline.htm&#34;&gt;vital statistics&lt;/a&gt; (mortality and natality) and hosts these for public use. These data can be accessed via a &lt;a href=&#34;https://wonder.cdc.gov/&#34;&gt;web-based query builder&lt;/a&gt; or by download. The files are available as zip archives, and when uncompressed contain tabular data with observations stored in fixed width format.&lt;/p&gt;
-&lt;p&gt;This post documents the steps I took to prepare the 2016 CDC national natality data for an analysis in R.&lt;/p&gt;
-&lt;p&gt;The first step is to download the data necessary. In this case, I was interested in 2016 statistics. But it’s worth pointing out that the data for births in the United States was collected and is available for public use all the way back to 1968. This data is collated from standard birth certificates, so some fields may vary across years.&lt;/p&gt;
-&lt;p&gt;After downloading the zip file (133MB) and extracting the archive, the key step for me was reading the fixed width format into R. These data are tidy in the sense that each observation is stored in a row, and each feature in a column. But unlike some other tabular formats, there isn’t a standard separator between columns. Instead data must be parsed by the position (start and stop) of the column.&lt;/p&gt;
-&lt;p&gt;You can read data from this format into R as a &lt;code&gt;data.frame&lt;/code&gt; with &lt;code&gt;read.fwf&lt;/code&gt;. Alternatively, the &lt;code&gt;readr&lt;/code&gt; package has the &lt;code&gt;read_fwf()&lt;/code&gt; function, which is what I chose to use.&lt;/p&gt;
-&lt;p&gt;The CDC provides a &lt;a href=&#34;ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Dataset_Documentation/DVS/natality/UserGuide2016.pdf&#34;&gt;user guide&lt;/a&gt; with documentation on the length, order, possible values and names for each column in the corresponding datasets. After looking through the files for the fields I needed, I put together a query for only the columns of interest.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(readr)
-
-births2016 &amp;lt;-
-  read_fwf(births2016&amp;quot;Nat2016PublicUS.c20170517.r20170913.txt&amp;quot;,
-           fwf_positions(start = c(75,490,521),
-                         end = c(76,491,521),
-                         col_names = c(&amp;quot;maternal_age&amp;quot;,&amp;quot;ega&amp;quot;, &amp;quot;antibiotics&amp;quot;)
-                         )
-           )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;If you wanted to read in all of the columns, you could use &lt;code&gt;fwf_empty()&lt;/code&gt; instead of &lt;code&gt;fwf_positions&lt;/code&gt; in the call to &lt;code&gt;read_fwf()&lt;/code&gt;:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;births2016 &amp;lt;-
-  read_fwf(&amp;quot;Nat2016PublicUS.c20170517.r20170913.txt&amp;quot;,
-           fwf_empty(&amp;quot;Nat2016PublicUS.c20170517.r20170913.txt&amp;quot;)
-           )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Keep in mind &lt;code&gt;fwf_empty&lt;/code&gt; can accommodate a “col_names” argument as well. But in this case there would be &amp;gt; 100 column names to provide, some of which are “filler” according to the dataset documentation.&lt;/p&gt;
 </description>
     </item>
     

@@ -13,6 +13,16 @@
     
     
     <item>
+      <title>Docker Image for tabulizer</title>
+      <link>/notes/docker-tabulizer/</link>
+      <pubDate>Thu, 27 Jun 2019 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/docker-tabulizer/</guid>
+      <description>TL;DR The tabulizer R package allows you extract tables from PDFs. It requires Java dependencies. To use the package via a Docker container:
+docker pull vpnagraj/tabulizer mkdir output # table of interest is on page 5 of some.pdf infile=some.pdf docker run -ti \ -v $(pwd)/$infile:/$infile \ -v $(pwd)/output:/output vpnagraj/tabulizer $infile 5 Avoidance of dependency hell can motivate folks to move towards containerization. I recently experienced (admittedly minor) frustration with installing dependencies for an R workflow.</description>
+    </item>
+    
+    <item>
       <title>Calculating Proportion with N</title>
       <link>/notes/prop-with-n/</link>
       <pubDate>Wed, 26 Jun 2019 17:14:59 +0000</pubDate>
@@ -99,7 +109,7 @@ When comparing dplyr::filter() versus a base method (using bracket indices and w
       
       <guid>/notes/dates-between/</guid>
       <description>A few weeks ago I helped someone who needed to expand a data frame that included events (with a start and stop date for each) to one that had rows for every date in an event (including start and stop) … the code below gives a reproducible example of how to do that with dplyr:
-library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-02-13 1999-02-15  1999-04-12 1999-04-14  1999-07-21 1999-07-25  1999-05-18 1999-05-21  1999-03-31 1999-04-03    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
+library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-02-09 1999-02-12  1999-03-04 1999-03-08  1999-08-28 1999-08-30  1999-11-06 1999-11-10  1999-12-10 1999-12-12    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
     </item>
     
     <item>
