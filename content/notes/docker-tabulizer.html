@@ -93,7 +93,7 @@ if(is.null(res_out)) {
 chmod+x run.R</code></pre>
 <p>Build the image:</p>
 <pre class="bash"><code>docker build -t --no-cache vpnagraj/tabulizer .</code></pre>
-<p>Alternatively you can pull the <a href="https://cloud.docker.com/u/vpnagraj/repository/docker/vpnagraj/tabulizer-docker">existing image from DockerHub</a>:</p>
+<p>Alternatively you can pull the <a href="https://cloud.docker.com/u/vpnagraj/repository/docker/vpnagraj/tabulizer">existing image from DockerHub</a>:</p>
 <pre class="bash"><code>docker pull vpnagraj/tabulizer</code></pre>
 </div>
 <div id="running" class="section level4">
@@ -119,6 +119,7 @@ infile=vsrr-007-508.pdf</code></pre>
 -v $(pwd)/$infile:/$infile \
 -v $(pwd)/output:/output vpnagraj/tabulizer $infile 15</code></pre>
 <pre class="r"><code>library(tidyverse)
+
 preterm &lt;-
   # skip mostly empty rows and ignore overall US values
   read_csv(&quot;output/vsrr-007-508_15.csv&quot;, 

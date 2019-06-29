@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>Looping Across Files</title>
+      <link>/notes/file-manipulation-loops/</link>
+      <pubDate>Sat, 29 Jun 2019 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/file-manipulation-loops/</guid>
+      <description>When performing repetitive file manipulation operations, it can be useful to write a loop.
+Let’s assume you have a file structure organized as follows:
+. +-- loop.sh +-- loop.R +-- raw | +-- sample1.bed | +-- sample2.bed | +-- sample3.bed | +-- sample4.bed | +-- sample5.bed +-- processed | +--  You’d like to loop through all of the .bed files in the raw/ directory, and output the first and last columns in a .</description>
+    </item>
+    
+    <item>
       <title>Docker Image for tabulizer</title>
       <link>/notes/docker-tabulizer/</link>
       <pubDate>Thu, 27 Jun 2019 17:14:59 +0000</pubDate>
@@ -109,7 +120,7 @@ When comparing dplyr::filter() versus a base method (using bracket indices and w
       
       <guid>/notes/dates-between/</guid>
       <description>A few weeks ago I helped someone who needed to expand a data frame that included events (with a start and stop date for each) to one that had rows for every date in an event (including start and stop) … the code below gives a reproducible example of how to do that with dplyr:
-library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-02-09 1999-02-12  1999-03-04 1999-03-08  1999-08-28 1999-08-30  1999-11-06 1999-11-10  1999-12-10 1999-12-12    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
+library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-09-15 1999-09-17  1999-07-02 1999-07-05  1999-01-24 1999-01-26  1999-05-31 1999-06-02  1999-05-02 1999-05-04    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
     </item>
     
     <item>

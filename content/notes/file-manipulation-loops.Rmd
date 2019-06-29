@@ -1,0 +1,102 @@
+---
+title: "Looping Across Files"
+date: 2019-06-29T17:14:59+00:00
+categories: ["notes"]
+tags: ["R", "bash"]
+summary: "comparing bash and R for iterative file manipulation"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, eval = FALSE)
+```
+
+When performing repetitive file manipulation operations, it can be useful to write a loop. 
+
+Let's assume you have a file structure organized as follows:
+
+```
+.
++-- loop.sh
++-- loop.R
++-- raw
+|   +-- sample1.bed
+|   +-- sample2.bed
+|   +-- sample3.bed
+|   +-- sample4.bed
+|   +-- sample5.bed
++-- processed
+|   +-- 
+```
+
+You'd like to loop through all of the `.bed` files in the `raw/` directory, and output the first and last columns in a `.csv` file in the `processed/` directory that shares the same file prefix (i.e. "sample1") as the given input. 
+
+To do so you have could write a bash script that is in a file called `loop.sh`:
+
+```{bash}
+#!/bin/bash
+
+# loop through all .bed files in the raw dir
+FILES=raw/*.bed
+
+for f in $FILES
+
+do
+  # message
+  printf "\n%s\n%s\n" "processing $f ..." "------------------------------"
+
+  # get input file name ...
+  # ... and create output file based on that
+  in_fn=$(basename -- "$f")
+  out_fn="${in_fn%.*}"
+
+  # use awk to get first and last columns  ...
+  # ... pipe output to csv format
+  awk 'BEGIN{FS="\t";OFS=","}{print $1, $NF}' $f > processed/"$out_fn".csv
+
+done
+```
+
+In R (presumably the `loop.R` file) you could write something like this:
+
+```{r}
+files <- list.files("raw", full.names = TRUE)
+
+for (f in files) {
+  
+  bed <- read.delim(f, sep = "\t")
+  
+  out_fp <- paste0("processed/", 
+                   tools::file_path_sans_ext(basename(f)),
+                   ".csv")
+  
+  write.csv(bed[,c(1,ncol(bed))], row.names = FALSE, file = out_fp)
+  
+}
+```
+
+Both of the above should work and yield the following: 
+
+```
+.
++-- loop.sh
++-- loop.R
++-- raw
+|   +-- sample1.bed
+|   +-- sample2.bed
+|   +-- sample3.bed
+|   +-- sample4.bed
+|   +-- sample5.bed
++-- processed
+|   +-- sample1.csv
+|   +-- sample2.csv
+|   +-- sample3.csv
+|   +-- sample4.csv
+|   +-- sample5.csv
+```
+
+However, your choice of method could have serious performance implications.
+
+I tested this on dummy files that were roughly 100MB each (~ 2.5 million rows, 4 columns). 
+
+The R method took ~ 90 seconds ... the bash script finished in 30 seconds.
+

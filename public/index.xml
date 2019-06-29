@@ -11,6 +11,84 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Looping Across Files</title>
+      <link>/notes/file-manipulation-loops/</link>
+      <pubDate>Sat, 29 Jun 2019 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/file-manipulation-loops/</guid>
+      <description>&lt;p&gt;When performing repetitive file manipulation operations, it can be useful to write a loop.&lt;/p&gt;
+&lt;p&gt;Let’s assume you have a file structure organized as follows:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.
++-- loop.sh
++-- loop.R
++-- raw
+|   +-- sample1.bed
+|   +-- sample2.bed
+|   +-- sample3.bed
+|   +-- sample4.bed
+|   +-- sample5.bed
++-- processed
+|   +-- &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You’d like to loop through all of the &lt;code&gt;.bed&lt;/code&gt; files in the &lt;code&gt;raw/&lt;/code&gt; directory, and output the first and last columns in a &lt;code&gt;.csv&lt;/code&gt; file in the &lt;code&gt;processed/&lt;/code&gt; directory that shares the same file prefix (i.e. “sample1”) as the given input.&lt;/p&gt;
+&lt;p&gt;To do so you have could write a bash script that is in a file called &lt;code&gt;loop.sh&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;#!/bin/bash
+
+# loop through all .bed files in the raw dir
+FILES=raw/*.bed
+
+for f in $FILES
+
+do
+  # message
+  printf &amp;quot;\n%s\n%s\n&amp;quot; &amp;quot;processing $f ...&amp;quot; &amp;quot;------------------------------&amp;quot;
+
+  # get input file name ...
+  # ... and create output file based on that
+  in_fn=$(basename -- &amp;quot;$f&amp;quot;)
+  out_fn=&amp;quot;${in_fn%.*}&amp;quot;
+
+  # use awk to get first and last columns  ...
+  # ... pipe output to csv format
+  awk &amp;#39;BEGIN{FS=&amp;quot;\t&amp;quot;;OFS=&amp;quot;,&amp;quot;}{print $1, $NF}&amp;#39; $f &amp;gt; processed/&amp;quot;$out_fn&amp;quot;.csv
+
+done&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In R (presumably the &lt;code&gt;loop.R&lt;/code&gt; file) you could write something like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;files &amp;lt;- list.files(&amp;quot;raw&amp;quot;, full.names = TRUE)
+
+for (f in files) {
+  
+  bed &amp;lt;- read.delim(f, sep = &amp;quot;\t&amp;quot;)
+  
+  out_fp &amp;lt;- paste0(&amp;quot;processed/&amp;quot;, 
+                   tools::file_path_sans_ext(basename(f)),
+                   &amp;quot;.csv&amp;quot;)
+  
+  write.csv(bed[,c(1,ncol(bed))], row.names = FALSE, file = out_fp)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Both of the above should work and yield the following:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.
++-- loop.sh
++-- loop.R
++-- raw
+|   +-- sample1.bed
+|   +-- sample2.bed
+|   +-- sample3.bed
+|   +-- sample4.bed
+|   +-- sample5.bed
++-- processed
+|   +-- sample1.csv
+|   +-- sample2.csv
+|   +-- sample3.csv
+|   +-- sample4.csv
+|   +-- sample5.csv&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;However, your choice of method could have serious performance implications.&lt;/p&gt;
+&lt;p&gt;I tested this on dummy files that were roughly 100MB each (~ 2.5 million rows, 4 columns).&lt;/p&gt;
+&lt;p&gt;The R method took ~ 90 seconds … the bash script finished in 30 seconds.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Docker Image for tabulizer</title>
       <link>/notes/docker-tabulizer/</link>
       <pubDate>Thu, 27 Jun 2019 17:14:59 +0000</pubDate>
@@ -101,7 +179,7 @@ if(is.null(res_out)) {
 chmod+x run.R&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Build the image:&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;docker build -t --no-cache vpnagraj/tabulizer .&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Alternatively you can pull the &lt;a href=&#34;https://cloud.docker.com/u/vpnagraj/repository/docker/vpnagraj/tabulizer-docker&#34;&gt;existing image from DockerHub&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;Alternatively you can pull the &lt;a href=&#34;https://cloud.docker.com/u/vpnagraj/repository/docker/vpnagraj/tabulizer&#34;&gt;existing image from DockerHub&lt;/a&gt;:&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;docker pull vpnagraj/tabulizer&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;running&#34; class=&#34;section level4&#34;&gt;
@@ -127,6 +205,7 @@ infile=vsrr-007-508.pdf&lt;/code&gt;&lt;/pre&gt;
 -v $(pwd)/$infile:/$infile \
 -v $(pwd)/output:/output vpnagraj/tabulizer $infile 15&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+
 preterm &amp;lt;-
   # skip mostly empty rows and ignore overall US values
   read_csv(&amp;quot;output/vsrr-007-508_15.csv&amp;quot;, 
@@ -1013,146 +1092,6 @@ mbm$n &amp;lt;- rep(sample_seq, each = 2)&lt;/code&gt;&lt;/pre&gt;
   theme_minimal() +
   guides(size = guide_legend(title = &amp;quot;time\n(milliseconds)&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/notes/filter-benchmark_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Expand Dates Between</title>
-      <link>/notes/dates-between/</link>
-      <pubDate>Sun, 29 Apr 2018 08:38:31 -0400</pubDate>
-      
-      <guid>/notes/dates-between/</guid>
-      <description>&lt;p&gt;A few weeks ago I helped someone who needed to expand a data frame that included events (with a start and stop date for each) to one that had rows for every date in an event (including start and stop) … the code below gives a reproducible example of how to do that with &lt;code&gt;dplyr&lt;/code&gt;:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
-
-start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5)
-end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_frame(start = start_time, end = end_time)&lt;/code&gt;&lt;/pre&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr class=&#34;header&#34;&gt;
-&lt;th align=&#34;left&#34;&gt;start&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;end&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-09&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-12&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-04&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-08&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-28&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-30&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-06&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-10&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-10&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-12&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_frame(start = start_time, end = end_time) %&amp;gt;%
-  mutate(id = 1:nrow(.)) %&amp;gt;%
-  rowwise() %&amp;gt;%
-  do(data.frame(id=.$id, days=seq(.$start,.$end,by=&amp;quot;days&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr class=&#34;header&#34;&gt;
-&lt;th align=&#34;right&#34;&gt;id&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;days&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-09&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-10&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-11&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-02-12&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-04&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-05&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-06&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-07&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-03-08&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-28&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-29&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-08-30&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-06&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-07&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-08&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-09&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;4&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-11-10&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-10&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-11&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;1999-12-12&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;This borrows from a &lt;a href=&#34;https://stackoverflow.com/questions/24803361/expand-rows-by-date-range-using-start-and-end-date?answertab=votes#tab-top&#34;&gt;SO post&lt;/a&gt; that also includes a &lt;code&gt;data.table&lt;/code&gt; solution.&lt;/p&gt;
 </description>
     </item>
     
