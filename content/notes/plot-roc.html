@@ -11,7 +11,7 @@ summary: "methods for plotting ROC curves"
 <blockquote>
 <p>A receiver operating characteristic curve, or ROC curve, is a graphical plot that illustrates the diagnostic ability of a binary classifier system as its discrimination threshold is varied.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
 </blockquote>
-<p>There’s already plenty of available information on how to plot ROC curves in R:</p>
+<p>There is plenty of available information on how to plot ROC curves in R:</p>
 <ul>
 <li><a href="https://blog.revolutionanalytics.com/2016/08/roc-curves-in-two-lines-of-code.html" class="uri">https://blog.revolutionanalytics.com/2016/08/roc-curves-in-two-lines-of-code.html</a></li>
 <li><a href="https://cran.r-project.org/web/packages/plotROC/vignettes/examples.html" class="uri">https://cran.r-project.org/web/packages/plotROC/vignettes/examples.html</a></li>
@@ -45,14 +45,52 @@ titanic &lt;-
   expand_counts(Freq) %&gt;%
   mutate(Survived = ifelse(Survived == &quot;Yes&quot;, 1, 0))
 
-head(titanic)</code></pre>
-<pre><code>##   Class  Sex   Age Survived
-## 1   3rd Male Child        0
-## 2   3rd Male Child        0
-## 3   3rd Male Child        0
-## 4   3rd Male Child        0
-## 5   3rd Male Child        0
-## 6   3rd Male Child        0</code></pre>
+as.data.frame(Titanic)</code></pre>
+<pre><code>##    Class    Sex   Age Survived Freq
+## 1    1st   Male Child       No    0
+## 2    2nd   Male Child       No    0
+## 3    3rd   Male Child       No   35
+## 4   Crew   Male Child       No    0
+## 5    1st Female Child       No    0
+## 6    2nd Female Child       No    0
+## 7    3rd Female Child       No   17
+## 8   Crew Female Child       No    0
+## 9    1st   Male Adult       No  118
+## 10   2nd   Male Adult       No  154
+## 11   3rd   Male Adult       No  387
+## 12  Crew   Male Adult       No  670
+## 13   1st Female Adult       No    4
+## 14   2nd Female Adult       No   13
+## 15   3rd Female Adult       No   89
+## 16  Crew Female Adult       No    3
+## 17   1st   Male Child      Yes    5
+## 18   2nd   Male Child      Yes   11
+## 19   3rd   Male Child      Yes   13
+## 20  Crew   Male Child      Yes    0
+## 21   1st Female Child      Yes    1
+## 22   2nd Female Child      Yes   13
+## 23   3rd Female Child      Yes   14
+## 24  Crew Female Child      Yes    0
+## 25   1st   Male Adult      Yes   57
+## 26   2nd   Male Adult      Yes   14
+## 27   3rd   Male Adult      Yes   75
+## 28  Crew   Male Adult      Yes  192
+## 29   1st Female Adult      Yes  140
+## 30   2nd Female Adult      Yes   80
+## 31   3rd Female Adult      Yes   76
+## 32  Crew Female Adult      Yes   20</code></pre>
+<pre class="r"><code>sample_n(titanic, 10)</code></pre>
+<pre><code>##    Class    Sex   Age Survived
+## 1    3rd   Male Adult        0
+## 2   Crew   Male Adult        0
+## 3   Crew   Male Adult        0
+## 4   Crew   Male Adult        0
+## 5    2nd Female Child        1
+## 6   Crew   Male Adult        0
+## 7    1st   Male Adult        0
+## 8   Crew   Male Adult        0
+## 9    1st Female Adult        1
+## 10   3rd   Male Adult        1</code></pre>
 <p>The model will predict survival (yes/no) from the Titanic. Predictors will include class, sex, and age. We’ll look at a model of with passenger class as the only predictor versus a model that includes class, sex, and age.</p>
 <div id="survived-class" class="section level4">
 <h4><code>Survived ~ Class</code></h4>

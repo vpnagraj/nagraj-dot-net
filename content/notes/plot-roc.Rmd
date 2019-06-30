@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, eval = TRUE
 
 > A receiver operating characteristic curve, or ROC curve, is a graphical plot that illustrates the diagnostic ability of a binary classifier system as its discrimination threshold is varied.[^1]
 
-There's already plenty of available information on how to plot ROC curves in R:
+There is plenty of available information on how to plot ROC curves in R:
 
 - <https://blog.revolutionanalytics.com/2016/08/roc-curves-in-two-lines-of-code.html>
 - <https://cran.r-project.org/web/packages/plotROC/vignettes/examples.html>
@@ -51,7 +51,8 @@ titanic <-
   expand_counts(Freq) %>%
   mutate(Survived = ifelse(Survived == "Yes", 1, 0))
 
-head(titanic)
+as.data.frame(Titanic)
+sample_n(titanic, 10)
 ```
 
 The model will predict survival (yes/no) from the Titanic. Predictors will include class, sex, and age. We'll look at a model of with passenger class as the only predictor versus a model that includes class, sex, and age.
