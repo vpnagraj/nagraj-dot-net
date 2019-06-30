@@ -13,6 +13,19 @@
     
     
     <item>
+      <title>ROC Curves in R</title>
+      <link>/notes/plot-roc/</link>
+      <pubDate>Sun, 30 Jun 2019 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/plot-roc/</guid>
+      <description>A receiver operating characteristic curve, or ROC curve, is a graphical plot that illustrates the diagnostic ability of a binary classifier system as its discrimination threshold is varied.1
+ There’s already plenty of available information on how to plot ROC curves in R:
+ https://blog.revolutionanalytics.com/2016/08/roc-curves-in-two-lines-of-code.html https://cran.r-project.org/web/packages/plotROC/vignettes/examples.html https://campus.datacamp.com/courses/machine-learning-with-tree-based-models-in-r/boosted-trees?ex=12 https://www.youtube.com/watch?v=qcvAqAH60Yw  A 2019 RViews post compares different methods side-by-side:
+https://rviews.rstudio.com/2019/03/01/some-r-packages-for-roc-curves/
+The example that follows provides a documented method I have used to plot ROC curves, both with the pROC package alone … and also using data from the pROC ROC AUC object and ggplot2.</description>
+    </item>
+    
+    <item>
       <title>Looping Across Files</title>
       <link>/notes/file-manipulation-loops/</link>
       <pubDate>Sat, 29 Jun 2019 17:14:59 +0000</pubDate>

@@ -5,6 +5,15 @@
     
     <url>
     
+      <loc>/notes/plot-roc/</loc>
+      <lastmod>2019-06-30T17:14:59+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/notes/file-manipulation-loops/</loc>
       <lastmod>2019-06-29T17:14:59+00:00</lastmod>
     </url>
@@ -671,7 +680,7 @@
     <url>
     
       <loc>/tags/ggplot2/</loc>
-      <lastmod>2019-06-16T17:14:59+00:00</lastmod>
+      <lastmod>2019-06-30T17:14:59+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -771,7 +780,7 @@
     <url>
     
       <loc>/categories/notes/</loc>
-      <lastmod>2019-06-29T17:14:59+00:00</lastmod>
+      <lastmod>2019-06-30T17:14:59+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -891,7 +900,7 @@
     <url>
     
       <loc>/tags/r/</loc>
-      <lastmod>2019-06-29T17:14:59+00:00</lastmod>
+      <lastmod>2019-06-30T17:14:59+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -911,7 +920,7 @@
     <url>
     
       <loc>/tags/r-markdown/</loc>
-      <lastmod>2016-02-29T12:03:12-05:00</lastmod>
+      <lastmod>2016-01-15T14:07:29-05:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -921,7 +930,7 @@
     <url>
     
       <loc>/tags/r-markdown/</loc>
-      <lastmod>2016-01-15T14:07:29-05:00</lastmod>
+      <lastmod>2016-02-29T12:03:12-05:00</lastmod>
       <priority>0</priority>
     </url>
     

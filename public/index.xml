@@ -11,6 +11,132 @@
     <atom:link href="/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>ROC Curves in R</title>
+      <link>/notes/plot-roc/</link>
+      <pubDate>Sun, 30 Jun 2019 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/plot-roc/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;A receiver operating characteristic curve, or ROC curve, is a graphical plot that illustrates the diagnostic ability of a binary classifier system as its discrimination threshold is varied.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;There’s already plenty of available information on how to plot ROC curves in R:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.revolutionanalytics.com/2016/08/roc-curves-in-two-lines-of-code.html&#34; class=&#34;uri&#34;&gt;https://blog.revolutionanalytics.com/2016/08/roc-curves-in-two-lines-of-code.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://cran.r-project.org/web/packages/plotROC/vignettes/examples.html&#34; class=&#34;uri&#34;&gt;https://cran.r-project.org/web/packages/plotROC/vignettes/examples.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://campus.datacamp.com/courses/machine-learning-with-tree-based-models-in-r/boosted-trees?ex=12&#34; class=&#34;uri&#34;&gt;https://campus.datacamp.com/courses/machine-learning-with-tree-based-models-in-r/boosted-trees?ex=12&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=qcvAqAH60Yw&#34; class=&#34;uri&#34;&gt;https://www.youtube.com/watch?v=qcvAqAH60Yw&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A 2019 RViews post compares different methods side-by-side:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://rviews.rstudio.com/2019/03/01/some-r-packages-for-roc-curves/&#34; class=&#34;uri&#34;&gt;https://rviews.rstudio.com/2019/03/01/some-r-packages-for-roc-curves/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The example that follows provides a documented method I have used to plot ROC curves, both with the &lt;code&gt;pROC&lt;/code&gt; package alone … and also using data from the &lt;code&gt;pROC&lt;/code&gt; ROC AUC object and &lt;code&gt;ggplot2&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;First, some code for to prepare the data (the &lt;code&gt;Titanic&lt;/code&gt; dataset in this case) for modeling:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+
+expand_counts &amp;lt;- function(.data, freq_col) {
+  
+  quo_freq &amp;lt;- dplyr::enquo(freq_col)
+  
+  freqs &amp;lt;- dplyr::pull(.data, !!quo_freq)
+  
+  ind &amp;lt;- rep(seq_len(nrow(.data)), freqs)
+  
+  # Drop count column
+  .data &amp;lt;- dplyr::select(.data, - !!quo_freq)
+  
+  # Get the rows from x
+  .data[ind, ]
+  
+}
+
+titanic &amp;lt;-
+  as.data.frame(Titanic, stringsAsFactors = FALSE) %&amp;gt;%
+  expand_counts(Freq) %&amp;gt;%
+  mutate(Survived = ifelse(Survived == &amp;quot;Yes&amp;quot;, 1, 0))
+
+head(titanic)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   Class  Sex   Age Survived
+## 1   3rd Male Child        0
+## 2   3rd Male Child        0
+## 3   3rd Male Child        0
+## 4   3rd Male Child        0
+## 5   3rd Male Child        0
+## 6   3rd Male Child        0&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The model will predict survival (yes/no) from the Titanic. Predictors will include class, sex, and age. We’ll look at a model of with passenger class as the only predictor versus a model that includes class, sex, and age.&lt;/p&gt;
+&lt;div id=&#34;survived-class&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;&lt;code&gt;Survived ~ Class&lt;/code&gt;&lt;/h4&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(pROC)
+
+fit1 &amp;lt;- glm(Survived ~ Class, data = titanic, family = binomial)
+
+prob &amp;lt;- predict(fit1,type=c(&amp;quot;response&amp;quot;))
+
+fit1$prob &amp;lt;- prob
+
+roc1 &amp;lt;- roc(Survived ~ prob, data = titanic, plot = FALSE)
+
+roc1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Call:
+## roc.formula(formula = Survived ~ prob, data = titanic, plot = FALSE)
+## 
+## Data: prob in 1490 controls (Survived 0) &amp;lt; 711 cases (Survived 1).
+## Area under the curve: 0.6417&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;survived-class-sex-age&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;&lt;code&gt;Survived ~ Class + Sex + Age&lt;/code&gt;&lt;/h4&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;fit2 &amp;lt;- glm(Survived ~ Class + Sex + Age, data = titanic, family = binomial)
+
+prob &amp;lt;- predict(fit2,type=c(&amp;quot;response&amp;quot;))
+
+fit2$prob &amp;lt;- prob
+
+roc2 &amp;lt;- roc(Survived ~ prob, data = titanic, plot = FALSE)
+
+roc2&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Call:
+## roc.formula(formula = Survived ~ prob, data = titanic, plot = FALSE)
+## 
+## Data: prob in 1490 controls (Survived 0) &amp;lt; 711 cases (Survived 1).
+## Area under the curve: 0.7597&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(roc1, lty = &amp;quot;solid&amp;quot;)
+lines(roc2, lty = &amp;quot;dotted&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/notes/plot-roc_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+
+df1 &amp;lt;- 
+  data_frame(
+    sensitivity = roc1$sensitivities,
+    specificity = roc1$specificities,
+    thresholds = roc1$thresholds,
+    model = &amp;quot;Survived ~ Class&amp;quot;
+  )
+
+df2 &amp;lt;- 
+  data_frame(
+    sensitivity = roc2$sensitivities,
+    specificity = roc2$specificities,
+    thresholds = roc2$thresholds,
+    model = &amp;quot;Survived ~ Class + Sex + Age&amp;quot;
+  )
+
+rbind(df1,df2) %&amp;gt;%
+  ggplot(aes(1-specificity, sensitivity)) +
+  geom_line(aes(group = model, lty = model)) +
+  theme(legend.position = &amp;quot;bottom&amp;quot;, 
+        legend.title = element_blank())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/notes/plot-roc_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;From &lt;a href=&#34;https://en.wikipedia.org/wiki/Receiver_operating_characteristic&#34;&gt;Receiver operating characteristic&lt;/a&gt; by &lt;a href=&#34;https://en.wikipedia.org/&#34;&gt;Wikipedia&lt;/a&gt; licensed under &lt;a href=&#34;https://creativecommons.org/licenses/by-sa/3.0/us/&#34;&gt;CC BY-SA 3.0&lt;/a&gt;.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Looping Across Files</title>
       <link>/notes/file-manipulation-loops/</link>
       <pubDate>Sat, 29 Jun 2019 17:14:59 +0000</pubDate>
@@ -1007,92 +1133,6 @@ library(dplyr)&lt;/code&gt;&lt;/pre&gt;
       
       <guid>/publication/ras-pas-2018/</guid>
       <description></description>
-    </item>
-    
-    <item>
-      <title>dplyr filter() Benchmark</title>
-      <link>/notes/filter-benchmark/</link>
-      <pubDate>Mon, 30 Apr 2018 14:50:23 +0000</pubDate>
-      
-      <guid>/notes/filter-benchmark/</guid>
-      <description>&lt;p&gt;Last week I finished preparing new teaching material for a workshop on R optimization techniques. Some of the examples were motivated by benchmarking tests I ran on data manipulation methods with &lt;code&gt;base&lt;/code&gt; vs &lt;code&gt;dplyr&lt;/code&gt; vs &lt;code&gt;data.table&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;Not surprisingly, &lt;code&gt;data.table&lt;/code&gt; was generally most efficient in terms of speed when running the &lt;code&gt;microbenchmark&lt;/code&gt; tests.&lt;/p&gt;
-&lt;p&gt;One oddball result did creep up …&lt;/p&gt;
-&lt;p&gt;When comparing &lt;code&gt;dplyr::filter()&lt;/code&gt; versus a base method (using bracket indices and &lt;code&gt;which()&lt;/code&gt;), I noticed that the former was quite a bit slower for a data frame with 5000 rows. But that result reversed as the size of the data frame increased … in other words, &lt;code&gt;filter()&lt;/code&gt; was actually much &lt;em&gt;faster&lt;/em&gt; for a larger dataset.&lt;/p&gt;
-&lt;p&gt;First we can load the packages we’ll be using:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(microbenchmark)
-library(dplyr)
-library(ggplot2)
-library(nycflights13)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Next create a sample of n = 5000 rows of the &lt;code&gt;nycflights13&lt;/code&gt; dataset:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;flights_sample &amp;lt;- 
-  sample_n(flights, 5000)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Then run the benchmark on the sample of n = 5000 rows:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# run benchmark on n = 5000
-microbenchmark(
-  bracket = flights_sample[which(flights_sample$dep_delay &amp;gt; 0),],
-  filter = filter(flights_sample, dep_delay &amp;gt; 0),
-  times = 10
-  )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Unit: microseconds
-##     expr      min       lq     mean    median       uq      max neval
-##  bracket  528.900  543.692 2881.957  616.8865  687.474 23348.52    10
-##   filter 1229.799 1384.516 2688.792 1573.2475 1701.045 12775.43    10&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Now run the benchmark on the full n = 336776 rows:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;microbenchmark(
-  bracket = flights[which(flights$dep_delay &amp;gt; 0),],
-  filter = filter(flights, dep_delay &amp;gt; 0),
-  times = 10
-  )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Unit: milliseconds
-##     expr      min       lq     mean   median       uq      max neval
-##  bracket 25.78197 28.99358 30.08971 29.85949 31.46580 36.93485    10
-##   filter 16.43049 18.37075 20.48562 18.63875 21.77536 28.94453    10&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;My guess is that there’s some overhead to using &lt;code&gt;filter()&lt;/code&gt; … but this clearly pays off eventually. So how big (i.e. how many rows) does a data frame need to be for &lt;code&gt;filter()&lt;/code&gt; to be faster?&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create sequence of number of rows to sample by 20000
-sample_seq &amp;lt;- seq(5000, nrow(flights), by = 20000)
-
-# set up empty data frame that will store results
-mbm &amp;lt;- data_frame()
-
-# loop through the samples and calculate microbencharmk in ms
-for(n in sample_seq) {
-  
-  flights_sample &amp;lt;- sample_n(flights, n)
-  
-  tmpmbm &amp;lt;-
-    microbenchmark(
-      bracket = flights_sample[which(flights_sample$dep_delay &amp;gt; 0),],
-      filter = filter(flights_sample, dep_delay &amp;gt; 0),
-      times = 10,
-      unit = &amp;quot;ms&amp;quot;
-    )
-  
-  mbm &amp;lt;- rbind(mbm, summary(tmpmbm))
-  
-}
-
-# add the sample n as a column for plotting
-mbm$n &amp;lt;- rep(sample_seq, each = 2)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The plot below shows the threshold (number of rows on y axis) at which &lt;code&gt;filter()&lt;/code&gt; is faster (ratio &amp;lt; 1 on x axis). It also demonstrates that the absolute amount of time starts leveling off as the datasets get bigger.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mbm %&amp;gt;%
-  select(method = expr,
-         nrows = n,
-         time = median) %&amp;gt;%
-  group_by(nrows) %&amp;gt;%
-  mutate(ratio = time / lag(time)) %&amp;gt;%
-  filter(!is.na(ratio)) %&amp;gt;%
-  ggplot(aes(nrows, ratio, size = time)) +
-  geom_point() +
-  geom_hline(yintercept = 1, col = &amp;quot;firebrick&amp;quot;, lwd = 2) +
-  scale_x_reverse(breaks = sample_seq) +
-  xlab(&amp;quot;number of rows&amp;quot;) +
-  ylab(&amp;quot;ratio of time\ndplyr::filter() / base&amp;quot;) +
-  coord_flip() +
-  theme_minimal() +
-  guides(size = guide_legend(title = &amp;quot;time\n(milliseconds)&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/notes/filter-benchmark_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-</description>
     </item>
     
   </channel>

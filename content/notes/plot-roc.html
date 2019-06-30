@@ -1,0 +1,127 @@
+---
+title: "ROC Curves in R"
+date: 2019-06-30T17:14:59+00:00
+categories: ["notes"]
+tags: ["R", "ggplot2"]
+summary: "methods for plotting ROC curves"
+---
+
+
+
+<blockquote>
+<p>A receiver operating characteristic curve, or ROC curve, is a graphical plot that illustrates the diagnostic ability of a binary classifier system as its discrimination threshold is varied.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+</blockquote>
+<p>There’s already plenty of available information on how to plot ROC curves in R:</p>
+<ul>
+<li><a href="https://blog.revolutionanalytics.com/2016/08/roc-curves-in-two-lines-of-code.html" class="uri">https://blog.revolutionanalytics.com/2016/08/roc-curves-in-two-lines-of-code.html</a></li>
+<li><a href="https://cran.r-project.org/web/packages/plotROC/vignettes/examples.html" class="uri">https://cran.r-project.org/web/packages/plotROC/vignettes/examples.html</a></li>
+<li><a href="https://campus.datacamp.com/courses/machine-learning-with-tree-based-models-in-r/boosted-trees?ex=12" class="uri">https://campus.datacamp.com/courses/machine-learning-with-tree-based-models-in-r/boosted-trees?ex=12</a></li>
+<li><a href="https://www.youtube.com/watch?v=qcvAqAH60Yw" class="uri">https://www.youtube.com/watch?v=qcvAqAH60Yw</a></li>
+</ul>
+<p>A 2019 RViews post compares different methods side-by-side:</p>
+<p><a href="https://rviews.rstudio.com/2019/03/01/some-r-packages-for-roc-curves/" class="uri">https://rviews.rstudio.com/2019/03/01/some-r-packages-for-roc-curves/</a></p>
+<p>The example that follows provides a documented method I have used to plot ROC curves, both with the <code>pROC</code> package alone … and also using data from the <code>pROC</code> ROC AUC object and <code>ggplot2</code>.</p>
+<p>First, some code for to prepare the data (the <code>Titanic</code> dataset in this case) for modeling:</p>
+<pre class="r"><code>library(dplyr)
+
+expand_counts &lt;- function(.data, freq_col) {
+  
+  quo_freq &lt;- dplyr::enquo(freq_col)
+  
+  freqs &lt;- dplyr::pull(.data, !!quo_freq)
+  
+  ind &lt;- rep(seq_len(nrow(.data)), freqs)
+  
+  # Drop count column
+  .data &lt;- dplyr::select(.data, - !!quo_freq)
+  
+  # Get the rows from x
+  .data[ind, ]
+  
+}
+
+titanic &lt;-
+  as.data.frame(Titanic, stringsAsFactors = FALSE) %&gt;%
+  expand_counts(Freq) %&gt;%
+  mutate(Survived = ifelse(Survived == &quot;Yes&quot;, 1, 0))
+
+head(titanic)</code></pre>
+<pre><code>##   Class  Sex   Age Survived
+## 1   3rd Male Child        0
+## 2   3rd Male Child        0
+## 3   3rd Male Child        0
+## 4   3rd Male Child        0
+## 5   3rd Male Child        0
+## 6   3rd Male Child        0</code></pre>
+<p>The model will predict survival (yes/no) from the Titanic. Predictors will include class, sex, and age. We’ll look at a model of with passenger class as the only predictor versus a model that includes class, sex, and age.</p>
+<div id="survived-class" class="section level4">
+<h4><code>Survived ~ Class</code></h4>
+<pre class="r"><code>library(pROC)
+
+fit1 &lt;- glm(Survived ~ Class, data = titanic, family = binomial)
+
+prob &lt;- predict(fit1,type=c(&quot;response&quot;))
+
+fit1$prob &lt;- prob
+
+roc1 &lt;- roc(Survived ~ prob, data = titanic, plot = FALSE)
+
+roc1</code></pre>
+<pre><code>## 
+## Call:
+## roc.formula(formula = Survived ~ prob, data = titanic, plot = FALSE)
+## 
+## Data: prob in 1490 controls (Survived 0) &lt; 711 cases (Survived 1).
+## Area under the curve: 0.6417</code></pre>
+</div>
+<div id="survived-class-sex-age" class="section level4">
+<h4><code>Survived ~ Class + Sex + Age</code></h4>
+<pre class="r"><code>fit2 &lt;- glm(Survived ~ Class + Sex + Age, data = titanic, family = binomial)
+
+prob &lt;- predict(fit2,type=c(&quot;response&quot;))
+
+fit2$prob &lt;- prob
+
+roc2 &lt;- roc(Survived ~ prob, data = titanic, plot = FALSE)
+
+roc2</code></pre>
+<pre><code>## 
+## Call:
+## roc.formula(formula = Survived ~ prob, data = titanic, plot = FALSE)
+## 
+## Data: prob in 1490 controls (Survived 0) &lt; 711 cases (Survived 1).
+## Area under the curve: 0.7597</code></pre>
+<pre class="r"><code>plot(roc1, lty = &quot;solid&quot;)
+lines(roc2, lty = &quot;dotted&quot;)</code></pre>
+<p><img src="/notes/plot-roc_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>library(ggplot2)
+
+df1 &lt;- 
+  data_frame(
+    sensitivity = roc1$sensitivities,
+    specificity = roc1$specificities,
+    thresholds = roc1$thresholds,
+    model = &quot;Survived ~ Class&quot;
+  )
+
+df2 &lt;- 
+  data_frame(
+    sensitivity = roc2$sensitivities,
+    specificity = roc2$specificities,
+    thresholds = roc2$thresholds,
+    model = &quot;Survived ~ Class + Sex + Age&quot;
+  )
+
+rbind(df1,df2) %&gt;%
+  ggplot(aes(1-specificity, sensitivity)) +
+  geom_line(aes(group = model, lty = model)) +
+  theme(legend.position = &quot;bottom&quot;, 
+        legend.title = element_blank())</code></pre>
+<p><img src="/notes/plot-roc_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>From <a href="https://en.wikipedia.org/wiki/Receiver_operating_characteristic">Receiver operating characteristic</a> by <a href="https://en.wikipedia.org/">Wikipedia</a> licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/us/">CC BY-SA 3.0</a>.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>

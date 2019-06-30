@@ -1,0 +1,119 @@
+---
+title: "ROC Curves in R"
+date: 2019-06-30T17:14:59+00:00
+categories: ["notes"]
+tags: ["R", "ggplot2"]
+summary: "methods for plotting ROC curves"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, eval = TRUE)
+```
+
+> A receiver operating characteristic curve, or ROC curve, is a graphical plot that illustrates the diagnostic ability of a binary classifier system as its discrimination threshold is varied.[^1]
+
+There's already plenty of available information on how to plot ROC curves in R:
+
+- <https://blog.revolutionanalytics.com/2016/08/roc-curves-in-two-lines-of-code.html>
+- <https://cran.r-project.org/web/packages/plotROC/vignettes/examples.html>
+- <https://campus.datacamp.com/courses/machine-learning-with-tree-based-models-in-r/boosted-trees?ex=12>
+- <https://www.youtube.com/watch?v=qcvAqAH60Yw>
+
+A 2019 RViews post compares different methods side-by-side:
+
+<https://rviews.rstudio.com/2019/03/01/some-r-packages-for-roc-curves/>
+
+The example that follows provides a documented method I have used to plot ROC curves, both with the  `pROC` package alone ... and also using data from the `pROC` ROC AUC object and `ggplot2`.
+
+First, some code for to prepare the data (the `Titanic` dataset in this case) for modeling:
+
+```{r}
+library(dplyr)
+
+expand_counts <- function(.data, freq_col) {
+  
+  quo_freq <- dplyr::enquo(freq_col)
+  
+  freqs <- dplyr::pull(.data, !!quo_freq)
+  
+  ind <- rep(seq_len(nrow(.data)), freqs)
+  
+  # Drop count column
+  .data <- dplyr::select(.data, - !!quo_freq)
+  
+  # Get the rows from x
+  .data[ind, ]
+  
+}
+
+titanic <-
+  as.data.frame(Titanic, stringsAsFactors = FALSE) %>%
+  expand_counts(Freq) %>%
+  mutate(Survived = ifelse(Survived == "Yes", 1, 0))
+
+head(titanic)
+```
+
+The model will predict survival (yes/no) from the Titanic. Predictors will include class, sex, and age. We'll look at a model of with passenger class as the only predictor versus a model that includes class, sex, and age.
+
+####  `Survived ~ Class`
+```{r}
+library(pROC)
+
+fit1 <- glm(Survived ~ Class, data = titanic, family = binomial)
+
+prob <- predict(fit1,type=c("response"))
+
+fit1$prob <- prob
+
+roc1 <- roc(Survived ~ prob, data = titanic, plot = FALSE)
+
+roc1
+```
+
+####  `Survived ~ Class + Sex + Age`
+
+```{r}
+fit2 <- glm(Survived ~ Class + Sex + Age, data = titanic, family = binomial)
+
+prob <- predict(fit2,type=c("response"))
+
+fit2$prob <- prob
+
+roc2 <- roc(Survived ~ prob, data = titanic, plot = FALSE)
+
+roc2
+```
+
+```{r}
+plot(roc1, lty = "solid")
+lines(roc2, lty = "dotted")
+```
+
+```{r}
+library(ggplot2)
+
+df1 <- 
+  data_frame(
+    sensitivity = roc1$sensitivities,
+    specificity = roc1$specificities,
+    thresholds = roc1$thresholds,
+    model = "Survived ~ Class"
+  )
+
+df2 <- 
+  data_frame(
+    sensitivity = roc2$sensitivities,
+    specificity = roc2$specificities,
+    thresholds = roc2$thresholds,
+    model = "Survived ~ Class + Sex + Age"
+  )
+
+rbind(df1,df2) %>%
+  ggplot(aes(1-specificity, sensitivity)) +
+  geom_line(aes(group = model, lty = model)) +
+  theme(legend.position = "bottom", 
+        legend.title = element_blank())
+```
+
+[^1]:  From [Receiver operating characteristic](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) by [Wikipedia](https://en.wikipedia.org/) licensed under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/us/).
