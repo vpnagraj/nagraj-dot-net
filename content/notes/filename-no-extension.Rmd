@@ -1,0 +1,83 @@
+---
+title: "Get Filename Without Extension"
+date: '2019-09-20T08:38:31-04:00'
+summary: 'methods for accessing filenames without file extensions'
+tags: ["bash"]
+categories: ["notes"]
+---
+
+```{r, include = FALSE}
+library(knitr)
+opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{bash, echo = FALSE, include = FALSE}
+mkdir prince
+touch prince/computer.blue
+ls prince
+```
+
+Filenames are rarely arbitrary. They're usually descriptive and sometimes contain useful data. You can use some basic `bash` file manipulation utilities to parse filenames for analysis or store them as variables.
+
+Take for example a file named `computer.blue` in a directory called `prince/`:
+
+```
+prince/computer.blue
+```
+
+If we wanted to get the filename(s) of anything in the `prince/` folder we could list (`ls`) the contents of the directory:
+
+```{bash}
+ls prince/
+```
+
+But what if we wanted the name of the file *without* the extension?
+
+One [SO post](https://stackoverflow.com/questions/2664740/extract-file-basename-without-path-and-extension-in-bash) offers the following solution:
+
+```{bash}
+f=prince/computer.blue
+echo ${f##*/}
+f=${f##*/}
+echo ${f%.blue}
+echo ${f%.*}
+```
+
+The code above stores the filename and directory in a variable (`f`) and then uses subsequent [string substitution expressions](http://tldp.org/LDP/LG/issue18/bash.html) to pull out the file name without extension.
+
+If you're using `bash` (and not another shell) then you could also rely on the `basename` function to do something similar.
+
+`man basename` describes the "suffix" argument:
+
+```
+BASENAME(1)               BSD General Commands Manual              BASENAME(1)
+
+NAME
+     basename, dirname -- return filename or directory portion of pathname
+
+SYNOPSIS
+     basename string [suffix]
+     basename [-a] [-s suffix] string [...]
+     dirname string
+
+DESCRIPTION
+     The basename utility deletes any prefix ending with the last slash `/'
+     character present in string (after first stripping trailing slashes), and
+     a suffix, if given.  The suffix is not stripped if it is identical to the
+     remaining characters in string.  The resulting filename is written to the
+     standard output.  A non-existent suffix is ignored.  If -a is specified,
+     then every argument is treated as a string as if basename were invoked
+     with just one argument.  If -s is specified, then the suffix is taken as
+     its argument, and all other arguments are treated as a string.
+```
+
+So (given you're on a system with the external `basename` function available) the following should work too:
+
+```{bash}
+basename -s .blue prince/computer.blue
+```
+
+```{bash, echo = FALSE}
+rm -rf prince
+```
+
