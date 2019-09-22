@@ -11,9 +11,6 @@
       {{ delimit . ", " | markdownify }}
       {{ end }}
     </span>
-    <span class="pull-right">
-      {{ partial "share.html" . }}
-    </span>
 
     {{ if .Params.image }}
     <img src="{{ "/img/" | relURL }}{{ .Params.image }}" class="pub-banner" itemprop="image">
