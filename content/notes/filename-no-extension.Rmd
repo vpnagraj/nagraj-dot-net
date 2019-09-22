@@ -1,6 +1,6 @@
 ---
 title: "Get Filename Without Extension"
-date: '2019-09-20T08:38:31-04:00'
+date: 2019-09-20T08:38:31-04:00
 tags: ["bash"]
 categories: ["notes"]
 summary: 'methods for accessing filenames without file extensions'
