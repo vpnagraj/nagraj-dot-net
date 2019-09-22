@@ -13,16 +13,21 @@
     
     
     <item>
+      <title>Get Filename Without Extension</title>
+      <link>/notes/filename-no-extension/</link>
+      <pubDate>Fri, 20 Sep 2019 08:38:31 -0400</pubDate>
+      
+      <guid>/notes/filename-no-extension/</guid>
+      <description>methods for accessing filenames without file extensions</description>
+    </item>
+    
+    <item>
       <title>ROC Curves in R</title>
       <link>/notes/plot-roc/</link>
       <pubDate>Sun, 30 Jun 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/plot-roc/</guid>
-      <description>A receiver operating characteristic curve, or ROC curve, is a graphical plot that illustrates the diagnostic ability of a binary classifier system as its discrimination threshold is varied.1
- There is plenty of available information on how to plot ROC curves in R:
- https://blog.revolutionanalytics.com/2016/08/roc-curves-in-two-lines-of-code.html https://cran.r-project.org/web/packages/plotROC/vignettes/examples.html https://campus.datacamp.com/courses/machine-learning-with-tree-based-models-in-r/boosted-trees?ex=12 https://www.youtube.com/watch?v=qcvAqAH60Yw  A 2019 RViews post compares different methods side-by-side:
-https://rviews.rstudio.com/2019/03/01/some-r-packages-for-roc-curves/
-The example that follows provides a documented method I have used to plot ROC curves, both with the pROC package alone … and also using data from the pROC ROC AUC object and ggplot2.</description>
+      <description>methods for plotting ROC curves</description>
     </item>
     
     <item>
@@ -31,9 +36,7 @@ The example that follows provides a documented method I have used to plot ROC cu
       <pubDate>Sat, 29 Jun 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/file-manipulation-loops/</guid>
-      <description>When performing repetitive file manipulation operations, it can be useful to write a loop.
-Let’s assume you have a file structure organized as follows:
-. +-- loop.sh +-- loop.R +-- raw | +-- sample1.bed | +-- sample2.bed | +-- sample3.bed | +-- sample4.bed | +-- sample5.bed +-- processed | +--  You’d like to loop through all of the .bed files in the raw/ directory, and output the first and last columns in a .</description>
+      <description>comparing bash and R for iterative file manipulation</description>
     </item>
     
     <item>
@@ -42,8 +45,7 @@ Let’s assume you have a file structure organized as follows:
       <pubDate>Thu, 27 Jun 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/docker-tabulizer/</guid>
-      <description>TL;DR The tabulizer R package allows you extract tables from PDFs. It requires Java dependencies. To use the package via a Docker container:
-docker pull vpnagraj/tabulizer mkdir output # table of interest is on page 5 of some.pdf infile=some.pdf docker run -ti \ -v $(pwd)/$infile:/$infile \ -v $(pwd)/output:/output vpnagraj/tabulizer $infile 5 Avoidance of dependency hell can motivate folks to move towards containerization. I recently experienced (admittedly minor) frustration with installing dependencies for an R workflow.</description>
+      <description>a containerized workflow with R</description>
     </item>
     
     <item>
@@ -52,9 +54,7 @@ docker pull vpnagraj/tabulizer mkdir output # table of interest is on page 5 of 
       <pubDate>Wed, 26 Jun 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/prop-with-n/</guid>
-      <description>One of the more typical workflows I need to perform is calculating counts within groups. The dplyr group_by() %&amp;gt;% summarise() pipeline (or just count()) can easily get aggregated tallies. But occassionally it’s helpful to get count within group along with the proportion overall.
-Here’s one way to do that:
-library(dplyr) # use the starwars dataset # one row per character # can be grouped by character species starwars ## # A tibble: 87 x 13 ## name height mass hair_color skin_color eye_color birth_year gender ## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; ## 1 Luke… 172 77 blond fair blue 19 male ## 2 C-3PO 167 75 &amp;lt;NA&amp;gt; gold yellow 112 &amp;lt;NA&amp;gt; ## 3 R2-D2 96 32 &amp;lt;NA&amp;gt; white, bl… red 33 &amp;lt;NA&amp;gt; ## 4 Dart… 202 136 none white yellow 41.</description>
+      <description>count and overall percentage in groups</description>
     </item>
     
     <item>
@@ -63,9 +63,7 @@ library(dplyr) # use the starwars dataset # one row per character # can be group
       <pubDate>Sun, 16 Jun 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/circular-barplots/</guid>
-      <description>While preparing figures for a manuscript recently, the first author proposed a plot to compare several phenotypes from every donor in the study. One suggestion was a series of circular barplots (normalized since each phenotype was on a different scale) side-by-side.
-Using ggplot2 that might look something like this:
-library(ggplot2) library(tidyr) library(dplyr) msleep %&amp;gt;% select(name,sleep_total,brainwt,bodywt) %&amp;gt;% filter(complete.cases(.)) %&amp;gt;% gather(key,value, -name) %&amp;gt;% group_by(key) %&amp;gt;% mutate(value = percent_rank(value)) %&amp;gt;% ggplot(aes(name,value)) + geom_col() + coord_polar() + facet_wrap(~ key, ncol = 3) + labs(x = NULL, y = &amp;quot;Percentile&amp;quot;) + theme_minimal() The figure isn’t easy to interpret in this configuration.</description>
+      <description>barplots in barplots in barplots</description>
     </item>
     
     <item>
@@ -74,10 +72,7 @@ library(ggplot2) library(tidyr) library(dplyr) msleep %&amp;gt;% select(name,sle
       <pubDate>Wed, 08 May 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/summary-se/</guid>
-      <description>I’ve found myself on Winston Chang’s cookbook-r website a number of times before. My most recent visit was to refresh my memory on the strategy for plotting means with error bars with ggplot2:
-http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)
-The recipe makes use of summarySE() a function that is described in detail in another post that details strategies for summarizing data.
-summarySE() is a custom function that computes the mean, standard deviation, count, standard error, confidence interval for a variable (“measurevar”) within defined grouping variables (“groupvars”).</description>
+      <description>explorations with tidyeval</description>
     </item>
     
     <item>
@@ -86,10 +81,7 @@ summarySE() is a custom function that computes the mean, standard deviation, cou
       <pubDate>Fri, 08 Mar 2019 11:26:40 -0500</pubDate>
       
       <guid>/notes/single-app-shiny-server/</guid>
-      <description>If you’ve written a Shiny app and have reached a point where you would like to share it with others … you have a few options:
-https://shiny.rstudio.com/deploy/
-Given that you have hardware (or a cloud setup) to install a server, Shiny Server Open Source may be a good solution.
-I’ve deployed dozens of apps on different Shiny servers. In some cases, I may need a single server that hosts an entire directory of apps.</description>
+      <description>shiny server for a single app</description>
     </item>
     
     <item>
@@ -98,9 +90,7 @@ I’ve deployed dozens of apps on different Shiny servers. In some cases, I may 
       <pubDate>Mon, 11 Feb 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/rstudioconf2019/</guid>
-      <description>This past January I was able to attend rstudio::conf 2019 in Austin. I was there for the full week, taking the Building Tidy Tools workshop and attending as many of the main conference program sessions as possible.
-Here is a collection of highlights/takeaways from the conference …
- Shortcuts RStudio 1.2 features Tidy eval separate_rows .Rmd to .pptx New packages  Shortcuts Coming into rstudio::conf I had a few keyboard shortcuts memorized.</description>
+      <description>highlights from rstudio::conf 2019</description>
     </item>
     
     <item>
@@ -109,9 +99,7 @@ Here is a collection of highlights/takeaways from the conference …
       <pubDate>Mon, 28 Jan 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/data-based-labels/</guid>
-      <description>Chapter 7 of Edward Tufte’s The Visual Display of Quantitative Information presents advantages of “multifunctioning graphical elements” in data visualiztions. The idea is that features like the shape of points on the plot, grid lines, or even data labels can serve multiple purposes in communicating information.
-For example, take the shape of a stem plot:
-library(ggplot2) library(dplyr) glimpse(starwars) ## Observations: 87 ## Variables: 13 ## $ name &amp;lt;chr&amp;gt; &amp;quot;Luke Skywalker&amp;quot;, &amp;quot;C-3PO&amp;quot;, &amp;quot;R2-D2&amp;quot;, &amp;quot;Darth Vader&amp;quot;, &amp;quot;L… ## $ height &amp;lt;int&amp;gt; 172, 167, 96, 202, 150, 178, 165, 97, 183, 182, 188, … ## $ mass &amp;lt;dbl&amp;gt; 77.</description>
+      <description>incorporating &amp;lsquo;multifunctioning&amp;rsquo; plot elements</description>
     </item>
     
     <item>
@@ -120,10 +108,7 @@ library(ggplot2) library(dplyr) glimpse(starwars) ## Observations: 87 ## Variabl
       <pubDate>Mon, 30 Apr 2018 14:50:23 +0000</pubDate>
       
       <guid>/notes/filter-benchmark/</guid>
-      <description>Last week I finished preparing new teaching material for a workshop on R optimization techniques. Some of the examples were motivated by benchmarking tests I ran on data manipulation methods with base vs dplyr vs data.table.
-Not surprisingly, data.table was generally most efficient in terms of speed when running the microbenchmark tests.
-One oddball result did creep up …
-When comparing dplyr::filter() versus a base method (using bracket indices and which()), I noticed that the former was quite a bit slower for a data frame with 5000 rows.</description>
+      <description>benchmarking dplyr filter versus base subsetting methods</description>
     </item>
     
     <item>
@@ -132,8 +117,7 @@ When comparing dplyr::filter() versus a base method (using bracket indices and w
       <pubDate>Sun, 29 Apr 2018 08:38:31 -0400</pubDate>
       
       <guid>/notes/dates-between/</guid>
-      <description>A few weeks ago I helped someone who needed to expand a data frame that included events (with a start and stop date for each) to one that had rows for every date in an event (including start and stop) … the code below gives a reproducible example of how to do that with dplyr:
-library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;quot;), as.Date(&amp;quot;1999/12/31&amp;quot;), &amp;quot;days&amp;quot;), 5) end_time &amp;lt;- start_time + sample(2:4, size = length(start_time), replace = TRUE) data_frame(start = start_time, end = end_time)   start end    1999-09-15 1999-09-17  1999-07-02 1999-07-05  1999-01-24 1999-01-26  1999-05-31 1999-06-02  1999-05-02 1999-05-04    data_frame(start = start_time, end = end_time) %&amp;gt;% mutate(id = 1:nrow(.</description>
+      <description>fill dates between a start and stop time with dplyr syntax</description>
     </item>
     
     <item>
@@ -142,8 +126,7 @@ library(dplyr) start_time &amp;lt;- sample(seq(as.Date(&amp;quot;1999/1/1&amp;qu
       <pubDate>Sat, 28 Apr 2018 17:14:59 +0000</pubDate>
       
       <guid>/notes/fixed-width-format-r/</guid>
-      <description>The Centers for Disease Control (CDC) collects vital statistics (mortality and natality) and hosts these for public use. These data can be accessed via a web-based query builder or by download. The files are available as zip archives, and when uncompressed contain tabular data with observations stored in fixed width format.
-This post documents the steps I took to prepare the 2016 CDC national natality data for an analysis in R.</description>
+      <description>reading data stored in fixed width format into R using CDC natality data</description>
     </item>
     
     <item>
@@ -152,8 +135,7 @@ This post documents the steps I took to prepare the 2016 CDC national natality d
       <pubDate>Fri, 27 Apr 2018 17:14:59 +0000</pubDate>
       
       <guid>/notes/bien/</guid>
-      <description>As a side project I recently helped a friend use an R package for retrieving data from the Botantical Information and Ecology Network Database (BIEN). The code for that exploration is documented below.
-install.packages(&amp;quot;BIEN&amp;quot;) install.packages(&amp;quot;dplyr&amp;quot;) install.packages(&amp;quot;leaflet&amp;quot;) install.packages(&amp;quot;rgdal&amp;quot;) install.packages(&amp;quot;geojsonio&amp;quot;) install.packages(&amp;quot;htmltools&amp;quot;) install.packages(&amp;quot;knitr&amp;quot;) library(BIEN) library(leaflet) library(rgdal) library(geojsonio) library(dplyr) library(htmltools) library(knitr) Occurrence BIEN includes occurence data on the species level. The code below queries the database for Western Sumac (Rhus copallanium) and returns an interactive map with markers for all of the places where the species has been documented.</description>
+      <description>exploring the botanical information and ecology network database (BIEN) with R</description>
     </item>
     
     <item>
@@ -162,10 +144,7 @@ install.packages(&amp;quot;BIEN&amp;quot;) install.packages(&amp;quot;dplyr&amp;
       <pubDate>Tue, 16 Aug 2016 13:27:57 -0400</pubDate>
       
       <guid>/notes/transparent-background-with-ggplot2/</guid>
-      <description>While I was preparing a figure for a research poster recently, I ran into an issue: my poster had an off-white background but the figure had a white background.
-The first thing that came to mind was making the plot background transparent. Should be easy enough?
-It is.
-The gist is that you need to set the both panel and and plot backgrounds to transparent. It’s probably a good idea to “turn off” the grid elements since otherwise they will default to a color.</description>
+      <description>transparency in ggplot2 plots</description>
     </item>
     
     <item>
@@ -174,8 +153,7 @@ The gist is that you need to set the both panel and and plot backgrounds to tran
       <pubDate>Mon, 25 Jul 2016 09:16:04 -0400</pubDate>
       
       <guid>/notes/choropleth-maps-with-leaflet/</guid>
-      <description>Choropleth maps are useful in displaying data across geographic regions. In these plots, the scale is represented by color and typically contained in defined spatial boundaries.
-There are a number of ways to make choropleth visualizations in R, including the ggmap package and the choroplethr package. Both of the methods above seem to work fine. But I recently started using Leaflet, which is a JavaScript mapping library that’s bound to R with the Leaflet pakcage.</description>
+      <description>create a choropleth map with R and Leaflet</description>
     </item>
     
     <item>
@@ -184,8 +162,7 @@ There are a number of ways to make choropleth visualizations in R, including the
       <pubDate>Thu, 21 Jul 2016 08:38:31 -0400</pubDate>
       
       <guid>/notes/multiple-rmarkdown-reports/</guid>
-      <description>Until recently I had yet to run into a scenario where I needed to use R Markdown to produce a “templated” set of reports. That is, a group of PDFs or HTML files with common R code (and therefore common report features, like figures, tables, summary statistics, etc.) executed dynamically on different data sets.
-I encountered this problem when I was trying to automate a workflow for generating reports on publication data.</description>
+      <description>how to create &amp;lsquo;templated&amp;rsquo; rmarkdown reports</description>
     </item>
     
     <item>
@@ -194,9 +171,7 @@ I encountered this problem when I was trying to automate a workflow for generati
       <pubDate>Mon, 11 Jul 2016 15:24:47 -0400</pubDate>
       
       <guid>/notes/chunking/</guid>
-      <description>TL;DR : “Chunking” a vector can facilitate processing or, as in the example below, serve as a solution for API query limits
- E-Utilities provides an intercace (API) for accessing NCBI databases such as PubMed, GenBank, etc. There are a variety of ways (clients) to leverage this service. Since I typically develop in R, I’ve been using the rentrez package.
-The API limits are typically pretty forgiving, and there are even methods to store a “web history” for search results so you don’t have to query again to retrieve them.</description>
+      <description>how to split data into chunks for processing in R</description>
     </item>
     
     <item>
@@ -205,10 +180,7 @@ The API limits are typically pretty forgiving, and there are even methods to sto
       <pubDate>Tue, 03 May 2016 12:19:11 -0400</pubDate>
       
       <guid>/notes/how-to-create-small-random-sample-from-large-csv-file/</guid>
-      <description>Problem: How do I generate a small random sample of large CSV to be read into R?
-  Solution: subsample
- One solution to dealing with large datasets is to read the data in smaller chunks, and then combine the pieces together. This isn’t trivial. And it may not be worthwhile, especially if you just want to poke around.
-What about just looking at a single one of those smaller chunks?</description>
+      <description>subsampling</description>
     </item>
     
     <item>
@@ -217,9 +189,7 @@ What about just looking at a single one of those smaller chunks?</description>
       <pubDate>Wed, 23 Mar 2016 12:11:02 -0400</pubDate>
       
       <guid>/notes/installing-r-packages-from-source/</guid>
-      <description>I upgraded to R version 3.2.2 several months ago and have pretty much reloaded all my packages.
-But today I tried running a script that uses the caret package’s implementation of glm() for a logistic regression model. There was a problem … caret wasn’t installed. And when I ran install.packages(&#34;caret&#34;) I got this message:
- Error in loadNamespace(j &amp;lt;- i[[1L]], c(lib.loc, .libPaths()), versionCheck = vI[[j]]) : there is no package called ‘pbkrtest’</description>
+      <description>using install.packages() to install package from source</description>
     </item>
     
     <item>
@@ -228,9 +198,7 @@ But today I tried running a script that uses the caret package’s implementatio
       <pubDate>Thu, 03 Mar 2016 11:26:40 -0500</pubDate>
       
       <guid>/notes/pandoc-latex-markdown/</guid>
-      <description>I just spent ~ 30 minutes figuring out how to include LaTeX symbols … in a Pandoc table column header … in an RMarkdown document.
-There are plenty of LaTeX cheat sheets like this one to choose from. And there are plenty of examples of using LaTeX in RMarkdown as well.
-The thing is that the syntax for these LaTeX symbols gets trickier when run inside a chunk (i.e. block of R code).</description>
+      <description>RMarkdown(Pandoc(LaTeX))</description>
     </item>
     
     <item>
@@ -239,12 +207,7 @@ The thing is that the syntax for these LaTeX symbols gets trickier when run insi
       <pubDate>Mon, 29 Feb 2016 12:03:12 -0500</pubDate>
       
       <guid>/notes/embedding-shiny-apps-inside-rmarkdown-documents/</guid>
-      <description>I’d read about ‘interactive’ documents before, and saw a presentation that used them at the Shiny Developer Conference. Thought it was a cool idea but figured it was too complicated to put into practice.
-Wrong.
-All it takes is one extra line in the YAML front matter for the RMarkdown …
-runtime: shiny
-… and that’s pretty much it.
-To host the document you do need a Shiny Server running on top of a version of R with the rmarkdown package installed.</description>
+      <description>recap of how to make interactive rmarkdown documents</description>
     </item>
     
     <item>
@@ -253,9 +216,7 @@ To host the document you do need a Shiny Server running on top of a version of R
       <pubDate>Fri, 15 Jan 2016 14:07:29 -0500</pubDate>
       
       <guid>/notes/pandoc-list/</guid>
-      <description>One of my recent tortures has been formatting RMarkdown reports. The pander package gives you access to all the Pandoc options you can handle. Seems like a big mountain to climb, but once you get started it’s actually not too rough.
-In particular, the pandoc.[WHATEVER]() functions from pander make it easy to render nicely formatted objects in RMarkdown.
-An example … say you had the following (not so arbitrary) character vector:</description>
+      <description>formatting a character vector as a list in R markdown</description>
     </item>
     
     <item>
@@ -264,7 +225,7 @@ An example … say you had the following (not so arbitrary) character vector:</d
       <pubDate>Wed, 13 Jan 2016 13:09:19 -0500</pubDate>
       
       <guid>/notes/nagraj-net/</guid>
-      <description>Not sure why I’ve been putting it off but I finally added a custom domain for this site, which is hosted by Github Pages. Once I settled on ‘nagraj.net’ I started looking for domain services. Google Domains had the name available at a reasonable price, and I found really good documentation that spells out exactly how to configure a Github Pages site to use a domain purchased via Google Domains.</description>
+      <description>custom domain for this github pages site</description>
     </item>
     
     <item>
@@ -273,8 +234,7 @@ An example … say you had the following (not so arbitrary) character vector:</d
       <pubDate>Wed, 06 Jan 2016 13:18:39 -0500</pubDate>
       
       <guid>/notes/networkd3/</guid>
-      <description>I’ve been working on a project that has a network analysis component, and am finally getting my head around how I can visualize the data. The package I’ve been using is networkD3, not to be confused with d3Network … same author but the former is now the actively developed version, and makes it easier to integrate the plots with something like Shiny.
-The vignette is encouraging but kind of opaque, especially in terms of data preparation.</description>
+      <description>interactive network visualiztion with D3 and R</description>
     </item>
     
     <item>
@@ -283,9 +243,7 @@ The vignette is encouraging but kind of opaque, especially in terms of data prep
       <pubDate>Tue, 22 Dec 2015 11:10:14 -0500</pubDate>
       
       <guid>/notes/abstruct/</guid>
-      <description>Just spent ~ 90 minutes this morning toying with the text generation program I mentioned in a note yesterday.
-dadadodo automatically creates pseudo random output based on input text. It’s a command line utility, and I have it installed on a Linux machine. Since I have a Shiny server running on the same box, I figured I’d see if I could combine the two and create a web app:
-http://apps.bioconnector.virginia.edu/abstruct/</description>
+      <description>Worked full or CI P of reasons. Was years.</description>
     </item>
     
     <item>
@@ -294,9 +252,7 @@ http://apps.bioconnector.virginia.edu/abstruct/</description>
       <pubDate>Mon, 21 Dec 2015 14:04:03 -0500</pubDate>
       
       <guid>/notes/dadadodo/</guid>
-      <description>dadadodo is a commmad line utilitiy for creating (pseudo) random sentences–and it was mentioned in the documentaiton for one of the datasets I wrote about in the last post.
-The name is a nod to the nonsensical, and some times the dadadodo output feels truly postmodern. The program is built on a Markov model but can generate some pretty wild results, especially with a larger corpus.
-That said, it’s easy to install and run from the command line.</description>
+      <description>programming cut-ups</description>
     </item>
     
     <item>
@@ -305,11 +261,7 @@ That said, it’s easy to install and run from the command line.</description>
       <pubDate>Wed, 16 Dec 2015 14:19:20 -0500</pubDate>
       
       <guid>/notes/free-data/</guid>
-      <description>Found a Github repository that curates links to “awesome public datasets”:
-https://github.com/caesar0301/awesome-public-datasets
-Judging from the fact that the repo has &amp;gt; 6000 stars, I might be a little late to the party …
-Tons of potential here but just to spitball a few ideas:
- Shiny app with choropleth map tracking spread of Ebola Classification algorithm for “age-appropriateness” of a piece of text based on modeled blog data Visualization of proportion of work on view (versus not on view) at the Minneapolis Institute of Art by artist nationality  </description>
+      <description>awesome</description>
     </item>
     
     <item>
@@ -318,8 +270,7 @@ Tons of potential here but just to spitball a few ideas:
       <pubDate>Tue, 08 Dec 2015 15:27:43 -0500</pubDate>
       
       <guid>/notes/calculating-geographic-distance-with-r/</guid>
-      <description>I’ve been working on an analysis that requires distance measurements as data points. The original dataset only had place names (as strings) so I had to do some geocoding before I could perform my distance calculations. I’ve used the ggmap package (… an R interface to the Google Maps API) to do this kind of thing in the past, but I haven’t documented that work before now.
-The workflow is simple enough:</description>
+      <description>a brief discussion of two methods for computing map distance</description>
     </item>
     
   </channel>

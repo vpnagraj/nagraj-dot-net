@@ -1,0 +1,51 @@
+---
+title: "Get Filename Without Extension"
+date: 2019-09-20T08:38:31-04:00
+tags: ["bash"]
+categories: ["notes"]
+summary: 'methods for accessing filenames without file extensions'
+---
+
+
+
+<p>Filenames are rarely arbitrary. They’re usually descriptive and sometimes contain useful data. You can use some basic <code>bash</code> file manipulation utilities to parse filenames for analysis or store them as variables.</p>
+<p>Take for example a file named <code>computer.blue</code> in a directory called <code>prince/</code>:</p>
+<pre><code>prince/computer.blue</code></pre>
+<p>If we wanted to get the filename(s) of anything in the <code>prince/</code> folder we could list (<code>ls</code>) the contents of the directory:</p>
+<pre class="bash"><code>ls prince/</code></pre>
+<pre><code>## computer.blue</code></pre>
+<p>But what if we wanted the name of the file <em>without</em> the extension?</p>
+<p>One <a href="https://stackoverflow.com/questions/2664740/extract-file-basename-without-path-and-extension-in-bash">SO post</a> offers the following solution:</p>
+<pre class="bash"><code>f=prince/computer.blue
+echo ${f##*/}
+f=${f##*/}
+echo ${f%.blue}
+echo ${f%.*}</code></pre>
+<pre><code>## computer.blue
+## computer
+## computer</code></pre>
+<p>The code above stores the filename and directory in a variable (<code>f</code>) and then uses subsequent <a href="http://tldp.org/LDP/LG/issue18/bash.html">string substitution expressions</a> to pull out the file name without extension.</p>
+<p>If you’re using <code>bash</code> (and not another shell) then you could also rely on the <code>basename</code> function to do something similar.</p>
+<p><code>man basename</code> describes the “suffix” argument:</p>
+<pre><code>BASENAME(1)               BSD General Commands Manual              BASENAME(1)
+
+NAME
+     basename, dirname -- return filename or directory portion of pathname
+
+SYNOPSIS
+     basename string [suffix]
+     basename [-a] [-s suffix] string [...]
+     dirname string
+
+DESCRIPTION
+     The basename utility deletes any prefix ending with the last slash `/&#39;
+     character present in string (after first stripping trailing slashes), and
+     a suffix, if given.  The suffix is not stripped if it is identical to the
+     remaining characters in string.  The resulting filename is written to the
+     standard output.  A non-existent suffix is ignored.  If -a is specified,
+     then every argument is treated as a string as if basename were invoked
+     with just one argument.  If -s is specified, then the suffix is taken as
+     its argument, and all other arguments are treated as a string.</code></pre>
+<p>So (given you’re on a system with the external <code>basename</code> function available) the following should work too:</p>
+<pre class="bash"><code>basename -s .blue prince/computer.blue</code></pre>
+<pre><code>## computer</code></pre>

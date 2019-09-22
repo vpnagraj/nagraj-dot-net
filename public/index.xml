@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>VP Nagraj on VP Nagraj</title>
@@ -7,8 +6,70 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018</copyright>
-    <lastBuildDate>Wed, 20 Apr 2016 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 20 Sep 2019 08:38:31 -0400</lastBuildDate>
     <atom:link href="/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Get Filename Without Extension</title>
+      <link>/notes/filename-no-extension/</link>
+      <pubDate>Fri, 20 Sep 2019 08:38:31 -0400</pubDate>
+      
+      <guid>/notes/filename-no-extension/</guid>
+      <description>
+
+
+&lt;p&gt;Filenames are rarely arbitrary. They’re usually descriptive and sometimes contain useful data. You can use some basic &lt;code&gt;bash&lt;/code&gt; file manipulation utilities to parse filenames for analysis or store them as variables.&lt;/p&gt;
+&lt;p&gt;Take for example a file named &lt;code&gt;computer.blue&lt;/code&gt; in a directory called &lt;code&gt;prince/&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;prince/computer.blue&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we wanted to get the filename(s) of anything in the &lt;code&gt;prince/&lt;/code&gt; folder we could list (&lt;code&gt;ls&lt;/code&gt;) the contents of the directory:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;ls prince/&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## computer.blue&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But what if we wanted the name of the file &lt;em&gt;without&lt;/em&gt; the extension?&lt;/p&gt;
+&lt;p&gt;One &lt;a href=&#34;https://stackoverflow.com/questions/2664740/extract-file-basename-without-path-and-extension-in-bash&#34;&gt;SO post&lt;/a&gt; offers the following solution:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;f=prince/computer.blue
+echo ${f##*/}
+f=${f##*/}
+echo ${f%.blue}
+echo ${f%.*}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## computer.blue
+## computer
+## computer&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The code above stores the filename and directory in a variable (&lt;code&gt;f&lt;/code&gt;) and then uses subsequent &lt;a href=&#34;http://tldp.org/LDP/LG/issue18/bash.html&#34;&gt;string substitution expressions&lt;/a&gt; to pull out the file name without extension.&lt;/p&gt;
+&lt;p&gt;If you’re using &lt;code&gt;bash&lt;/code&gt; (and not another shell) then you could also rely on the &lt;code&gt;basename&lt;/code&gt; function to do something similar.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;man basename&lt;/code&gt; describes the “suffix” argument:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;BASENAME(1)               BSD General Commands Manual              BASENAME(1)
+
+NAME
+     basename, dirname -- return filename or directory portion of pathname
+
+SYNOPSIS
+     basename string [suffix]
+     basename [-a] [-s suffix] string [...]
+     dirname string
+
+DESCRIPTION
+     The basename utility deletes any prefix ending with the last slash `/&amp;#39;
+     character present in string (after first stripping trailing slashes), and
+     a suffix, if given.  The suffix is not stripped if it is identical to the
+     remaining characters in string.  The resulting filename is written to the
+     standard output.  A non-existent suffix is ignored.  If -a is specified,
+     then every argument is treated as a string as if basename were invoked
+     with just one argument.  If -s is specified, then the suffix is taken as
+     its argument, and all other arguments are treated as a string.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So (given you’re on a system with the external &lt;code&gt;basename&lt;/code&gt; function available) the following should work too:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;basename -s .blue prince/computer.blue&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## computer&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Recovery from bradycardia and desaturation events at 32 weeks corrected age and NICU length of stay: an indicator of physiologic resilience?</title>
+      <link>/publication/late-bd/</link>
+      <pubDate>Thu, 04 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/late-bd/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>ROC Curves in R</title>
@@ -16,7 +77,10 @@
       <pubDate>Sun, 30 Jun 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/plot-roc/</guid>
-      <description>&lt;blockquote&gt;
+      <description>
+
+
+&lt;blockquote&gt;
 &lt;p&gt;A receiver operating characteristic curve, or ROC curve, is a graphical plot that illustrates the diagnostic ability of a binary classifier system as its discrimination threshold is varied.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;There is plenty of available information on how to plot ROC curves in R:&lt;/p&gt;
@@ -89,16 +153,16 @@ as.data.frame(Titanic)&lt;/code&gt;&lt;/pre&gt;
 ## 32  Crew Female Adult      Yes   20&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sample_n(titanic, 10)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##    Class    Sex   Age Survived
-## 1    3rd   Male Adult        0
+## 1   Crew   Male Adult        0
 ## 2   Crew   Male Adult        0
-## 3   Crew   Male Adult        0
+## 3    2nd   Male Adult        0
 ## 4   Crew   Male Adult        0
-## 5    2nd Female Child        1
+## 5    3rd   Male Adult        0
 ## 6   Crew   Male Adult        0
-## 7    1st   Male Adult        0
+## 7   Crew   Male Adult        0
 ## 8   Crew   Male Adult        0
-## 9    1st Female Adult        1
-## 10   3rd   Male Adult        1&lt;/code&gt;&lt;/pre&gt;
+## 9   Crew   Male Adult        0
+## 10  Crew Female Adult        1&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The model will predict survival (yes/no) from the Titanic. Predictors will include class, sex, and age. We’ll look at a model of with passenger class as the only predictor versus a model that includes class, sex, and age.&lt;/p&gt;
 &lt;div id=&#34;survived-class&#34; class=&#34;section level4&#34;&gt;
 &lt;h4&gt;&lt;code&gt;Survived ~ Class&lt;/code&gt;&lt;/h4&gt;
@@ -180,7 +244,10 @@ rbind(df1,df2) %&amp;gt;%
       <pubDate>Sat, 29 Jun 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/file-manipulation-loops/</guid>
-      <description>&lt;p&gt;When performing repetitive file manipulation operations, it can be useful to write a loop.&lt;/p&gt;
+      <description>
+
+
+&lt;p&gt;When performing repetitive file manipulation operations, it can be useful to write a loop.&lt;/p&gt;
 &lt;p&gt;Let’s assume you have a file structure organized as follows:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;.
 +-- loop.sh
@@ -193,7 +260,7 @@ rbind(df1,df2) %&amp;gt;%
 |   +-- sample5.bed
 +-- processed
 |   +-- &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You’d like to loop through all of the &lt;code&gt;.bed&lt;/code&gt; files in the &lt;code&gt;raw/&lt;/code&gt; directory, and output the first and last columns in a &lt;code&gt;.csv&lt;/code&gt; file in the &lt;code&gt;processed/&lt;/code&gt; directory that shares the same file prefix (i.e. “sample1”) as the given input.&lt;/p&gt;
+&lt;p&gt;You’d like to loop through all of the &lt;code&gt;.bed&lt;/code&gt; files in the &lt;code&gt;raw/&lt;/code&gt; directory, and output the first and last columns in a &lt;code&gt;.csv&lt;/code&gt; file in the &lt;code&gt;processed/&lt;/code&gt; directory that shares the same file prefix (i.e. “sample1”) as the given input.&lt;/p&gt;
 &lt;p&gt;To do so you have could write a bash script that is in a file called &lt;code&gt;loop.sh&lt;/code&gt;:&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;#!/bin/bash
 
@@ -258,7 +325,10 @@ for (f in files) {
       <pubDate>Thu, 27 Jun 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/docker-tabulizer/</guid>
-      <description>&lt;div id=&#34;tldr&#34; class=&#34;section level4&#34;&gt;
+      <description>
+
+
+&lt;div id=&#34;tldr&#34; class=&#34;section level4&#34;&gt;
 &lt;h4&gt;TL;DR&lt;/h4&gt;
 &lt;p&gt;The &lt;code&gt;tabulizer&lt;/code&gt; R package allows you extract tables from PDFs. It requires Java dependencies. To use the package via a Docker container:&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;docker pull vpnagraj/tabulizer
@@ -421,7 +491,10 @@ preterm %&amp;gt;%
       <pubDate>Wed, 26 Jun 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/prop-with-n/</guid>
-      <description>&lt;p&gt;One of the more typical workflows I need to perform is calculating counts within groups. The &lt;strong&gt;dplyr&lt;/strong&gt; &lt;code&gt;group_by() %&amp;gt;% summarise()&lt;/code&gt; pipeline (or just &lt;code&gt;count()&lt;/code&gt;) can easily get aggregated tallies. But occassionally it’s helpful to get count within group along with the proportion overall.&lt;/p&gt;
+      <description>
+
+
+&lt;p&gt;One of the more typical workflows I need to perform is calculating counts within groups. The &lt;strong&gt;dplyr&lt;/strong&gt; &lt;code&gt;group_by() %&amp;gt;% summarise()&lt;/code&gt; pipeline (or just &lt;code&gt;count()&lt;/code&gt;) can easily get aggregated tallies. But occassionally it’s helpful to get count within group along with the proportion overall.&lt;/p&gt;
 &lt;p&gt;Here’s one way to do that:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
 
@@ -460,8 +533,8 @@ starwars&lt;/code&gt;&lt;/pre&gt;
 ##    species  prop_with_n
 ##    &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;      
 ##  1 Human    35 (40%)   
-##  2 &amp;lt;NA&amp;gt;     5 (6%)     
-##  3 Droid    5 (6%)     
+##  2 Droid    5 (6%)     
+##  3 &amp;lt;NA&amp;gt;     5 (6%)     
 ##  4 Gungan   3 (3%)     
 ##  5 Kaminoan 2 (2%)     
 ##  6 Mirialan 2 (2%)     
@@ -479,7 +552,10 @@ starwars&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Sun, 16 Jun 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/circular-barplots/</guid>
-      <description>&lt;p&gt;While preparing figures for a manuscript recently, the first author proposed a plot to compare several phenotypes from every donor in the study. One suggestion was a series of circular barplots (normalized since each phenotype was on a different scale) side-by-side.&lt;/p&gt;
+      <description>
+
+
+&lt;p&gt;While preparing figures for a manuscript recently, the first author proposed a plot to compare several phenotypes from every donor in the study. One suggestion was a series of circular barplots (normalized since each phenotype was on a different scale) side-by-side.&lt;/p&gt;
 &lt;p&gt;Using &lt;code&gt;ggplot2&lt;/code&gt; that might look something like this:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
 library(tidyr)
@@ -636,7 +712,10 @@ upViewport()&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Wed, 08 May 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/summary-se/</guid>
-      <description>&lt;p&gt;I’ve found myself on Winston Chang’s &lt;a href=&#34;http://www.cookbook-r.com/&#34;&gt;cookbook-r website&lt;/a&gt; a number of times before. My most recent visit was to refresh my memory on the strategy for plotting means with error bars with &lt;code&gt;ggplot2&lt;/code&gt;:&lt;/p&gt;
+      <description>
+
+
+&lt;p&gt;I’ve found myself on Winston Chang’s &lt;a href=&#34;http://www.cookbook-r.com/&#34;&gt;cookbook-r website&lt;/a&gt; a number of times before. My most recent visit was to refresh my memory on the strategy for plotting means with error bars with &lt;code&gt;ggplot2&lt;/code&gt;:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)&#34; class=&#34;uri&#34;&gt;http://www.cookbook-r.com/Graphs/Plotting_means_and_error_bars_(ggplot2)&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;The recipe makes use of &lt;code&gt;summarySE()&lt;/code&gt; a function that is described in detail in &lt;a href=&#34;http://www.cookbook-r.com/Manipulating_data/Summarizing_data/&#34;&gt;another post that details strategies for summarizing data&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;summarySE()&lt;/code&gt; is a custom function that computes the mean, standard deviation, count, standard error, confidence interval for a variable (“measurevar”) within defined grouping variables (“groupvars”).&lt;/p&gt;
@@ -764,7 +843,10 @@ ToothGrowth %&amp;gt;%
       <pubDate>Fri, 08 Mar 2019 11:26:40 -0500</pubDate>
       
       <guid>/notes/single-app-shiny-server/</guid>
-      <description>&lt;p&gt;If you’ve written a Shiny app and have reached a point where you would like to share it with others … you have a few options:&lt;/p&gt;
+      <description>
+
+
+&lt;p&gt;If you’ve written a Shiny app and have reached a point where you would like to share it with others … you have a few options:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://shiny.rstudio.com/deploy/&#34; class=&#34;uri&#34;&gt;https://shiny.rstudio.com/deploy/&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Given that you have hardware (or a cloud setup) to install a server, &lt;a href=&#34;https://www.rstudio.com/products/shiny/download-server/&#34;&gt;Shiny Server Open Source&lt;/a&gt; may be a good solution.&lt;/p&gt;
 &lt;p&gt;I’ve deployed dozens of apps on different Shiny servers. In some cases, I may need a single server that hosts an entire directory of apps. With this configuration (the default for Shiny Server Open Source) each app is available at {url}/{app-name}.&lt;/p&gt;
@@ -797,7 +879,7 @@ server {
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Note that the parameters of interest for this post are:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;listen&lt;/code&gt; … explicitly tell the server to &lt;code&gt;listen 80&lt;/code&gt; so that apps are served at port 80 … otherwise you’ll need to specify the port number after the url (i.e. {url}:3737)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;listen&lt;/code&gt; … explicitly tell the server to &lt;code&gt;listen 80&lt;/code&gt; so that apps are served at port 80 … otherwise you’ll need to specify the port number after the url (i.e. {url}:3737)&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;location&lt;/code&gt; … we don’t want to pass any special location to the base URL since we’re defining an &lt;code&gt;app_dir&lt;/code&gt; (see below) … so &lt;code&gt;location /&lt;/code&gt; should work fine&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;app_dir&lt;/code&gt; … rather than serving up an entire directory of apps, we just have one … make sure the &lt;code&gt;app_dir&lt;/code&gt; specifies the directory where the app is on the host machine (usually &lt;code&gt;/srv/shiny-server/{app-name}&lt;/code&gt;)&lt;/li&gt;
 &lt;/ul&gt;
@@ -810,7 +892,10 @@ server {
       <pubDate>Mon, 11 Feb 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/rstudioconf2019/</guid>
-      <description>&lt;p&gt;This past January I was able to attend &lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019&#34;&gt;rstudio::conf 2019&lt;/a&gt; in Austin. I was there for the full week, taking the &lt;em&gt;Building Tidy Tools&lt;/em&gt; workshop and attending as many of the main conference program sessions as possible.&lt;/p&gt;
+      <description>
+
+
+&lt;p&gt;This past January I was able to attend &lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019&#34;&gt;rstudio::conf 2019&lt;/a&gt; in Austin. I was there for the full week, taking the &lt;em&gt;Building Tidy Tools&lt;/em&gt; workshop and attending as many of the main conference program sessions as possible.&lt;/p&gt;
 &lt;p&gt;Here is a collection of highlights/takeaways from the conference …&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#shortcuts&#34;&gt;Shortcuts&lt;/a&gt;&lt;/li&gt;
@@ -1032,7 +1117,10 @@ The package name comes from the German word “Ungewissheit”, which means unce
       <pubDate>Mon, 28 Jan 2019 17:14:59 +0000</pubDate>
       
       <guid>/notes/data-based-labels/</guid>
-      <description>&lt;p&gt;Chapter 7 of Edward Tufte’s &lt;strong&gt;The Visual Display of Quantitative Information&lt;/strong&gt; presents advantages of “multifunctioning graphical elements” in data visualiztions. The idea is that features like the shape of points on the plot, grid lines, or even data labels can serve multiple purposes in communicating information.&lt;/p&gt;
+      <description>
+
+
+&lt;p&gt;Chapter 7 of Edward Tufte’s &lt;strong&gt;The Visual Display of Quantitative Information&lt;/strong&gt; presents advantages of “multifunctioning graphical elements” in data visualiztions. The idea is that features like the shape of points on the plot, grid lines, or even data labels can serve multiple purposes in communicating information.&lt;/p&gt;
 &lt;p&gt;For example, take the shape of a stem plot:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
 library(dplyr)&lt;/code&gt;&lt;/pre&gt;
@@ -1152,24 +1240,6 @@ library(dplyr)&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Thu, 10 May 2018 00:00:00 +0000</pubDate>
       
       <guid>/publication/epicontacts/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Bradycardia and Oxygen Desaturation Events in VLBW infants: Association with BPD and other outcomes</title>
-      <link>/publication/bd-pas-2018/</link>
-      <pubDate>Thu, 03 May 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/publication/bd-pas-2018/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Seventh Day Respiratory Acuity Score is a Strong Predictor of BPD in VLBW Infants</title>
-      <link>/publication/ras-pas-2018/</link>
-      <pubDate>Thu, 03 May 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/publication/ras-pas-2018/</guid>
       <description></description>
     </item>
     

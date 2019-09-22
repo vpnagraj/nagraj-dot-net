@@ -18,12 +18,7 @@
       <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/project/lolaweb/</guid>
-      <description>LOLAweb is an interactive application that implements functions from the LOLA package in a web interface via the Shiny framework.
-The app is hosted and available for use at:
-http://lolaweb.databio.org
-To run the application locally, you&amp;rsquo;ll need to first clone this repository:
-git clone https://github.com/databio/LOLAweb.git  The app requires R to be installed, as well as several packages. From within R run the following to install the dependencies:
-install.packages(c(&amp;quot;ggplot2&amp;quot;, &amp;quot;shiny&amp;quot;, &amp;quot;DT&amp;quot;, &amp;quot;shinyWidgets&amp;quot;, &amp;quot;shinyjs&amp;quot;, &amp;quot;sodium&amp;quot;, &amp;quot;devtools&amp;quot;, &amp;quot;shinyBS&amp;quot;)) devtools::install_github(&amp;quot;databio/simpleCache&amp;quot;) devtools::install_github(&amp;quot;databio/GenomicDistributions&amp;quot;) source(&amp;quot;https://bioconductor.</description>
+      <description>LOLAweb is a web server and interactive results viewer for enrichment of overlap between a query region set (a bed file) and a database of region sets. It provides an interactive result explorer to visualize the highest ranked enrichments from the database. You can access the web server at &lt;a href=&#34;http://lolaweb.databio.org&#34; target=&#34;_blank&#34;&gt;http://lolaweb.databio.org&lt;/a&gt;</description>
     </item>
     
     <item>
@@ -32,7 +27,7 @@ install.packages(c(&amp;quot;ggplot2&amp;quot;, &amp;quot;shiny&amp;quot;, &amp;
       <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/project/recon/</guid>
-      <description></description>
+      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</description>
     </item>
     
     <item>
@@ -41,7 +36,7 @@ install.packages(c(&amp;quot;ggplot2&amp;quot;, &amp;quot;shiny&amp;quot;, &amp;
       <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/project/somrc/</guid>
-      <description></description>
+      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</description>
     </item>
     
     <item>
@@ -50,7 +45,7 @@ install.packages(c(&amp;quot;ggplot2&amp;quot;, &amp;quot;shiny&amp;quot;, &amp;
       <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/project/rug/</guid>
-      <description></description>
+      <description>Charlottesville / University of Virginia R Users Group Meetup</description>
     </item>
     
     <item>
@@ -59,7 +54,7 @@ install.packages(c(&amp;quot;ggplot2&amp;quot;, &amp;quot;shiny&amp;quot;, &amp;
       <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/project/workshops/</guid>
-      <description> Spring 2018 School of Medicine Research Computing Series (University of Virginia)  Optimizing R Code R Package Development Tools Writing Functions in R Conditional Logic in R Introduction to R  Health Sciences Library Workshop Series (University of Virginia)  Interactive Visualization with Javascript and R  Fall 2017 School of Medicine Research Computing Series (University of Virginia)  R Package Development Tools Advanced Data Visualization with R Introduction to Ivy Secure Computing Environment R For Beginners  StatLab Workshop Series (University of Virginia)  Interactive Visualization with Javascript and R  Spring 2017 BioConnector Workshop Series (University of Virginia)  Introduction to the Command Line Advanced Data Visualization with R Advanced Data Manipulation with R Building Shiny Web Applications In R R For Beginners  StatLab Workshop Series (University of Virginia)  Advanced Data Visualization with R  Fall 2016 BioConnector Workshop Series (University of Virginia)  Harvesting Data from NCBI Reproducible Reporting: Generating Dynamic Documents with R+RStudio Advanced Data Visualization with R Advanced Data Manipulation with R Building Shiny Web Applications In R R For Beginners  StatLab Workshop Series (University of Virginia)  Manipulating List Objects in R Interactive Visualization with Javascript and R  Summer 2016 BioConnector Workshop Series (University of Virginia)  Advanced Data Visualization with R Advanced Data Manipulation with R  Spring 2016 BioConnector Workshop Series (University of Virginia)  Building Shiny Web Applications In R R For Beginners  Fall 2015 StatLab Workshop Series (University of Virginia)  Building Shiny Web Applications In R  </description>
+      <description>I have experience teaching a variety of workshop material around basic programming and data analysis techniques. These are typically offered as hands-on sessions that are free for faculty, staff and students.</description>
     </item>
     
     <item>
@@ -68,12 +63,7 @@ install.packages(c(&amp;quot;ggplot2&amp;quot;, &amp;quot;shiny&amp;quot;, &amp;
       <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/project/epicontacts/</guid>
-      <description>Installing the package To install the current stable, CRAN version of the package, type:
-install.packages(&amp;quot;epicontacts&amp;quot;)  To benefit from the latest features and bug fixes, install the development, github version of the package using:
-devtools::install_github(&amp;quot;reconhub/epicontacts&amp;quot;)  Note that this requires the package devtools installed.
-What does it do? The main features of the package include:
- epicontacts: a new S3 class for storing linelists and contacts data
- make_epicontacts: a constructor for the new epicontacts class</description>
+      <description>A collection of tools for representing epidemiological contact data, composed of case line lists and contacts between cases. Also contains procedures for data handling, interactive graphics, and statistics.</description>
     </item>
     
     <item>
@@ -82,9 +72,7 @@ What does it do? The main features of the package include:
       <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/project/hei/</guid>
-      <description>Overview The goal of hei is to calculate Healthy Eating Index (HEI) scores from National Health and Nutrition Examination Survey (NHANES) data for use in dietary analyses. The HEI is a dietary metric designed by the USDA and NCI to gauge adherence to the US Dietary Guidelines.
-Installation hei is available on CRAN, and can be installed as follows:
-install.packages(&amp;quot;hei&amp;quot;)  To install the development version hosted on this repository, use the devtools package and the following:</description>
+      <description>Calculates Healthy Eating Index (HEI) scores for National Health and Nutrition Examination Survey (NHANES) data sets to facilitate analysis of demographic and dietary differences.</description>
     </item>
     
     <item>
@@ -93,8 +81,7 @@ install.packages(&amp;quot;hei&amp;quot;)  To install the development version ho
       <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/project/rrefine/</guid>
-      <description>Introduction OpenRefine (formerly Google Refine) is a popular, open source data cleaning software. rrefine enables users to programmatically trigger data transfer between R and OpenRefine. Using the functions available in this package, you can import, export or delete a project in OpenRefine directly from R. There are several client libraries for automating OpenRefine tasks via Python, nodeJS and Ruby. rrefine extends this functionality to R users.
-Installation The latest version of rrefine is availabe on Github and can be installed via devtools:</description>
+      <description>&amp;lsquo;OpenRefine&amp;rsquo; (formerly &amp;lsquo;Google Refine&amp;rsquo;) is a popular, open source data cleaning software. This package enables users to programmatically trigger data transfer between R and &amp;lsquo;OpenRefine&amp;rsquo;. Available functionality includes project import, export and deletion.</description>
     </item>
     
     <item>
@@ -103,8 +90,7 @@ Installation The latest version of rrefine is availabe on Github and can be inst
       <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/project/simplecache/</guid>
-      <description>simpleCache is an R package providing functions for caching R objects. Its purpose is to encourage writing reusable, restartable, and reproducible analysis pipelines for projects with massive data and computational requirements.
-Like its name indicates, simpleCache is intended to be simple. You choose a location to store your caches, and then provide the function with nothing more than a cache name and instructions (R code) for how to produce the R object.</description>
+      <description>Provides intuitive functions for caching R objects, encouraging reproducible, restartable, and distributed R analysis. The user selects a location to store caches, and then provides nothing more than a cache name and instructions (R code) for how to produce the R object. Also provides some advanced options like environment assignments, recreating or reloading caches, and cluster compute bindings (using the &amp;lsquo;batchtools&amp;rsquo; package) making it flexible enough for use in large-scale data analysis projects.</description>
     </item>
     
     <item>
@@ -113,7 +99,7 @@ Like its name indicates, simpleCache is intended to be simple. You choose a loca
       <pubDate>Sun, 01 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/project/courses/</guid>
-      <description> Spring 2018 BIMS 8382: Introduction to Biomedical Data Science Summer 2017 Data Science Institute Bootcamp: Introduction to Cloud Computing with AWS Spring 2017 BIMS 8382: Introduction to Biomedical Data Science Summer 2016 Data Science Institute Bootcamp: Introduction to Git and Github Spring 2016 BIMS 8382: Introduction to Biomedical Data Science </description>
+      <description>I have experience teaching several courses at the University of Virginia. These are similar in content to workshops but offered in a for-credit format.</description>
     </item>
     
   </channel>

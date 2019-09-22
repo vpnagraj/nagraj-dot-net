@@ -1,5 +1,92 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+    
+    
+    <url>
+    
+      <loc>/categories/</loc>
+      <lastmod>2019-09-20T08:38:31-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/notes/filename-no-extension/</loc>
+      <lastmod>2019-09-20T08:38:31-04:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/</loc>
+      <lastmod>2019-09-20T08:38:31-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/</loc>
+      <lastmod>2019-09-20T08:38:31-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/bash/</loc>
+      <lastmod>2019-09-20T08:38:31-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/notes/</loc>
+      <lastmod>2019-09-20T08:38:31-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication_types/2/</loc>
+      <lastmod>2019-07-04T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication_types/</loc>
+      <lastmod>2019-07-04T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication/late-bd/</loc>
+      <lastmod>2019-07-04T00:00:00+00:00</lastmod>
+    </url>
+    
   
     
     
@@ -7,6 +94,26 @@
     
       <loc>/notes/plot-roc/</loc>
       <lastmod>2019-06-30T17:14:59+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/ggplot2/</loc>
+      <lastmod>2019-06-30T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/r/</loc>
+      <lastmod>2019-06-30T17:14:59+00:00</lastmod>
+      <priority>0</priority>
     </url>
     
   
@@ -32,6 +139,16 @@
     
     <url>
     
+      <loc>/tags/docker/</loc>
+      <lastmod>2019-06-27T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/notes/prop-with-n/</loc>
       <lastmod>2019-06-26T17:14:59+00:00</lastmod>
     </url>
@@ -41,8 +158,28 @@
     
     <url>
     
+      <loc>/tags/dplyr/</loc>
+      <lastmod>2019-06-26T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/notes/circular-barplots/</loc>
       <lastmod>2019-06-16T17:14:59+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/circlize/</loc>
+      <lastmod>2019-06-16T17:14:59+00:00</lastmod>
+      <priority>0</priority>
     </url>
     
   
@@ -61,6 +198,16 @@
     
       <loc>/notes/single-app-shiny-server/</loc>
       <lastmod>2019-03-08T11:26:40-05:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/shiny/</loc>
+      <lastmod>2019-03-08T11:26:40-05:00</lastmod>
+      <priority>0</priority>
     </url>
     
   
@@ -122,6 +269,16 @@
     
     <url>
     
+      <loc>/publication_types/1/</loc>
+      <lastmod>2018-05-03T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/publication/bd-pas-2018/</loc>
       <lastmod>2018-05-03T00:00:00+00:00</lastmod>
     </url>
@@ -133,6 +290,16 @@
     
       <loc>/publication/ras-pas-2018/</loc>
       <lastmod>2018-05-03T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/benchmark/</loc>
+      <lastmod>2018-04-30T14:50:23+00:00</lastmod>
+      <priority>0</priority>
     </url>
     
   
@@ -167,6 +334,26 @@
     
     <url>
     
+      <loc>/tags/epi/</loc>
+      <lastmod>2018-04-28T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/readr/</loc>
+      <lastmod>2018-04-28T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/notes/bien/</loc>
       <lastmod>2018-04-27T17:14:59+00:00</lastmod>
     </url>
@@ -176,8 +363,38 @@
     
     <url>
     
+      <loc>/tags/leaflet/</loc>
+      <lastmod>2018-04-27T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/plants/</loc>
+      <lastmod>2018-04-27T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/project/lolaweb/</loc>
       <lastmod>2018-04-02T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/project/</loc>
+      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
+      <priority>0</priority>
     </url>
     
   
@@ -221,6 +438,16 @@
     
     <url>
     
+      <loc>/tags/affiliations/</loc>
+      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/project/epicontacts/</loc>
       <lastmod>2018-04-02T00:00:00+00:00</lastmod>
     </url>
@@ -239,6 +466,26 @@
     
     <url>
     
+      <loc>/tags/other/</loc>
+      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/r-packages/</loc>
+      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/project/rrefine/</loc>
       <lastmod>2018-04-02T00:00:00+00:00</lastmod>
     </url>
@@ -250,6 +497,16 @@
     
       <loc>/project/simplecache/</loc>
       <lastmod>2018-04-02T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/teaching/</loc>
+      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
+      <priority>0</priority>
     </url>
     
   
@@ -356,8 +613,48 @@
     
     <url>
     
+      <loc>/tags/javascript/</loc>
+      <lastmod>2016-07-25T09:16:04-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/gis/</loc>
+      <lastmod>2016-07-25T09:16:04-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/maps/</loc>
+      <lastmod>2016-07-25T09:16:04-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/notes/multiple-rmarkdown-reports/</loc>
       <lastmod>2016-07-21T08:38:31-04:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/r-markdown/</loc>
+      <lastmod>2016-07-21T08:38:31-04:00</lastmod>
+      <priority>0</priority>
     </url>
     
   
@@ -374,8 +671,48 @@
     
     <url>
     
+      <loc>/tags/chunking/</loc>
+      <lastmod>2016-07-11T15:24:47-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/pubmed/</loc>
+      <lastmod>2016-07-11T15:24:47-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/notes/how-to-create-small-random-sample-from-large-csv-file/</loc>
       <lastmod>2016-05-03T12:19:11-04:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/python/</loc>
+      <lastmod>2016-05-03T12:19:11-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/sample/</loc>
+      <lastmod>2016-05-03T12:19:11-04:00</lastmod>
+      <priority>0</priority>
     </url>
     
   
@@ -392,8 +729,28 @@
     
     <url>
     
+      <loc>/about/</loc>
+      <lastmod>2016-04-20T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/notes/installing-r-packages-from-source/</loc>
       <lastmod>2016-03-23T12:11:02-04:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/packages/</loc>
+      <lastmod>2016-03-23T12:11:02-04:00</lastmod>
+      <priority>0</priority>
     </url>
     
   
@@ -410,8 +767,38 @@
     
     <url>
     
+      <loc>/tags/latex/</loc>
+      <lastmod>2016-03-03T11:26:40-05:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/pandoc/</loc>
+      <lastmod>2016-03-03T11:26:40-05:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/notes/embedding-shiny-apps-inside-rmarkdown-documents/</loc>
       <lastmod>2016-02-29T12:03:12-05:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/pander/</loc>
+      <lastmod>2016-01-15T14:07:29-05:00</lastmod>
+      <priority>0</priority>
     </url>
     
   
@@ -428,8 +815,38 @@
     
     <url>
     
+      <loc>/tags/github-pages/</loc>
+      <lastmod>2016-01-13T13:09:19-05:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/notes/nagraj-net/</loc>
       <lastmod>2016-01-13T13:09:19-05:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/d3/</loc>
+      <lastmod>2016-01-06T13:18:39-05:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/network-analysis/</loc>
+      <lastmod>2016-01-06T13:18:39-05:00</lastmod>
+      <priority>0</priority>
     </url>
     
   
@@ -455,552 +872,8 @@
     
     <url>
     
-      <loc>/notes/dadadodo/</loc>
-      <lastmod>2015-12-21T14:04:03-05:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/notes/free-data/</loc>
-      <lastmod>2015-12-16T14:19:20-05:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/notes/calculating-geographic-distance-with-r/</loc>
-      <lastmod>2015-12-08T15:27:43-05:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/publication/library-crm/</loc>
-      <lastmod>2015-09-01T00:00:00+00:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/publication/exit-as-strategy/</loc>
-      <lastmod>2014-09-01T00:00:00+00:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/publication_types/1/</loc>
-      <lastmod>2018-05-03T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/publication_types/2/</loc>
-      <lastmod>2018-10-29T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/publication_types/6/</loc>
-      <lastmod>2014-09-01T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/about/</loc>
-      <lastmod>2016-04-20T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/affiliations/</loc>
-      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/bash/</loc>
-      <lastmod>2019-06-29T17:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/benchmark/</loc>
-      <lastmod>2018-04-30T14:50:23+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/categories/</loc>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/chunking/</loc>
-      <lastmod>2016-07-11T15:24:47-04:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/circlize/</loc>
-      <lastmod>2019-06-16T17:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/d3/</loc>
-      <lastmod>2016-01-06T13:18:39-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/tags/dadadodo/</loc>
       <lastmod>2015-12-22T11:10:14-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/datasets/</loc>
-      <lastmod>2015-12-16T14:19:20-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/docker/</loc>
-      <lastmod>2019-06-27T17:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/dplyr/</loc>
-      <lastmod>2019-06-26T17:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/epi/</loc>
-      <lastmod>2018-04-28T17:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/gis/</loc>
-      <lastmod>2016-07-25T09:16:04-04:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/geocoding/</loc>
-      <lastmod>2015-12-08T15:27:43-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/ggplot2/</loc>
-      <lastmod>2019-06-30T17:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/gis/</loc>
-      <lastmod>2015-12-08T15:27:43-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/github/</loc>
-      <lastmod>2015-12-16T14:19:20-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/github-pages/</loc>
-      <lastmod>2016-01-13T13:09:19-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/google/</loc>
-      <lastmod>2015-12-08T15:27:43-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/javascript/</loc>
-      <lastmod>2016-07-25T09:16:04-04:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/latex/</loc>
-      <lastmod>2016-03-03T11:26:40-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/leaflet/</loc>
-      <lastmod>2018-04-27T17:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/maps/</loc>
-      <lastmod>2016-07-25T09:16:04-04:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/network-analysis/</loc>
-      <lastmod>2016-01-06T13:18:39-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/categories/notes/</loc>
-      <lastmod>2019-06-30T17:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/other/</loc>
-      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/packages/</loc>
-      <lastmod>2016-03-23T12:11:02-04:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/pander/</loc>
-      <lastmod>2016-01-15T14:07:29-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/pandoc/</loc>
-      <lastmod>2016-03-03T11:26:40-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/plants/</loc>
-      <lastmod>2018-04-27T17:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/project/</loc>
-      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/publication_types/</loc>
-      <lastmod>2018-05-03T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/pubmed/</loc>
-      <lastmod>2015-12-22T11:10:14-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/pubmed/</loc>
-      <lastmod>2016-07-11T15:24:47-04:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/python/</loc>
-      <lastmod>2016-05-03T12:19:11-04:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/r/</loc>
-      <lastmod>2016-02-29T12:03:12-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/r/</loc>
-      <lastmod>2019-06-30T17:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/r-markdown/</loc>
-      <lastmod>2016-07-21T08:38:31-04:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/r-markdown/</loc>
-      <lastmod>2016-02-29T12:03:12-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/r-markdown/</loc>
-      <lastmod>2016-01-15T14:07:29-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/r-packages/</loc>
-      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/readr/</loc>
-      <lastmod>2018-04-28T17:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/sample/</loc>
-      <lastmod>2016-05-03T12:19:11-04:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/shiny/</loc>
-      <lastmod>2016-02-29T12:03:12-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/shiny/</loc>
-      <lastmod>2019-03-08T11:26:40-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/</loc>
-      <lastmod>2017-01-01T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/teaching/</loc>
-      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -1019,9 +892,94 @@
     
     <url>
     
-      <loc>/</loc>
-      <lastmod>2016-04-20T00:00:00+00:00</lastmod>
+      <loc>/notes/dadadodo/</loc>
+      <lastmod>2015-12-21T14:04:03-05:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/notes/free-data/</loc>
+      <lastmod>2015-12-16T14:19:20-05:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/datasets/</loc>
+      <lastmod>2015-12-16T14:19:20-05:00</lastmod>
       <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/github/</loc>
+      <lastmod>2015-12-16T14:19:20-05:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/notes/calculating-geographic-distance-with-r/</loc>
+      <lastmod>2015-12-08T15:27:43-05:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/geocoding/</loc>
+      <lastmod>2015-12-08T15:27:43-05:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/google/</loc>
+      <lastmod>2015-12-08T15:27:43-05:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication/library-crm/</loc>
+      <lastmod>2015-09-01T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication_types/6/</loc>
+      <lastmod>2014-09-01T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication/exit-as-strategy/</loc>
+      <lastmod>2014-09-01T00:00:00+00:00</lastmod>
     </url>
     
   

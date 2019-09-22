@@ -41,7 +41,7 @@ server {
 }</code></pre>
 <p>Note that the parameters of interest for this post are:</p>
 <ul>
-<li><code>listen</code> … explicitly tell the server to <code>listen 80</code> so that apps are served at port 80 … otherwise you’ll need to specify the port number after the url (i.e. {url}:3737)</li>
+<li><code>listen</code> … explicitly tell the server to <code>listen 80</code> so that apps are served at port 80 … otherwise you’ll need to specify the port number after the url (i.e. {url}:3737)</li>
 <li><code>location</code> … we don’t want to pass any special location to the base URL since we’re defining an <code>app_dir</code> (see below) … so <code>location /</code> should work fine</li>
 <li><code>app_dir</code> … rather than serving up an entire directory of apps, we just have one … make sure the <code>app_dir</code> specifies the directory where the app is on the host machine (usually <code>/srv/shiny-server/{app-name}</code>)</li>
 </ul>
