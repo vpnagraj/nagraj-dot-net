@@ -1,0 +1,57 @@
+---
+title: "bash Aliases"
+date: 2019-09-21T08:38:31-04:00
+tags: ["bash"]
+categories: ["notes"]
+summary: 'a collection of useful bash aliases'
+---
+
+
+
+<p>Aliases are great. Typing takes time, and a little shorthand for common <code>bash</code> commands can save more than a few keystrokes. Time saving aside … investigating flags to bake into an alias can be illuminating. The breadth of options to most of my go-to command line tools never ceases to amaze me. And, at least in my experience, many times the default incantation isn’t necessarily the best.</p>
+<p>Here are a few aliases that I find useful.</p>
+<div id="c" class="section level3">
+<h3><code>c</code></h3>
+<pre class="bash"><code>alias c=&quot;clear&quot;</code></pre>
+<p>Simple shorthand … but <code>c</code> is definitely a time saver, especially considering how many times I find myself <code>clear</code>-ing the window each day.</p>
+</div>
+<div id="wcl" class="section level3">
+<h3><code>wcl</code></h3>
+<pre class="bash"><code>alias wcl=&quot;wc -l&quot;</code></pre>
+<p><code>wcl</code> will return the number of lines in file. This can be helpful for debugging (i.e. when the length of expected output is known) an output file or input from a <code>|</code>. It also may be worth considering something like <code>alias wcc='wc -c'</code> to get file size in bytes.</p>
+<p>From <code>man wc</code>:</p>
+<pre><code>     -l      The number of lines in each input file is written to the standard
+             output.</code></pre>
+</div>
+<div id="ll" class="section level3">
+<h3><code>ll</code></h3>
+<pre class="bash"><code>alias ll=&quot;ls -lathp&quot;</code></pre>
+<p>Listing contents of a directory with <code>ls</code> doesn’t show file size/permissions or hidden files. A “long list” (<code>ls -la</code>) will include</p>
+<p>From <code>man ls</code>:</p>
+<pre><code>     -l      (The lowercase letter ``ell&#39;&#39;.)  List in long format.  (See
+             below.)  If the output is to a terminal, a total sum for all the
+             file sizes is output on a line before the long listing.
+     -a      Include directory entries whose names begin with a dot (.).
+     -t      Sort by time modified (most recently modified first) before sort-
+             ing the operands by lexicographical order.
+     -h      When used with the -l option, use unit suffixes: Byte, Kilobyte,
+             Megabyte, Gigabyte, Terabyte and Petabyte in order to reduce the
+             number of digits to three or less using base 2 for sizes.
+     -p      Write a slash (`/&#39;) after each filename if that file is a direc-
+             tory.
+</code></pre>
+</div>
+<div id="gitlog" class="section level3">
+<h3><code>gitlog</code></h3>
+<pre class="bash"><code>alias gitlog=&quot;git log --graph --pretty=format:&#39;%d %Cred%h%Creset - %C(yellow)%s%Creset %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#39;&quot;</code></pre>
+<p>While it may not be the canonical way to do things (<a href="https://git-scm.com/book/en/v2/Git-Basics-Git-Aliases"><code>git</code> has its own concept of aliases</a>), I like having aliased <code>git</code> commands side-by-side with my <code>bash</code> aliases. The <code>git log</code> command takes a <a href="https://git-scm.com/docs/pretty-formats/1.8.2">formatting string</a>. You can selectively display commit information and even color code fields. The <code>--graph</code> (graph-ical) option represents the commit history as a list.</p>
+<p><img src="/img/gitlog-1.png" /></p>
+<p>And you can still use other options to <code>git log</code> too (i.e. <code>gitlog -n 5</code> to just display info for the last 5 commits).</p>
+<p><img src="/img/gitlog-2.png" /></p>
+</div>
+<div id="dps" class="section level3">
+<h3><code>dps</code></h3>
+<pre class="bash"><code>alias dps=&quot;watch -n1 \&quot;docker ps --format &#39;table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.RunningFor}}&#39;\&quot;&quot;</code></pre>
+<p>This might fall more into the category of one-liner than alias … but I recently found a way to constantly monitor the status of Docker containers. I made an alias that uses the <a href="https://superuser.com/questions/276701/using-the-watch-command-with-an-argument-that-contains-quotes"><code>watch</code> command</a> on <code>docker -ps</code> with a formatting string specifying the info I want to view for the running container(s). When I’m doing development work with Docker I keep this running in a <code>tmux</code> pane so I can see when containers start/stop running.</p>
+<p><img src="/img/dps_demo.gif" /></p>
+</div>

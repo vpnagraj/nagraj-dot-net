@@ -13,6 +13,15 @@
     
     
     <item>
+      <title>bash Aliases</title>
+      <link>/notes/useful-aliases/</link>
+      <pubDate>Sat, 21 Sep 2019 08:38:31 -0400</pubDate>
+      
+      <guid>/notes/useful-aliases/</guid>
+      <description>a collection of useful bash aliases</description>
+    </item>
+    
+    <item>
       <title>Get Filename Without Extension</title>
       <link>/notes/filename-no-extension/</link>
       <pubDate>Fri, 20 Sep 2019 08:38:31 -0400</pubDate>

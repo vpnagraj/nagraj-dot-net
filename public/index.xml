@@ -6,8 +6,67 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018</copyright>
-    <lastBuildDate>Fri, 20 Sep 2019 08:38:31 -0400</lastBuildDate>
+    <lastBuildDate>Sat, 21 Sep 2019 08:38:31 -0400</lastBuildDate>
     <atom:link href="/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>bash Aliases</title>
+      <link>/notes/useful-aliases/</link>
+      <pubDate>Sat, 21 Sep 2019 08:38:31 -0400</pubDate>
+      
+      <guid>/notes/useful-aliases/</guid>
+      <description>
+
+
+&lt;p&gt;Aliases are great. Typing takes time, and a little shorthand for common &lt;code&gt;bash&lt;/code&gt; commands can save more than a few keystrokes. Time saving aside … investigating flags to bake into an alias can be illuminating. The breadth of options to most of my go-to command line tools never ceases to amaze me. And, at least in my experience, many times the default incantation isn’t necessarily the best.&lt;/p&gt;
+&lt;p&gt;Here are a few aliases that I find useful.&lt;/p&gt;
+&lt;div id=&#34;c&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;code&gt;c&lt;/code&gt;&lt;/h3&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;alias c=&amp;quot;clear&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Simple shorthand … but &lt;code&gt;c&lt;/code&gt; is definitely a time saver, especially considering how many times I find myself &lt;code&gt;clear&lt;/code&gt;-ing the window each day.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;wcl&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;code&gt;wcl&lt;/code&gt;&lt;/h3&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;alias wcl=&amp;quot;wc -l&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;wcl&lt;/code&gt; will return the number of lines in file. This can be helpful for debugging (i.e. when the length of expected output is known) an output file or input from a &lt;code&gt;|&lt;/code&gt;. It also may be worth considering something like &lt;code&gt;alias wcc=&#39;wc -c&#39;&lt;/code&gt; to get file size in bytes.&lt;/p&gt;
+&lt;p&gt;From &lt;code&gt;man wc&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;     -l      The number of lines in each input file is written to the standard
+             output.&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ll&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;code&gt;ll&lt;/code&gt;&lt;/h3&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;alias ll=&amp;quot;ls -lathp&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Listing contents of a directory with &lt;code&gt;ls&lt;/code&gt; doesn’t show file size/permissions or hidden files. A “long list” (&lt;code&gt;ls -la&lt;/code&gt;) will include&lt;/p&gt;
+&lt;p&gt;From &lt;code&gt;man ls&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;     -l      (The lowercase letter ``ell&amp;#39;&amp;#39;.)  List in long format.  (See
+             below.)  If the output is to a terminal, a total sum for all the
+             file sizes is output on a line before the long listing.
+     -a      Include directory entries whose names begin with a dot (.).
+     -t      Sort by time modified (most recently modified first) before sort-
+             ing the operands by lexicographical order.
+     -h      When used with the -l option, use unit suffixes: Byte, Kilobyte,
+             Megabyte, Gigabyte, Terabyte and Petabyte in order to reduce the
+             number of digits to three or less using base 2 for sizes.
+     -p      Write a slash (`/&amp;#39;) after each filename if that file is a direc-
+             tory.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;gitlog&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;code&gt;gitlog&lt;/code&gt;&lt;/h3&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;alias gitlog=&amp;quot;git log --graph --pretty=format:&amp;#39;%d %Cred%h%Creset - %C(yellow)%s%Creset %Cgreen(%cr) %C(bold blue)&amp;lt;%an&amp;gt;%Creset&amp;#39;&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;While it may not be the canonical way to do things (&lt;a href=&#34;https://git-scm.com/book/en/v2/Git-Basics-Git-Aliases&#34;&gt;&lt;code&gt;git&lt;/code&gt; has its own concept of aliases&lt;/a&gt;), I like having aliased &lt;code&gt;git&lt;/code&gt; commands side-by-side with my &lt;code&gt;bash&lt;/code&gt; aliases. The &lt;code&gt;git log&lt;/code&gt; command takes a &lt;a href=&#34;https://git-scm.com/docs/pretty-formats/1.8.2&#34;&gt;formatting string&lt;/a&gt;. You can selectively display commit information and even color code fields. The &lt;code&gt;--graph&lt;/code&gt; (graph-ical) option represents the commit history as a list.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/gitlog-1.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;And you can still use other options to &lt;code&gt;git log&lt;/code&gt; too (i.e. &lt;code&gt;gitlog -n 5&lt;/code&gt; to just display info for the last 5 commits).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/gitlog-2.png&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;dps&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;code&gt;dps&lt;/code&gt;&lt;/h3&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;alias dps=&amp;quot;watch -n1 \&amp;quot;docker ps --format &amp;#39;table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.RunningFor}}&amp;#39;\&amp;quot;&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This might fall more into the category of one-liner than alias … but I recently found a way to constantly monitor the status of Docker containers. I made an alias that uses the &lt;a href=&#34;https://superuser.com/questions/276701/using-the-watch-command-with-an-argument-that-contains-quotes&#34;&gt;&lt;code&gt;watch&lt;/code&gt; command&lt;/a&gt; on &lt;code&gt;docker -ps&lt;/code&gt; with a formatting string specifying the info I want to view for the running container(s). When I’m doing development work with Docker I keep this running in a &lt;code&gt;tmux&lt;/code&gt; pane so I can see when containers start/stop running.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/dps_demo.gif&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Get Filename Without Extension</title>
@@ -153,16 +212,16 @@ as.data.frame(Titanic)&lt;/code&gt;&lt;/pre&gt;
 ## 32  Crew Female Adult      Yes   20&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sample_n(titanic, 10)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##    Class    Sex   Age Survived
-## 1   Crew   Male Adult        0
-## 2   Crew   Male Adult        0
+## 1    3rd   Male Child        0
+## 2    3rd   Male Adult        1
 ## 3    2nd   Male Adult        0
-## 4   Crew   Male Adult        0
-## 5    3rd   Male Adult        0
+## 4    1st   Male Adult        0
+## 5   Crew   Male Adult        0
 ## 6   Crew   Male Adult        0
-## 7   Crew   Male Adult        0
+## 7   Crew Female Adult        1
 ## 8   Crew   Male Adult        0
-## 9   Crew   Male Adult        0
-## 10  Crew Female Adult        1&lt;/code&gt;&lt;/pre&gt;
+## 9    3rd   Male Adult        0
+## 10   3rd   Male Adult        0&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The model will predict survival (yes/no) from the Titanic. Predictors will include class, sex, and age. We’ll look at a model of with passenger class as the only predictor versus a model that includes class, sex, and age.&lt;/p&gt;
 &lt;div id=&#34;survived-class&#34; class=&#34;section level4&#34;&gt;
 &lt;h4&gt;&lt;code&gt;Survived ~ Class&lt;/code&gt;&lt;/h4&gt;
@@ -1231,15 +1290,6 @@ library(dplyr)&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Wed, 06 Jun 2018 00:00:00 +0000</pubDate>
       
       <guid>/publication/lolaweb/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>epicontacts: Handling, visualisation and analysis of epidemiological contacts</title>
-      <link>/publication/epicontacts/</link>
-      <pubDate>Thu, 10 May 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/publication/epicontacts/</guid>
       <description></description>
     </item>
     

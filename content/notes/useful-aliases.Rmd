@@ -1,0 +1,91 @@
+---
+title: "bash Aliases"
+date: 2019-09-21T08:38:31-04:00
+tags: ["bash"]
+categories: ["notes"]
+summary: 'a collection of useful bash aliases'
+---
+
+```{r, include = FALSE}
+library(knitr)
+opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, eval = FALSE)
+```
+
+Aliases are great. Typing takes time, and a little shorthand for common `bash` commands can save more than a few keystrokes. Time saving aside ... investigating flags to bake into an alias can be illuminating. The breadth of options to most of my go-to command line tools never ceases to amaze me. And, at least in my experience, many times the default incantation isn't necessarily the best.
+
+Here are a few aliases that I find useful.
+
+### `c`
+
+```{bash}
+alias c="clear"
+```
+
+Simple shorthand ... but `c` is definitely a time saver, especially considering how many times I find myself `clear`-ing the window each day.
+
+### `wcl`
+
+```{bash}
+alias wcl="wc -l"
+```
+
+`wcl` will return the number of lines in file. This can be helpful for debugging (i.e. when the length of expected output is known) an output file or input from a `|`. It also may be worth considering something like `alias wcc='wc -c'` to get file size in bytes.
+
+From `man wc`:
+
+```
+     -l      The number of lines in each input file is written to the standard
+             output.
+```
+
+### `ll`
+
+```{bash}
+alias ll="ls -lathp"
+```
+
+Listing contents of a directory with `ls` doesn't show file size/permissions or hidden files. A "long list" (`ls -la`) will include 
+
+From `man ls`:
+
+```
+     -l      (The lowercase letter ``ell''.)  List in long format.  (See
+             below.)  If the output is to a terminal, a total sum for all the
+             file sizes is output on a line before the long listing.
+     -a      Include directory entries whose names begin with a dot (.).
+     -t      Sort by time modified (most recently modified first) before sort-
+             ing the operands by lexicographical order.
+     -h      When used with the -l option, use unit suffixes: Byte, Kilobyte,
+             Megabyte, Gigabyte, Terabyte and Petabyte in order to reduce the
+             number of digits to three or less using base 2 for sizes.
+     -p      Write a slash (`/') after each filename if that file is a direc-
+             tory.
+
+```
+
+
+### `gitlog`
+
+```{bash}
+alias gitlog="git log --graph --pretty=format:'%d %Cred%h%Creset - %C(yellow)%s%Creset %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
+```
+
+While it may not be the canonical way to do things ([`git` has its own concept of aliases](https://git-scm.com/book/en/v2/Git-Basics-Git-Aliases)), I like having aliased `git` commands side-by-side with my `bash` aliases. The `git log` command takes a [formatting string](https://git-scm.com/docs/pretty-formats/1.8.2). You can selectively display commit information and even color code fields. The `--graph` (graph-ical) option represents the commit history as a list.
+
+![](/img/gitlog-1.png)
+
+And you can still use other options to `git log` too (i.e. `gitlog -n 5` to just display info for the last 5 commits).
+
+![](/img/gitlog-2.png)
+
+### `dps`
+
+```{bash}
+alias dps="watch -n1 \"docker ps --format 'table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.RunningFor}}'\""
+```
+
+This might fall more into the category of one-liner than alias ... but I recently found a way to constantly monitor the status of Docker containers. I made an alias that uses the [`watch` command](https://superuser.com/questions/276701/using-the-watch-command-with-an-argument-that-contains-quotes
+) on `docker -ps` with a formatting string specifying the info I want to view for the running container(s). When I'm doing development work with Docker I keep this running in a `tmux` pane so I can see when containers start/stop running.
+
+![](/img/dps_demo.gif)
+
