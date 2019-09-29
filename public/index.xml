@@ -320,7 +320,7 @@ rbind(df1,df2) %&amp;gt;%
 +-- processed
 |   +-- &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;You’d like to loop through all of the &lt;code&gt;.bed&lt;/code&gt; files in the &lt;code&gt;raw/&lt;/code&gt; directory, and output the first and last columns in a &lt;code&gt;.csv&lt;/code&gt; file in the &lt;code&gt;processed/&lt;/code&gt; directory that shares the same file prefix (i.e. “sample1”) as the given input.&lt;/p&gt;
-&lt;p&gt;To do so you have could write a bash script that is in a file called &lt;code&gt;loop.sh&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;To do so you could write a bash script that is in a file called &lt;code&gt;loop.sh&lt;/code&gt;:&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;#!/bin/bash
 
 # loop through all .bed files in the raw dir
@@ -342,7 +342,7 @@ do
   awk &amp;#39;BEGIN{FS=&amp;quot;\t&amp;quot;;OFS=&amp;quot;,&amp;quot;}{print $1, $NF}&amp;#39; $f &amp;gt; processed/&amp;quot;$out_fn&amp;quot;.csv
 
 done&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In R (presumably the &lt;code&gt;loop.R&lt;/code&gt; file) you could write something like this:&lt;/p&gt;
+&lt;p&gt;And in &lt;code&gt;loop.R&lt;/code&gt; you could write something like this:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;files &amp;lt;- list.files(&amp;quot;raw&amp;quot;, full.names = TRUE)
 
 for (f in files) {
@@ -1003,7 +1003,7 @@ shortcuts&lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;&lt;a name=&#34;rstudio12&#34;&gt;&lt;/a&gt;RStudio 1.2 features&lt;/h3&gt;
 &lt;p&gt;The RStudio team is working to make the RStudio IDE an even more comprehensive data science toolkit. Version 1.2 introduces features to support multiple languages, including python, SQL and D3. Jonathan McPherson gave a tour of the new multilingual support:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio&#34; class=&#34;uri&#34;&gt;https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;I put together a trival example of what this looks workflow looks like for passing R objects to python (and vice versa) from chunk-to-chunk in an R markdown document:&lt;/p&gt;
+&lt;p&gt;I put together a trivial example of what this looks workflow looks like for passing R objects to python (and vice versa) from chunk-to-chunk in an R markdown document:&lt;/p&gt;
 &lt;pre class=&#34;python&#34;&gt;&lt;code&gt;```{r setup}
   library(reticulate)
   use_python(&amp;quot;/usr/bin/python&amp;quot;, required = TRUE)
@@ -1055,7 +1055,7 @@ shortcuts&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;separate_rows&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;&lt;a name=&#34;separaterows&#34;&gt;&lt;/a&gt;&lt;code&gt;separate_rows()&lt;/code&gt;&lt;/h3&gt;
-&lt;p&gt;The &lt;code&gt;tidyr&lt;/code&gt; &lt;code&gt;separate_rows()&lt;/code&gt; function isn’t a new by any means, but it’s one that I picked up during a demo at the conference. This will be handy “wide-to-long” transformations on data that is packed into a single column (and separated by a common delimiter):&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;tidyr&lt;/code&gt; &lt;code&gt;separate_rows()&lt;/code&gt; function isn’t a new by any means, but it’s one that I picked up during a demo at the conference. This will be for handy “wide-to-long” transformations on data that is packed into a single column (and separated by a common delimiter):&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyr)
 
 

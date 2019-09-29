@@ -48,7 +48,7 @@ The RStudio team is working to make the RStudio IDE an even more comprehensive d
 
 <https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio>
 
-I put together a trival example of what this looks workflow looks like for passing R objects to python (and vice versa) from chunk-to-chunk in an R markdown document:
+I put together a trivial example of what this looks workflow looks like for passing R objects to python (and vice versa) from chunk-to-chunk in an R markdown document:
 
 
 ````python
@@ -102,7 +102,7 @@ Programming with [`tidy eval`](https://tidyeval.tidyverse.org/) can seem dauntin
 
 ### <a name="separaterows"></a>`separate_rows()`
 
-The `tidyr` `separate_rows()` function isn't a new by any means, but it's one that I picked up during a demo at the conference. This will be handy "wide-to-long" transformations on data that is packed into a single column (and separated by a common delimiter):
+The `tidyr` `separate_rows()` function isn't a new by any means, but it's one that I picked up during a demo at the conference. This will be for handy "wide-to-long" transformations on data that is packed into a single column (and separated by a common delimiter):
 
 ```{r}
 library(tidyr)

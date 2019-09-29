@@ -22,7 +22,7 @@ summary: "comparing bash and R for iterative file manipulation"
 +-- processed
 |   +-- </code></pre>
 <p>You’d like to loop through all of the <code>.bed</code> files in the <code>raw/</code> directory, and output the first and last columns in a <code>.csv</code> file in the <code>processed/</code> directory that shares the same file prefix (i.e. “sample1”) as the given input.</p>
-<p>To do so you have could write a bash script that is in a file called <code>loop.sh</code>:</p>
+<p>To do so you could write a bash script that is in a file called <code>loop.sh</code>:</p>
 <pre class="bash"><code>#!/bin/bash
 
 # loop through all .bed files in the raw dir
@@ -44,7 +44,7 @@ do
   awk &#39;BEGIN{FS=&quot;\t&quot;;OFS=&quot;,&quot;}{print $1, $NF}&#39; $f &gt; processed/&quot;$out_fn&quot;.csv
 
 done</code></pre>
-<p>In R (presumably the <code>loop.R</code> file) you could write something like this:</p>
+<p>And in <code>loop.R</code> you could write something like this:</p>
 <pre class="r"><code>files &lt;- list.files(&quot;raw&quot;, full.names = TRUE)
 
 for (f in files) {

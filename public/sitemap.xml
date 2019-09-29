@@ -101,6 +101,16 @@
     
     <url>
     
+      <loc>/tags/r/</loc>
+      <lastmod>2019-06-30T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/notes/plot-roc/</loc>
       <lastmod>2019-06-30T17:14:59+00:00</lastmod>
     </url>
@@ -111,16 +121,6 @@
     <url>
     
       <loc>/tags/ggplot2/</loc>
-      <lastmod>2019-06-30T17:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/r/</loc>
       <lastmod>2019-06-30T17:14:59+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -622,7 +622,7 @@
     
     <url>
     
-      <loc>/tags/javascript/</loc>
+      <loc>/tags/gis/</loc>
       <lastmod>2016-07-25T09:16:04-04:00</lastmod>
       <priority>0</priority>
     </url>
@@ -632,7 +632,7 @@
     
     <url>
     
-      <loc>/tags/gis/</loc>
+      <loc>/tags/javascript/</loc>
       <lastmod>2016-07-25T09:16:04-04:00</lastmod>
       <priority>0</priority>
     </url>

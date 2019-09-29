@@ -67,14 +67,11 @@ gapminder %>%
 
 3. Write an RMarkdown file that is generic enough to work for each data set ... and the title of in the YAML header for the Rmd can include data specific to the file being processed
 
-<p>
 ```{r, echo=FALSE, results='asis', eval = TRUE}
-catn("---")
-catn("title: '`r unique(cont$continent)`'")
-catn("output: pdf_document")
-catn("---")
+catn("<pre class = '{r}'><code class = 'hljs shell'>")
+catn("---<br>  title: '`r unique(cont$continent)`'<br>  output: pdf_document<br>  ---")
+catn("</code></pre>")
 ```
-</p>
 
 ```{r, echo=F, results='asis', eval = TRUE}
 catn("```{r}")

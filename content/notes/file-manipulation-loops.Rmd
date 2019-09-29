@@ -30,7 +30,7 @@ Let's assume you have a file structure organized as follows:
 
 You'd like to loop through all of the `.bed` files in the `raw/` directory, and output the first and last columns in a `.csv` file in the `processed/` directory that shares the same file prefix (i.e. "sample1") as the given input. 
 
-To do so you have could write a bash script that is in a file called `loop.sh`:
+To do so you could write a bash script that is in a file called `loop.sh`:
 
 ```{bash}
 #!/bin/bash
@@ -56,7 +56,7 @@ do
 done
 ```
 
-In R (presumably the `loop.R` file) you could write something like this:
+And in `loop.R` you could write something like this:
 
 ```{r}
 files <- list.files("raw", full.names = TRUE)

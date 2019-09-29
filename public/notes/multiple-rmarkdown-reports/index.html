@@ -298,28 +298,21 @@ gapminder %&gt;%
   write_csv(&quot;data/oceania.csv&quot;)</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li><p>Check that data is prepared correctly (i.e. all columns are named the same, missing values are represented consistently)</p></li>
-<li><p>Write an RMarkdown file that is generic enough to work for each data set … and the title of in the YAML header for the Rmd can include data specific to the file being processed</p></li>
-</ol>
-<p>
-<hr />
-title: ‘<code>r unique(cont$continent)</code>’
-output: pdf_document
-—
-</p>
-<pre><code> ```{r} 
- library(ggplot2) 
- library(dplyr) 
-  
- cont %&gt;% 
-   # average life expectancy and gdp per capita 
-   group_by(country) %&gt;% 
-   summarise(lifeExp = mean(lifeExp), gdpPercap = mean(gdpPercap)) %&gt;% 
-   # scatterplot of life expectancy by gdp per capita 
-   ggplot(aes(lifeExp, gdpPercap, label = country)) + 
-   geom_text() + 
-   theme_minimal() 
- ``` </code></pre>
-<ol start="4" style="list-style-type: decimal">
+<li><p>Write an RMarkdown file that is generic enough to work for each data set … and the title of in the YAML header for the Rmd can include data specific to the file being processed</p>
+<pre class = '{r}'><code class = 'hljs shell'> 
+  ---<br>  title: '`r unique(cont$continent)`'<br>  output: pdf_document<br>  --- 
+  </code></pre>
+<pre class="{r}"><code>library(ggplot2) 
+library(dplyr) 
+
+cont %&gt;% 
+  # average life expectancy and gdp per capita 
+  group_by(country) %&gt;% 
+  summarise(lifeExp = mean(lifeExp), gdpPercap = mean(gdpPercap)) %&gt;% 
+  # scatterplot of life expectancy by gdp per capita 
+  ggplot(aes(lifeExp, gdpPercap, label = country)) + 
+  geom_text() + 
+  theme_minimal() </code></pre></li>
 <li><p>Write an R script that:</p>
 <ol style="list-style-type: decimal">
 <li>Loops through the data folder</li>

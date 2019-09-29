@@ -57,7 +57,7 @@ shortcuts</code></pre>
 <h3><a name="rstudio12"></a>RStudio 1.2 features</h3>
 <p>The RStudio team is working to make the RStudio IDE an even more comprehensive data science toolkit. Version 1.2 introduces features to support multiple languages, including python, SQL and D3. Jonathan McPherson gave a tour of the new multilingual support:</p>
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio" class="uri">https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio</a></p>
-<p>I put together a trival example of what this looks workflow looks like for passing R objects to python (and vice versa) from chunk-to-chunk in an R markdown document:</p>
+<p>I put together a trivial example of what this looks workflow looks like for passing R objects to python (and vice versa) from chunk-to-chunk in an R markdown document:</p>
 <pre class="python"><code>```{r setup}
   library(reticulate)
   use_python(&quot;/usr/bin/python&quot;, required = TRUE)
@@ -109,7 +109,7 @@ shortcuts</code></pre>
 </div>
 <div id="separate_rows" class="section level3">
 <h3><a name="separaterows"></a><code>separate_rows()</code></h3>
-<p>The <code>tidyr</code> <code>separate_rows()</code> function isn’t a new by any means, but it’s one that I picked up during a demo at the conference. This will be handy “wide-to-long” transformations on data that is packed into a single column (and separated by a common delimiter):</p>
+<p>The <code>tidyr</code> <code>separate_rows()</code> function isn’t a new by any means, but it’s one that I picked up during a demo at the conference. This will be for handy “wide-to-long” transformations on data that is packed into a single column (and separated by a common delimiter):</p>
 <pre class="r"><code>library(tidyr)
 
 
