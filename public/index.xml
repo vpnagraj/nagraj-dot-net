@@ -6,8 +6,35 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018</copyright>
-    <lastBuildDate>Sat, 21 Sep 2019 08:38:31 -0400</lastBuildDate>
+    <lastBuildDate>Sun, 17 May 2020 00:00:00 +0000</lastBuildDate>
     <atom:link href="/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Web Application for Designing and Conducting Phase I Drug Combination Studies Using the Partial Order Continual Reassessment Method</title>
+      <link>/publication/pocrm-sct/</link>
+      <pubDate>Sun, 17 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/pocrm-sct/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Evidence From a Multistate Cohort: Enrollment in Affordable Care Act Qualified Health Plans&#39; Association With Viral Suppression</title>
+      <link>/publication/adap-qhp/</link>
+      <pubDate>Mon, 18 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/adap-qhp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Evidence from a Multistate Cohort: Enrollment in Affordable Care Act Qualified Health Plans Results in Viral Suppression</title>
+      <link>/publication/adap-qhp-idweek/</link>
+      <pubDate>Thu, 03 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/adap-qhp-idweek/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>bash Aliases</title>
@@ -212,15 +239,15 @@ as.data.frame(Titanic)&lt;/code&gt;&lt;/pre&gt;
 ## 32  Crew Female Adult      Yes   20&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sample_n(titanic, 10)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##    Class    Sex   Age Survived
-## 1    3rd   Male Child        0
-## 2    3rd   Male Adult        1
-## 3    2nd   Male Adult        0
+## 1    3rd   Male Adult        0
+## 2    1st   Male Adult        1
+## 3   Crew   Male Adult        0
 ## 4    1st   Male Adult        0
-## 5   Crew   Male Adult        0
+## 5    3rd Female Adult        1
 ## 6   Crew   Male Adult        0
-## 7   Crew Female Adult        1
-## 8   Crew   Male Adult        0
-## 9    3rd   Male Adult        0
+## 7   Crew   Male Adult        1
+## 8    3rd   Male Adult        1
+## 9    3rd Female Child        1
 ## 10   3rd   Male Adult        0&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The model will predict survival (yes/no) from the Titanic. Predictors will include class, sex, and age. We’ll look at a model of with passenger class as the only predictor versus a model that includes class, sex, and age.&lt;/p&gt;
 &lt;div id=&#34;survived-class&#34; class=&#34;section level4&#34;&gt;
@@ -574,8 +601,8 @@ starwars&lt;/code&gt;&lt;/pre&gt;
 ##  8 R5-D4     97    32 &amp;lt;NA&amp;gt;       white, red red             NA   &amp;lt;NA&amp;gt;  
 ##  9 Bigg…    183    84 black      light      brown           24   male  
 ## 10 Obi-…    182    77 auburn, w… fair       blue-gray       57   male  
-## # … with 77 more rows, and 5 more variables: homeworld &amp;lt;chr&amp;gt;,
-## #   species &amp;lt;chr&amp;gt;, films &amp;lt;list&amp;gt;, vehicles &amp;lt;list&amp;gt;, starships &amp;lt;list&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+## # … with 77 more rows, and 5 more variables: homeworld &amp;lt;chr&amp;gt;, species &amp;lt;chr&amp;gt;,
+## #   films &amp;lt;list&amp;gt;, vehicles &amp;lt;list&amp;gt;, starships &amp;lt;list&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;starwars %&amp;gt;%
   # get the count in category with count()
   count(species, name = &amp;quot;species_n&amp;quot;, sort = TRUE) %&amp;gt;%
@@ -1186,19 +1213,19 @@ library(dplyr)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;glimpse(starwars)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Observations: 87
 ## Variables: 13
-## $ name       &amp;lt;chr&amp;gt; &amp;quot;Luke Skywalker&amp;quot;, &amp;quot;C-3PO&amp;quot;, &amp;quot;R2-D2&amp;quot;, &amp;quot;Darth Vader&amp;quot;, &amp;quot;L…
-## $ height     &amp;lt;int&amp;gt; 172, 167, 96, 202, 150, 178, 165, 97, 183, 182, 188, …
-## $ mass       &amp;lt;dbl&amp;gt; 77.0, 75.0, 32.0, 136.0, 49.0, 120.0, 75.0, 32.0, 84.…
-## $ hair_color &amp;lt;chr&amp;gt; &amp;quot;blond&amp;quot;, NA, NA, &amp;quot;none&amp;quot;, &amp;quot;brown&amp;quot;, &amp;quot;brown, grey&amp;quot;, &amp;quot;bro…
-## $ skin_color &amp;lt;chr&amp;gt; &amp;quot;fair&amp;quot;, &amp;quot;gold&amp;quot;, &amp;quot;white, blue&amp;quot;, &amp;quot;white&amp;quot;, &amp;quot;light&amp;quot;, &amp;quot;lig…
-## $ eye_color  &amp;lt;chr&amp;gt; &amp;quot;blue&amp;quot;, &amp;quot;yellow&amp;quot;, &amp;quot;red&amp;quot;, &amp;quot;yellow&amp;quot;, &amp;quot;brown&amp;quot;, &amp;quot;blue&amp;quot;, &amp;quot;…
-## $ birth_year &amp;lt;dbl&amp;gt; 19.0, 112.0, 33.0, 41.9, 19.0, 52.0, 47.0, NA, 24.0, …
-## $ gender     &amp;lt;chr&amp;gt; &amp;quot;male&amp;quot;, NA, NA, &amp;quot;male&amp;quot;, &amp;quot;female&amp;quot;, &amp;quot;male&amp;quot;, &amp;quot;female&amp;quot;, N…
-## $ homeworld  &amp;lt;chr&amp;gt; &amp;quot;Tatooine&amp;quot;, &amp;quot;Tatooine&amp;quot;, &amp;quot;Naboo&amp;quot;, &amp;quot;Tatooine&amp;quot;, &amp;quot;Alderaa…
-## $ species    &amp;lt;chr&amp;gt; &amp;quot;Human&amp;quot;, &amp;quot;Droid&amp;quot;, &amp;quot;Droid&amp;quot;, &amp;quot;Human&amp;quot;, &amp;quot;Human&amp;quot;, &amp;quot;Human&amp;quot;,…
-## $ films      &amp;lt;list&amp;gt; [&amp;lt;&amp;quot;Revenge of the Sith&amp;quot;, &amp;quot;Return of the Jedi&amp;quot;, &amp;quot;The …
-## $ vehicles   &amp;lt;list&amp;gt; [&amp;lt;&amp;quot;Snowspeeder&amp;quot;, &amp;quot;Imperial Speeder Bike&amp;quot;&amp;gt;, &amp;lt;&amp;gt;, &amp;lt;&amp;gt;, &amp;lt;…
-## $ starships  &amp;lt;list&amp;gt; [&amp;lt;&amp;quot;X-wing&amp;quot;, &amp;quot;Imperial shuttle&amp;quot;&amp;gt;, &amp;lt;&amp;gt;, &amp;lt;&amp;gt;, &amp;quot;TIE Advanc…&lt;/code&gt;&lt;/pre&gt;
+## $ name       &amp;lt;chr&amp;gt; &amp;quot;Luke Skywalker&amp;quot;, &amp;quot;C-3PO&amp;quot;, &amp;quot;R2-D2&amp;quot;, &amp;quot;Darth Vader&amp;quot;, &amp;quot;Leia O…
+## $ height     &amp;lt;int&amp;gt; 172, 167, 96, 202, 150, 178, 165, 97, 183, 182, 188, 180, …
+## $ mass       &amp;lt;dbl&amp;gt; 77.0, 75.0, 32.0, 136.0, 49.0, 120.0, 75.0, 32.0, 84.0, 77…
+## $ hair_color &amp;lt;chr&amp;gt; &amp;quot;blond&amp;quot;, NA, NA, &amp;quot;none&amp;quot;, &amp;quot;brown&amp;quot;, &amp;quot;brown, grey&amp;quot;, &amp;quot;brown&amp;quot;, …
+## $ skin_color &amp;lt;chr&amp;gt; &amp;quot;fair&amp;quot;, &amp;quot;gold&amp;quot;, &amp;quot;white, blue&amp;quot;, &amp;quot;white&amp;quot;, &amp;quot;light&amp;quot;, &amp;quot;light&amp;quot;, …
+## $ eye_color  &amp;lt;chr&amp;gt; &amp;quot;blue&amp;quot;, &amp;quot;yellow&amp;quot;, &amp;quot;red&amp;quot;, &amp;quot;yellow&amp;quot;, &amp;quot;brown&amp;quot;, &amp;quot;blue&amp;quot;, &amp;quot;blue&amp;quot;…
+## $ birth_year &amp;lt;dbl&amp;gt; 19.0, 112.0, 33.0, 41.9, 19.0, 52.0, 47.0, NA, 24.0, 57.0,…
+## $ gender     &amp;lt;chr&amp;gt; &amp;quot;male&amp;quot;, NA, NA, &amp;quot;male&amp;quot;, &amp;quot;female&amp;quot;, &amp;quot;male&amp;quot;, &amp;quot;female&amp;quot;, NA, &amp;quot;m…
+## $ homeworld  &amp;lt;chr&amp;gt; &amp;quot;Tatooine&amp;quot;, &amp;quot;Tatooine&amp;quot;, &amp;quot;Naboo&amp;quot;, &amp;quot;Tatooine&amp;quot;, &amp;quot;Alderaan&amp;quot;, &amp;quot;…
+## $ species    &amp;lt;chr&amp;gt; &amp;quot;Human&amp;quot;, &amp;quot;Droid&amp;quot;, &amp;quot;Droid&amp;quot;, &amp;quot;Human&amp;quot;, &amp;quot;Human&amp;quot;, &amp;quot;Human&amp;quot;, &amp;quot;Hum…
+## $ films      &amp;lt;list&amp;gt; [&amp;lt;&amp;quot;Revenge of the Sith&amp;quot;, &amp;quot;Return of the Jedi&amp;quot;, &amp;quot;The Empir…
+## $ vehicles   &amp;lt;list&amp;gt; [&amp;lt;&amp;quot;Snowspeeder&amp;quot;, &amp;quot;Imperial Speeder Bike&amp;quot;&amp;gt;, &amp;lt;&amp;gt;, &amp;lt;&amp;gt;, &amp;lt;&amp;gt;, &amp;quot;I…
+## $ starships  &amp;lt;list&amp;gt; [&amp;lt;&amp;quot;X-wing&amp;quot;, &amp;quot;Imperial shuttle&amp;quot;&amp;gt;, &amp;lt;&amp;gt;, &amp;lt;&amp;gt;, &amp;quot;TIE Advanced x1…&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;starwars %&amp;gt;%
   mutate(bmi = mass/((height/100)^2)) %&amp;gt;%
   # no jabba ...
@@ -1221,17 +1248,17 @@ library(dplyr)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;glimpse(msleep)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Observations: 83
 ## Variables: 11
-## $ name         &amp;lt;chr&amp;gt; &amp;quot;Cheetah&amp;quot;, &amp;quot;Owl monkey&amp;quot;, &amp;quot;Mountain beaver&amp;quot;, &amp;quot;Greate…
-## $ genus        &amp;lt;chr&amp;gt; &amp;quot;Acinonyx&amp;quot;, &amp;quot;Aotus&amp;quot;, &amp;quot;Aplodontia&amp;quot;, &amp;quot;Blarina&amp;quot;, &amp;quot;Bos&amp;quot;…
-## $ vore         &amp;lt;chr&amp;gt; &amp;quot;carni&amp;quot;, &amp;quot;omni&amp;quot;, &amp;quot;herbi&amp;quot;, &amp;quot;omni&amp;quot;, &amp;quot;herbi&amp;quot;, &amp;quot;herbi&amp;quot;,…
-## $ order        &amp;lt;chr&amp;gt; &amp;quot;Carnivora&amp;quot;, &amp;quot;Primates&amp;quot;, &amp;quot;Rodentia&amp;quot;, &amp;quot;Soricomorpha&amp;quot;…
-## $ conservation &amp;lt;chr&amp;gt; &amp;quot;lc&amp;quot;, NA, &amp;quot;nt&amp;quot;, &amp;quot;lc&amp;quot;, &amp;quot;domesticated&amp;quot;, NA, &amp;quot;vu&amp;quot;, NA,…
-## $ sleep_total  &amp;lt;dbl&amp;gt; 12.1, 17.0, 14.4, 14.9, 4.0, 14.4, 8.7, 7.0, 10.1, …
-## $ sleep_rem    &amp;lt;dbl&amp;gt; NA, 1.8, 2.4, 2.3, 0.7, 2.2, 1.4, NA, 2.9, NA, 0.6,…
-## $ sleep_cycle  &amp;lt;dbl&amp;gt; NA, NA, NA, 0.1333333, 0.6666667, 0.7666667, 0.3833…
-## $ awake        &amp;lt;dbl&amp;gt; 11.9, 7.0, 9.6, 9.1, 20.0, 9.6, 15.3, 17.0, 13.9, 2…
-## $ brainwt      &amp;lt;dbl&amp;gt; NA, 0.01550, NA, 0.00029, 0.42300, NA, NA, NA, 0.07…
-## $ bodywt       &amp;lt;dbl&amp;gt; 50.000, 0.480, 1.350, 0.019, 600.000, 3.850, 20.490…&lt;/code&gt;&lt;/pre&gt;
+## $ name         &amp;lt;chr&amp;gt; &amp;quot;Cheetah&amp;quot;, &amp;quot;Owl monkey&amp;quot;, &amp;quot;Mountain beaver&amp;quot;, &amp;quot;Greater sho…
+## $ genus        &amp;lt;chr&amp;gt; &amp;quot;Acinonyx&amp;quot;, &amp;quot;Aotus&amp;quot;, &amp;quot;Aplodontia&amp;quot;, &amp;quot;Blarina&amp;quot;, &amp;quot;Bos&amp;quot;, &amp;quot;Br…
+## $ vore         &amp;lt;chr&amp;gt; &amp;quot;carni&amp;quot;, &amp;quot;omni&amp;quot;, &amp;quot;herbi&amp;quot;, &amp;quot;omni&amp;quot;, &amp;quot;herbi&amp;quot;, &amp;quot;herbi&amp;quot;, &amp;quot;car…
+## $ order        &amp;lt;chr&amp;gt; &amp;quot;Carnivora&amp;quot;, &amp;quot;Primates&amp;quot;, &amp;quot;Rodentia&amp;quot;, &amp;quot;Soricomorpha&amp;quot;, &amp;quot;Ar…
+## $ conservation &amp;lt;chr&amp;gt; &amp;quot;lc&amp;quot;, NA, &amp;quot;nt&amp;quot;, &amp;quot;lc&amp;quot;, &amp;quot;domesticated&amp;quot;, NA, &amp;quot;vu&amp;quot;, NA, &amp;quot;dom…
+## $ sleep_total  &amp;lt;dbl&amp;gt; 12.1, 17.0, 14.4, 14.9, 4.0, 14.4, 8.7, 7.0, 10.1, 3.0, …
+## $ sleep_rem    &amp;lt;dbl&amp;gt; NA, 1.8, 2.4, 2.3, 0.7, 2.2, 1.4, NA, 2.9, NA, 0.6, 0.8,…
+## $ sleep_cycle  &amp;lt;dbl&amp;gt; NA, NA, NA, 0.1333333, 0.6666667, 0.7666667, 0.3833333, …
+## $ awake        &amp;lt;dbl&amp;gt; 11.9, 7.0, 9.6, 9.1, 20.0, 9.6, 15.3, 17.0, 13.9, 21.0, …
+## $ brainwt      &amp;lt;dbl&amp;gt; NA, 0.01550, NA, 0.00029, 0.42300, NA, NA, NA, 0.07000, …
+## $ bodywt       &amp;lt;dbl&amp;gt; 50.000, 0.480, 1.350, 0.019, 600.000, 3.850, 20.490, 0.0…&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animals &amp;lt;- c(&amp;quot;Asian elephant&amp;quot;, 
              &amp;quot;Little brown bat&amp;quot;,
              &amp;quot;Three-toed sloth&amp;quot;, 
@@ -1264,33 +1291,6 @@ library(dplyr)&lt;/code&gt;&lt;/pre&gt;
         axis.ticks = element_blank())&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/notes/data-based-labels_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;960&#34; /&gt;&lt;/p&gt;
 </description>
-    </item>
-    
-    <item>
-      <title>Oxygen desaturations in the early neonatal period predict development of bronchopulmonary dysplasia</title>
-      <link>/publication/bd-bpd-pr/</link>
-      <pubDate>Mon, 29 Oct 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/publication/bd-bpd-pr/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Heart rate ranges in premature neonates using high resolution physiologic data</title>
-      <link>/publication/hrranges/</link>
-      <pubDate>Sat, 01 Sep 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/publication/hrranges/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>LOLAweb: a containerized web server for interactive genomic locus overlap enrichment analysis</title>
-      <link>/publication/lolaweb/</link>
-      <pubDate>Wed, 06 Jun 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/publication/lolaweb/</guid>
-      <description></description>
     </item>
     
   </channel>

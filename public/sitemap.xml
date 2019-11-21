@@ -4,6 +4,73 @@
     
     <url>
     
+      <loc>/publication_types/1/</loc>
+      <lastmod>2020-05-17T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication_types/</loc>
+      <lastmod>2020-05-17T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/</loc>
+      <lastmod>2020-05-17T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication/pocrm-sct/</loc>
+      <lastmod>2020-05-17T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication_types/2/</loc>
+      <lastmod>2019-11-18T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication/adap-qhp/</loc>
+      <lastmod>2019-11-18T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication/adap-qhp-idweek/</loc>
+      <lastmod>2019-10-03T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/categories/</loc>
       <lastmod>2019-09-21T08:38:31-04:00</lastmod>
       <priority>0</priority>
@@ -15,16 +82,6 @@
     <url>
     
       <loc>/tags/</loc>
-      <lastmod>2019-09-21T08:38:31-04:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/</loc>
       <lastmod>2019-09-21T08:38:31-04:00</lastmod>
       <priority>0</priority>
     </url>
@@ -72,38 +129,8 @@
     
     <url>
     
-      <loc>/publication_types/2/</loc>
-      <lastmod>2019-07-04T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/publication_types/</loc>
-      <lastmod>2019-07-04T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/publication/late-bd/</loc>
       <lastmod>2019-07-04T00:00:00+00:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/r/</loc>
-      <lastmod>2019-06-30T17:14:59+00:00</lastmod>
-      <priority>0</priority>
     </url>
     
   
@@ -121,6 +148,16 @@
     <url>
     
       <loc>/tags/ggplot2/</loc>
+      <lastmod>2019-06-30T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/r/</loc>
       <lastmod>2019-06-30T17:14:59+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -271,16 +308,6 @@
     
       <loc>/publication/epicontacts/</loc>
       <lastmod>2018-05-10T00:00:00+00:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/publication_types/1/</loc>
-      <lastmod>2018-05-03T00:00:00+00:00</lastmod>
-      <priority>0</priority>
     </url>
     
   

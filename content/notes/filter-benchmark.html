@@ -28,9 +28,9 @@ microbenchmark(
   times = 10
   )</code></pre>
 <pre><code>## Unit: microseconds
-##     expr      min       lq     mean    median       uq      max neval
-##  bracket  528.900  543.692 2881.957  616.8865  687.474 23348.52    10
-##   filter 1229.799 1384.516 2688.792 1573.2475 1701.045 12775.43    10</code></pre>
+##     expr     min      lq     mean   median      uq     max neval
+##  bracket 223.183 246.329 310.3268 290.7345 315.310 632.726    10
+##   filter 265.342 352.911 387.6371 371.1365 382.088 673.066    10</code></pre>
 <p>Now run the benchmark on the full n = 336776 rows:</p>
 <pre class="r"><code>microbenchmark(
   bracket = flights[which(flights$dep_delay &gt; 0),],
@@ -39,8 +39,8 @@ microbenchmark(
   )</code></pre>
 <pre><code>## Unit: milliseconds
 ##     expr      min       lq     mean   median       uq      max neval
-##  bracket 25.78197 28.99358 30.08971 29.85949 31.46580 36.93485    10
-##   filter 16.43049 18.37075 20.48562 18.63875 21.77536 28.94453    10</code></pre>
+##  bracket 8.844108 9.041099 12.35393 12.58248 13.52227 20.33769    10
+##   filter 8.001824 8.159017 12.65863 12.27404 13.27080 21.73494    10</code></pre>
 <p>My guess is that there’s some overhead to using <code>filter()</code> … but this clearly pays off eventually. So how big (i.e. how many rows) does a data frame need to be for <code>filter()</code> to be faster?</p>
 <pre class="r"><code># create sequence of number of rows to sample by 20000
 sample_seq &lt;- seq(5000, nrow(flights), by = 20000)

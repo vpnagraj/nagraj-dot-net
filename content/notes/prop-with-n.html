@@ -29,8 +29,8 @@ starwars</code></pre>
 ##  8 R5-D4     97    32 &lt;NA&gt;       white, red red             NA   &lt;NA&gt;  
 ##  9 Bigg…    183    84 black      light      brown           24   male  
 ## 10 Obi-…    182    77 auburn, w… fair       blue-gray       57   male  
-## # … with 77 more rows, and 5 more variables: homeworld &lt;chr&gt;,
-## #   species &lt;chr&gt;, films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+## # … with 77 more rows, and 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;,
+## #   films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
 <pre class="r"><code>starwars %&gt;%
   # get the count in category with count()
   count(species, name = &quot;species_n&quot;, sort = TRUE) %&gt;%
