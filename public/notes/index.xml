@@ -13,6 +13,15 @@
     
     
     <item>
+      <title>Create a GIF with R</title>
+      <link>/notes/gifs-in-r/</link>
+      <pubDate>Wed, 27 Nov 2019 08:38:31 -0400</pubDate>
+      
+      <guid>/notes/gifs-in-r/</guid>
+      <description>how to make animated GIF images using the magick R package</description>
+    </item>
+    
+    <item>
       <title>bash Aliases</title>
       <link>/notes/useful-aliases/</link>
       <pubDate>Sat, 21 Sep 2019 08:38:31 -0400</pubDate>
