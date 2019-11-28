@@ -352,16 +352,16 @@ as.data.frame(Titanic)&lt;/code&gt;&lt;/pre&gt;
 ## 32  Crew Female Adult      Yes   20&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sample_n(titanic, 10)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##    Class    Sex   Age Survived
-## 1   Crew   Male Adult        1
-## 2    3rd   Male Adult        0
-## 3    1st Female Adult        1
-## 4    3rd   Male Adult        0
-## 5    3rd   Male Child        0
-## 6   Crew   Male Adult        1
-## 7    3rd   Male Adult        0
-## 8    1st   Male Adult        0
-## 9    2nd   Male Adult        1
-## 10   3rd Female Child        1&lt;/code&gt;&lt;/pre&gt;
+## 1    3rd   Male Adult        0
+## 2    1st   Male Adult        0
+## 3    2nd   Male Adult        0
+## 4   Crew   Male Adult        0
+## 5   Crew   Male Adult        0
+## 6    3rd   Male Adult        0
+## 7   Crew   Male Adult        0
+## 8   Crew   Male Adult        1
+## 9   Crew   Male Adult        0
+## 10   1st Female Adult        1&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The model will predict survival (yes/no) from the Titanic. Predictors will include class, sex, and age. We’ll look at a model of with passenger class as the only predictor versus a model that includes class, sex, and age.&lt;/p&gt;
 &lt;div id=&#34;survived-class&#34; class=&#34;section level4&#34;&gt;
 &lt;h4&gt;&lt;code&gt;Survived ~ Class&lt;/code&gt;&lt;/h4&gt;

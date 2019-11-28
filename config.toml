@@ -221,7 +221,7 @@ defaultContentLanguageInSubdir = false
   [[params.social]]
     icon = "envelope"
     icon_pack = "fa"
-    link = "mailto:vpnagraj@virginia.edu"
+    link = "mailto:nagraj@nagraj.net"
 
   [[params.social]]
     icon = "twitter"
@@ -247,10 +247,10 @@ defaultContentLanguageInSubdir = false
   url = "/"
   weight = 1
 
-[[menu.main]]
-  name = "About"
-  url = "about/bio"
-  weight = 2
+#[[menu.main]]
+#  name = "About"
+#  url = "about/bio"
+#  weight = 2
   
 [[menu.main]]
   name = "Notes"
