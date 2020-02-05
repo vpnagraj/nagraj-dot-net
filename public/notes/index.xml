@@ -184,12 +184,12 @@
     </item>
     
     <item>
-      <title>Multiple RMarkdown Reports, Multiple Data Sets, Single File</title>
+      <title>Multiple R Markdown Reports, Multiple Data Sets, Single File</title>
       <link>/notes/multiple-rmarkdown-reports/</link>
       <pubDate>Thu, 21 Jul 2016 08:38:31 -0400</pubDate>
       
       <guid>/notes/multiple-rmarkdown-reports/</guid>
-      <description>how to create &amp;lsquo;templated&amp;rsquo; rmarkdown reports</description>
+      <description>how to create &amp;lsquo;templated&amp;rsquo; r markdown reports</description>
     </item>
     
     <item>
@@ -220,7 +220,7 @@
     </item>
     
     <item>
-      <title>LaTeX Symbols Inside Pandoc Table Column Headings Inside RMarkdown Documents</title>
+      <title>LaTeX Symbols Inside Pandoc Table Column Headings Inside R Markdown Documents</title>
       <link>/notes/pandoc-latex-markdown/</link>
       <pubDate>Thu, 03 Mar 2016 11:26:40 -0500</pubDate>
       
@@ -229,12 +229,12 @@
     </item>
     
     <item>
-      <title>Embedding Shiny Apps Inside RMarkdown Documents</title>
+      <title>Embedding Shiny Apps Inside R Markdown Documents</title>
       <link>/notes/embedding-shiny-apps-inside-rmarkdown-documents/</link>
       <pubDate>Mon, 29 Feb 2016 12:03:12 -0500</pubDate>
       
       <guid>/notes/embedding-shiny-apps-inside-rmarkdown-documents/</guid>
-      <description>recap of how to make interactive rmarkdown documents</description>
+      <description>recap of how to make interactive r markdown documents</description>
     </item>
     
     <item>

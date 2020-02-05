@@ -105,7 +105,7 @@ To build the image first clone the GitHub repository that contains the image cod
 git clone https://github.com/vpnagraj/tabulizer-docker.git
 ```
 
-Make sure `run.R` has appropriate permissons to be executed:
+Make sure `run.R` has appropriate permissions to be executed:
 
 ```{bash, eval = FALSE}
 cd tabulizer-docker
@@ -209,7 +209,7 @@ preterm %>%
   theme(text = element_text(size = 7))
 ```
 
-The data above was acquired from the CDC National Center for Health Statistics. The report states that all material is in the public domain and may be reproduced or copied without comission.
+The data above was acquired from the CDC National Center for Health Statistics. The report states that all material is in the public domain and may be reproduced or copied without commission.
 
 > Hamilton BE, Martin JA, Osterman MJK, Rossen LM. Births: Provisional data for 2018. Vital Statistics Rapid Release; no 7. Hyattsville, MD: National Center for Health Statistics. May 2019. 
 

@@ -1,5 +1,5 @@
 ---
-title: "LaTeX Symbols Inside Pandoc Table Column Headings Inside RMarkdown Documents"
+title: "LaTeX Symbols Inside Pandoc Table Column Headings Inside R Markdown Documents"
 date: 2016-03-03T11:26:40-05:00
 categories: ["notes"]
 tags: ["R Markdown", "R", "LaTex", "Pandoc"]
@@ -8,9 +8,9 @@ summary: "RMarkdown(Pandoc(LaTeX))"
 
 
 
-<p>I just spent ~ 30 minutes figuring out how to include LaTeX symbols … in a Pandoc table column header … in an RMarkdown document.</p>
+<p>I just spent ~ 30 minutes figuring out how to include LaTeX symbols … in a Pandoc table column header … in an R Markdown document.</p>
 <p>There are plenty of LaTeX cheat sheets like <a href="https://wch.github.io/latexsheet/latexsheet-0.png">this one</a> to choose from. And there are plenty of examples of <a href="http://www.calvin.edu/~rpruim/courses/m343/F12/RStudio/LatexExamples.html">using LaTeX in RMarkdown</a> as well.</p>
-<p>The thing is that the syntax for these LaTeX symbols gets trickier when run inside a chunk (i.e. block of R code). The code below demonstrates one way to get the pander table to output the column names with LaTeX syntax.</p>
+<p>The syntax for these LaTeX symbols gets trickier when run inside a chunk (i.e. block of R code). The code below demonstrates one way to get the pander table to output the column names with LaTeX syntax.</p>
 <pre class="r"><code># set random seed
 set.seed(123)
 
@@ -50,6 +50,6 @@ names(propdata) &lt;- c(&quot;n&quot;, &quot;$\\mu_{\\bar{x}}$&quot;, &quot;$\\s
 pander(propdata)</code></pre>
 <p>The key line is:</p>
 <pre class="r"><code>names(propdata) &lt;- c(&quot;n&quot;, &quot;$\\mu_{\\bar{x}}$&quot;, &quot;$\\sigma^2_{\\bar{x}}$&quot;, &quot;$E(s^2)$&quot;)</code></pre>
-<p>That piece of code assigns names to the <code>propdata</code> object the desired syntax … err … sort of the desired syntax. You have to escape the <code>\</code> character that preceeds each of the references to <code>mu</code>, <code>bar</code> and <code>sigma</code>.</p>
+<p>That piece of code assigns names to the <code>propdata</code> object the desired syntax … err … sort of the desired syntax. You have to escape the <code>\</code> character that precedes each of the references to <code>mu</code>, <code>bar</code> and <code>sigma</code>.</p>
 <p>It’s not pretty but it works.</p>
 <p>Maybe there’s a better way to this with <code>pandoc.table()</code>?</p>

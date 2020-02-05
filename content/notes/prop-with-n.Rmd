@@ -10,7 +10,7 @@ summary: "count and overall percentage in groups"
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, eval = TRUE)
 ```
 
-One of the more typical workflows I need to perform is calculating counts within groups. The **dplyr** `group_by() %>% summarise()` pipeline (or just `count()`) can easily get aggregated tallies. But occassionally it's helpful to get count within group along with the proportion overall. 
+One of the more typical workflows I need to perform is calculating counts within groups. The **dplyr** `group_by() %>% summarise()` pipeline (or just `count()`) can easily get aggregated tallies. But occasionally it's helpful to get count within group along with the proportion overall. 
 
 Here's one way to do that:
 

@@ -8,9 +8,9 @@ summary: "formatting a character vector as a list in R markdown"
 
 
 
-<p>One of my recent tortures has been formatting RMarkdown reports. The <a href="https://cran.r-project.org/web/packages/pander/index.html">pander</a> package gives you access to all the <a href="http://pandoc.org/README.html">Pandoc options</a> you can handle. Seems like a big mountain to climb, but once you get started it’s actually not too rough.</p>
-<p>In particular, the <code>pandoc.[WHATEVER]()</code> functions from pander make it easy to render nicely formatted objects in RMarkdown.</p>
-<p>An example … say you had the following (not so arbitrary) character vector:</p>
+<p>The <a href="https://cran.r-project.org/web/packages/pander/index.html">pander</a> package gives you access to all the <a href="http://pandoc.org/README.html">Pandoc options</a> you can handle. Seems like a big mountain to climb, but once you get started it’s actually not too rough.</p>
+<p>In particular, the <code>pandoc.[WHATEVER]()</code> functions from pander make it easy to render nicely formatted objects in R Markdown.</p>
+<p>An example … say you had the following character vector:</p>
 <pre class="r"><code>bowie &lt;- c(&quot;Young Americans&quot;, &quot;Station To Station&quot;, &quot;Low&quot;, &quot;Heroes&quot;, &quot;Lodger&quot;, &quot;Scary Monsters&quot;, &quot;Let&#39;s Dance&quot;)</code></pre>
 <p>You could just print the object:</p>
 <pre class="r"><code>bowie</code></pre>
@@ -61,28 +61,5 @@ pander(bowie)</code></pre>
 <li>Let’s Dance</li>
 </ol>
 <!-- end of list -->
-<p>The best part about these functions is that they’re documented inside R man pages (as opposed to only in the generic pandoc documentation) … check it out:</p>
+<p>The best part about these functions is that they’re documented inside R man pages (as opposed to only in the generic pandoc documentation):</p>
 <pre class="r"><code>?pandoc.list</code></pre>
-<pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 3.6.1 (2019-07-05)
-## Platform: x86_64-apple-darwin15.6.0 (64-bit)
-## Running under: macOS Mojave 10.14.6
-## 
-## Matrix products: default
-## BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
-## LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
-## 
-## locale:
-## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
-## 
-## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  methods   base     
-## 
-## other attached packages:
-## [1] pander_0.6.3
-## 
-## loaded via a namespace (and not attached):
-##  [1] compiler_3.6.1  magrittr_1.5    bookdown_0.12   tools_3.6.1    
-##  [5] htmltools_0.4.0 yaml_2.2.0      Rcpp_1.0.3      stringi_1.4.3  
-##  [9] rmarkdown_1.17  blogdown_0.14   knitr_1.26      stringr_1.4.0  
-## [13] digest_0.6.22   xfun_0.11       rlang_0.4.1     evaluate_0.14</code></pre>

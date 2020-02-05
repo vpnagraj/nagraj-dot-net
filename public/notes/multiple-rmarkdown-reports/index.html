@@ -17,7 +17,7 @@
       
     
   
-  <meta name="description" content="how to create &lsquo;templated&rsquo; rmarkdown reports">
+  <meta name="description" content="how to create &lsquo;templated&rsquo; r markdown reports">
 
   
   <link rel="alternate" hreflang="en-us" href="/notes/multiple-rmarkdown-reports/">
@@ -78,8 +78,8 @@
   
   <meta property="og:site_name" content="VP Nagraj">
   <meta property="og:url" content="/notes/multiple-rmarkdown-reports/">
-  <meta property="og:title" content="Multiple RMarkdown Reports, Multiple Data Sets, Single File | VP Nagraj">
-  <meta property="og:description" content="how to create &lsquo;templated&rsquo; rmarkdown reports">
+  <meta property="og:title" content="Multiple R Markdown Reports, Multiple Data Sets, Single File | VP Nagraj">
+  <meta property="og:description" content="how to create &lsquo;templated&rsquo; r markdown reports">
   <meta property="og:locale" content="en-us">
   
   <meta property="article:published_time" content="2016-07-21T08:38:31-04:00">
@@ -91,7 +91,7 @@
   
   <meta name="google-site-verification" content="ppzo6np2j0dwXjWa2KEyLd5as2Xd76FoUhT1cXtCbW4" />
 
-  <title>Multiple RMarkdown Reports, Multiple Data Sets, Single File | VP Nagraj</title>
+  <title>Multiple R Markdown Reports, Multiple Data Sets, Single File | VP Nagraj</title>
 
 </head>
 <body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
@@ -191,7 +191,7 @@
 
 
   <div class="article-container">
-    <h1 itemprop="name">Multiple RMarkdown Reports, Multiple Data Sets, Single File</h1>
+    <h1 itemprop="name">Multiple R Markdown Reports, Multiple Data Sets, Single File</h1>
 
 <div class="article-metadata">
 
@@ -240,15 +240,15 @@
 <p>The <em>brute force</em> GUI solution here would be to:</p>
 <ol style="list-style-type: decimal">
 <li>Open up RStudio</li>
-<li>Write an RMarkdown report that reads in the first data set</li>
+<li>Write an R Markdown report that reads in the first data set</li>
 <li>Click “Knit PDF”</li>
-<li>Point the <code>read_csv()</code> in the RMarkdown file to the second data set</li>
+<li>Point the <code>read_csv()</code> in the R Markdown file to the second data set</li>
 <li>Click “Knit PDF”</li>
 <li>Repeat steps 4 &amp; 5 until all reports have been generated</li>
 </ol>
 <p>I could have potentially &gt; 50 data sets. So the process above wasn’t going to work for me.</p>
 <p>Instead I started looking around for ways to loop through a list of files and generate multiple PDF reports. Each PDF would be based on data from each file.</p>
-<p>Stack Overflow features posts that speak to this issue. One post describes a similar problem, but in terms of <a href="http://stackoverflow.com/questions/15396755/using-loops-with-knitr-to-produce-multiple-pdf-reports-need-a-little-help-to"><strong>knitr</strong> with Sweave</a>. Another seems more relavent to my workflow (since I’m using RMarkdown rather than Sweave) but explains <a href="http://stackoverflow.com/questions/26304576/how-to-best-generate-multiple-html-files-from-rmarkdown-based-on-one-dataset">how to create multiple reports from a <em>single</em> data set</a>.</p>
+<p>There are several Stack Overflow posts that speak to this issue. One describes a similar problem, but in terms of <a href="http://stackoverflow.com/questions/15396755/using-loops-with-knitr-to-produce-multiple-pdf-reports-need-a-little-help-to"><strong>knitr</strong> with Sweave</a>. Another seems more relevant to my workflow (since I’m using R Markdown rather than Sweave) but explains <a href="http://stackoverflow.com/questions/26304576/how-to-best-generate-multiple-html-files-from-rmarkdown-based-on-one-dataset">how to create multiple reports from a <em>single</em> data set</a>.</p>
 <p>My solution borrows from the posts above. The basic premise here is that you can use a single R script to “drive” the rendering of your R Markdown file. <a href="http://brooksandrew.github.io/simpleblog/articles/render-reports-directly-from-R-scripts/">Another piece of documentation</a> I found does a great job detailing this idea.</p>
 <p>All that said … here’s the workflow that works for me:</p>
 <ol style="list-style-type: decimal">
@@ -279,7 +279,7 @@ gapminder %&gt;%
   write_csv(&quot;data/oceania.csv&quot;)</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li><p>Check that data is prepared correctly (i.e. all columns are named the same, missing values are represented consistently)</p></li>
-<li><p>Write an RMarkdown file that is generic enough to work for each data set … and the title of in the YAML header for the Rmd can include data specific to the file being processed</p>
+<li><p>Write an R Markdown file that is generic enough to work for each data set … and the title of in the YAML header for the Rmd can include data specific to the file being processed</p>
 <pre class = '{r}'><code class = 'hljs shell'> 
   ---<br>  title: '`r unique(cont$continent)`'<br>  output: pdf_document<br>  --- 
   </code></pre>
@@ -353,7 +353,7 @@ for (file in filelist) {
       <h3>Related</h3>
       <ul>
         
-        <li><a href="/notes/pandoc-latex-markdown/">LaTeX Symbols Inside Pandoc Table Column Headings Inside RMarkdown Documents</a></li>
+        <li><a href="/notes/pandoc-latex-markdown/">LaTeX Symbols Inside Pandoc Table Column Headings Inside R Markdown Documents</a></li>
         
         <li><a href="/notes/chunking/">Chunking in R</a></li>
         

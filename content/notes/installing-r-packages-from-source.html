@@ -19,8 +19,7 @@ there is no package called ‘pbkrtest’</p>
 <p>OK. So how do I install a package “manually” (i.e. from source)?</p>
 <p>I’ve had to do deal with this several times before, and have even had a consult devoted to this issue. But the answer is pretty simple:</p>
 <p><a href="http://stackoverflow.com/questions/1474081/how-do-i-install-an-r-package-from-source" class="uri">http://stackoverflow.com/questions/1474081/how-do-i-install-an-r-package-from-source</a></p>
-<p>As the upvoted response above indicates, the <code>install.packages()</code> function takes several arguments, inculding “repos” and “type”.</p>
+<p>As the upvoted response above indicates, the <code>install.packages()</code> function takes several arguments, including “repos” and “type”.</p>
 <p>To install a package from source, go to the CRAN page of interest (in my case it’s <a href="https://cran.r-project.org/web/packages/pbkrtest/index.html" class="uri">https://cran.r-project.org/web/packages/pbkrtest/index.html</a>) and download the “Package source”, which should have a “tar.gz” extension. Then in your R console you can use the following:</p>
 <pre class="r"><code>install.packages(path_to_file, repos = NULL, type=&quot;source&quot;)</code></pre>
 <p>The <code>path_to_file</code> referred to above will depend on where you’ve downloaded the source, and whether or not you’re using a Windows or Unix/Mac operating system.</p>
-<p>I know all of this is detailed in the Stack Overflow post … but it’s something I’ve had to do several times now, so it’s not a terrible exercise to duplicate here.</p>

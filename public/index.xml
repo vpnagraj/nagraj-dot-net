@@ -936,7 +936,7 @@ if(is.null(res_out)) {
 &lt;h4&gt;Building the image&lt;/h4&gt;
 &lt;p&gt;To build the image first clone the GitHub repository that contains the image code:&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;git clone https://github.com/vpnagraj/tabulizer-docker.git&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Make sure &lt;code&gt;run.R&lt;/code&gt; has appropriate permissons to be executed:&lt;/p&gt;
+&lt;p&gt;Make sure &lt;code&gt;run.R&lt;/code&gt; has appropriate permissions to be executed:&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;cd tabulizer-docker
 chmod+x run.R&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Build the image:&lt;/p&gt;
@@ -1005,7 +1005,7 @@ preterm %&amp;gt;%
   theme_bw() +
   theme(text = element_text(size = 7))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/notes/docker-tabulizer_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;The data above was acquired from the CDC National Center for Health Statistics. The report states that all material is in the public domain and may be reproduced or copied without comission.&lt;/p&gt;
+&lt;p&gt;The data above was acquired from the CDC National Center for Health Statistics. The report states that all material is in the public domain and may be reproduced or copied without commission.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Hamilton BE, Martin JA, Osterman MJK, Rossen LM. Births: Provisional data for 2018. Vital Statistics Rapid Release; no 7. Hyattsville, MD: National Center for Health Statistics. May 2019.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1022,7 +1022,7 @@ preterm %&amp;gt;%
       <description>
 
 
-&lt;p&gt;One of the more typical workflows I need to perform is calculating counts within groups. The &lt;strong&gt;dplyr&lt;/strong&gt; &lt;code&gt;group_by() %&amp;gt;% summarise()&lt;/code&gt; pipeline (or just &lt;code&gt;count()&lt;/code&gt;) can easily get aggregated tallies. But occassionally it’s helpful to get count within group along with the proportion overall.&lt;/p&gt;
+&lt;p&gt;One of the more typical workflows I need to perform is calculating counts within groups. The &lt;strong&gt;dplyr&lt;/strong&gt; &lt;code&gt;group_by() %&amp;gt;% summarise()&lt;/code&gt; pipeline (or just &lt;code&gt;count()&lt;/code&gt;) can easily get aggregated tallies. But occasionally it’s helpful to get count within group along with the proportion overall.&lt;/p&gt;
 &lt;p&gt;Here’s one way to do that:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
 
