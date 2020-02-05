@@ -19,6 +19,335 @@
     </item>
     
     <item>
+      <title>rstudio::conf 2020</title>
+      <link>/notes/rstudioconf2020/</link>
+      <pubDate>Fri, 31 Jan 2020 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/rstudioconf2020/</guid>
+      <description>
+
+
+&lt;p&gt;This past January I was able to attend &lt;a href=&#34;https://blog.rstudio.com/2019/07/15/rstudio-conf-2020/&#34;&gt;rstudio::conf 2020&lt;/a&gt;&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; in San Francisco. I was there for the full week, taking the &lt;strong&gt;Applied Machine Learning&lt;/strong&gt; workshop and attending as many of the main conference program sessions as possible.&lt;/p&gt;
+&lt;p&gt;Here is a collection of highlights/takeaways from the conference:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#debug-with-browser&#34;&gt;Debugging with &lt;code&gt;browser()&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#tech-debt&#34;&gt;Technical Debt&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#tunneling&#34;&gt;Tunneling with &lt;em&gt;tidyeval&lt;/em&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#ggplot-null&#34;&gt;&lt;code&gt;ggplot + NULL&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#plumber&#34;&gt;&lt;code&gt;plumber&lt;/code&gt; for building APIs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#pins-package&#34;&gt;&lt;code&gt;pins&lt;/code&gt; package&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bslib&#34;&gt;&lt;code&gt;boostraplib&lt;/code&gt; package&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#rolldown&#34;&gt;&lt;code&gt;rolldown&lt;/code&gt; output&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;div id=&#34;debugging-with-browser&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;debug-with-browser&#34;&gt;Debugging with &lt;code&gt;browser()&lt;/code&gt;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;https://speakerdeck.com/jennybc/object-of-type-closure-is-not-subsettable&#34;&gt;Jenny Bryan’s &lt;strong&gt;Object of Type Closure Is Not Subsettable&lt;/strong&gt;&lt;/a&gt; was one of my favorite talks at the conference. My debugging practices have been … crude, at best. I wish I would have taken the time to learn about some of the tools she covered a &lt;em&gt;long&lt;/em&gt; time ago.&lt;/p&gt;
+&lt;p&gt;Moving forward I’ll definitely be using &lt;code&gt;browser()&lt;/code&gt;. When you drop it in inside a function, you can step through each call in the stack until it fails or succeeds. Along the way you can interactively update objects in the function environment to test fixes.&lt;/p&gt;
+&lt;p&gt;An example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## define our function
+fix_me &amp;lt;- function(.data) {
+  x &amp;lt;- head(.data)
+  y &amp;lt;- colSums(x)
+  x[which.max(y),]
+}
+
+## try it with a data.frame
+fix_me(mtcars)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##             mpg cyl disp hp drat   wt  qsec vs am gear carb
+## Datsun 710 22.8   4  108 93 3.85 2.32 18.61  1  1    4    1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## now try it with a vector
+## doesn&amp;#39;t work :(
+fix_me(1:3)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error in colSums(x): &amp;#39;x&amp;#39; must be an array of at least two dimensions&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## add in call to browser() to see where it breaks
+fix_me &amp;lt;- function(.data) {
+  browser()
+  x &amp;lt;- head(.data)
+  y &amp;lt;- colSums(x)
+  x[which.max(y),]
+}
+
+## run again to prompt browser
+fix_me(1:3)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## add in logic and messaging for dim check
+fix_me &amp;lt;- function(.data) {
+  if(is.null(dim(.data))) {
+    stop(&amp;quot;Your argument to `.data` must have at least 2 dimensions (columns and rows).&amp;quot;)
+  }
+  x &amp;lt;- head(.data)
+  y &amp;lt;- colSums(x)
+  x[which.max(y),]
+}
+
+## still doesn&amp;#39;t work :(
+## but now it at least issues a message!
+fix_me(1:3)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error in fix_me(1:3): Your argument to `.data` must have at least 2 dimensions (columns and rows).&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## and this still works!
+fix_me(mtcars)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##             mpg cyl disp hp drat   wt  qsec vs am gear carb
+## Datsun 710 22.8   4  108 93 3.85 2.32 18.61  1  1    4    1&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;/div&gt;
+&lt;div id=&#34;technical-debt&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;tech-debt&#34;&gt;Technical Debt&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/GShotwell/technical_debt&#34;&gt;Gordon Shotwell’s talk&lt;/a&gt; might have been the least technical and most important talk I saw at rstudio::conf. Technical debt abounds. There’s no doubt that my own development practices have led to more work for folks (including myself) down the line. It’s easy to take shortcuts in documentation, testing, and up-front efforts when scoping a project. It’s even easier to be cynical or blame a former maintainer (including yourself) for these shortcomings. But as Gordon pointed out, &lt;strong&gt;technical debt is a good sign&lt;/strong&gt; … if there is a motivation to salvage, refactor, or otherwise optimize a codebase, then it means the underlying ideas hold value. The talk outlined a number of ways to avoid and/or remedy technical debt. One suggestion: build tools that are fun to use. Gordon gave the example of R markdown’s ability to give new users two very important features:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Ease-of-use&lt;/li&gt;
+&lt;li&gt;Path to mastery&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr /&gt;
+&lt;/div&gt;
+&lt;div id=&#34;tunneling-with-tidyeval&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;tunneling&#34;&gt;Tunneling with &lt;em&gt;tidyeval&lt;/em&gt;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;Lionel Henry’s talk reviewed the history, design, and current features &lt;em&gt;tidyeval&lt;/em&gt; (i.e. masking) in R. The new feature that resonated most with me was the “tunneling” syntax with &lt;code&gt;{{ variable }}&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The code below outlines a simple use-case where we want to use &lt;code&gt;dplyr&lt;/code&gt; syntax in a function that can accept &lt;em&gt;bare&lt;/em&gt; variable names as arguments. This example function (&lt;code&gt;most()&lt;/code&gt;) will try to find the maximum value for a given variable, stratified by a category:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## make sure dplyr is loaded
+## NOTE: dplyr includes the starwars dataset
+library(dplyr)
+
+## define function *without* tunneling 
+most &amp;lt;- function(.data, var, by) {
+  .data %&amp;gt;%
+    group_by(by) %&amp;gt;%
+    summarise(max(var, na.rm = TRUE)) %&amp;gt;%
+    arrange(desc(var))
+}
+
+## this should produce an error ...
+most(starwars, height, species)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error: Column `by` is unknown&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## try defining the function with tunneling
+most &amp;lt;- function(.data, var, by = NULL) {
+  .data %&amp;gt;%
+    group_by({{ by }}) %&amp;gt;%
+    summarise(max({{ var }}, na.rm = TRUE)) %&amp;gt;%
+    arrange(desc({{ var }}))
+}
+
+## still getting an error? ...
+most(starwars, height, species)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error in ~height: object &amp;#39;height&amp;#39; not found&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## make sure we&amp;#39;re passing in tunneled name for the summarise variable we create
+most &amp;lt;- function(.data, var, by = NULL) {
+  .data %&amp;gt;%
+    group_by({{ by }}) %&amp;gt;%
+    summarise({{ var }} := max({{ var }}, na.rm = TRUE)) %&amp;gt;%
+    arrange(desc({{ var }}))
+}
+
+## works !
+most(starwars, height, species)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 38 x 2
+##    species  height
+##    &amp;lt;chr&amp;gt;     &amp;lt;int&amp;gt;
+##  1 Quermian    264
+##  2 Wookiee     234
+##  3 Kaminoan    229
+##  4 Gungan      224
+##  5 Kaleesh     216
+##  6 Pau&amp;#39;an      206
+##  7 Human       202
+##  8 Droid       200
+##  9 Besalisk    198
+## 10 Cerean      198
+## # … with 28 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the Q&amp;amp;A Lionel clarified that the tunneling syntax meant to make tidyeval easier for folks to use … and will not necessarily supersede or replace the existing &lt;code&gt;quo&lt;/code&gt;, &lt;code&gt;enquo&lt;/code&gt;, &lt;code&gt;!!&lt;/code&gt;, etc features.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ggplot-null&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;ggplot-null&#34;&gt;&lt;code&gt;ggplot + NULL&lt;/code&gt;&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;I didn’t know that adding &lt;code&gt;NULL&lt;/code&gt; to a &lt;code&gt;ggplot2&lt;/code&gt; layer would produce the same plot as if it weren’t added at all:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+
+p &amp;lt;-
+  ggplot(msleep, aes(name, sleep_total)) +
+  geom_col() +
+  coord_polar()
+
+q &amp;lt;-
+  ggplot(msleep, aes(name, sleep_total)) +
+  geom_col() +
+  coord_polar() +
+  NULL
+
+all.equal(p,q)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Dewey Dunnington pointed this out in the context of tips for programming with &lt;code&gt;ggplot2&lt;/code&gt;. As an example, if you were writing your own function you might add an option for facetting but still maintain the same API:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## define polar plot
+polar_plot &amp;lt;- function(.data, x, y, by = NULL) {
+  
+  if(!is.null(by)) {
+    facet &amp;lt;- facet_wrap(~ .data[[by]])
+  } else {
+    facet &amp;lt;- NULL
+  }
+  
+  ggplot(.data, aes(.data[[x]], .data[[y]])) +
+    geom_col() +
+    coord_polar() +
+    facet
+}
+
+## works !
+polar_plot(msleep, &amp;quot;name&amp;quot;, &amp;quot;sleep_total&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/notes/rstudioconf2020_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## works !
+polar_plot(msleep, &amp;quot;name&amp;quot;, &amp;quot;sleep_total&amp;quot;, by = &amp;quot;vore&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/notes/rstudioconf2020_files/figure-html/unnamed-chunk-6-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Given the notes around &lt;em&gt;tidyeval&lt;/em&gt; above, it’s worth pointing out that the method Dewey used (&lt;code&gt;.data[[&amp;quot;variable&amp;quot;]]&lt;/code&gt;) does &lt;em&gt;not&lt;/em&gt; allow for bare variable names.&lt;/p&gt;
+&lt;p&gt;Could we use the tunneling approach to do that? Kind of …&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## define polar_plot() with tunneling
+polar_plot &amp;lt;- function(.data, x, y, by = NULL) {
+  
+  if(!is.null(by)) {
+    facet &amp;lt;- facet_wrap(~ {{ by }})
+  } else {
+    facet &amp;lt;- NULL
+  }
+  
+  ggplot(.data, aes({{x}}, {{y}})) +
+    geom_col() +
+    coord_polar() +
+    facet
+}
+
+## works !
+polar_plot(msleep, name, sleep_total)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/notes/rstudioconf2020_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## doesn&amp;#39;t work :(
+polar_plot(msleep, name, sleep_total, vore)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error in polar_plot(msleep, name, sleep_total, vore): object &amp;#39;vore&amp;#39; not found&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The second call to the function doesn’t work. Where is this breaking? &lt;code&gt;if(!is.null(by)&lt;/code&gt; … thanks &lt;code&gt;browser()&lt;/code&gt;!&lt;/p&gt;
+&lt;p&gt;To get this working we probably need to dive deeper into &lt;a href=&#34;https://rlang.r-lib.org/reference/quasiquotation.html&#34;&gt;quasiquotation&lt;/a&gt;. Maybe a topic for another post …&lt;/p&gt;
+&lt;hr /&gt;
+&lt;/div&gt;
+&lt;div id=&#34;plumber-for-building-apis&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;plumber&#34;&gt;&lt;code&gt;plumber&lt;/code&gt; for building APIs&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.rplumber.io/&#34;&gt;&lt;code&gt;plumber&lt;/code&gt;&lt;/a&gt; came up several in several talks.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;plumber allows you to create a REST API by merely decorating your existing R source code with special comments.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The example below uses the following procedure:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Fit a model and save it to an R object&lt;/li&gt;
+&lt;li&gt;Write &lt;code&gt;plumber&lt;/code&gt; code that loads model and defines API endpoints&lt;/li&gt;
+&lt;li&gt;Run the API locally at port &lt;code&gt;8000&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Query the API with &lt;code&gt;curl&lt;/code&gt; to return predicted value&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
+library(AmesHousing)
+
+ames &amp;lt;- make_ames()
+
+ames_train &amp;lt;-
+  ames %&amp;gt;%
+  select(Sale_Price, Gr_Liv_Area, Year_Built, Central_Air)
+
+ames_fit &amp;lt;- lm(Sale_Price ~ ., data  = ames_train)
+save(ames_fit, file = &amp;quot;ames_fit.rda&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# plumber.R
+load(&amp;quot;ames_fit.rda&amp;quot;)
+
+#* Echo back the input
+#* @param msg The message to echo
+#* @get /echo
+function(msg=&amp;quot;&amp;quot;){
+  list(msg = paste0(&amp;quot;The message is: &amp;#39;&amp;quot;, msg, &amp;quot;&amp;#39;&amp;quot;))
+}
+
+#* Return r squared
+#* @get /rsq
+function(){
+  summary(ames_fit)$r.squared
+}
+
+#* Return the predicted sale price in dollars
+#* @param area The total area of home in square feet
+#* @param year The year the home was built
+#* @param ac Whether or not the home has Central Air (&amp;quot;Y&amp;quot; or &amp;quot;N&amp;quot;)
+#* @post /predict
+function(area, year, ac){
+  newdata &amp;lt;- 
+    data.frame(Gr_Liv_Area = as.numeric(area),
+               Year_Built = as.numeric(year),
+               Central_Air = ac)
+  
+  predict(ames_fit, newdata = newdata)[[1]]
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(plumber)
+ames_api &amp;lt;- plumb(&amp;quot;plumber.R&amp;quot;)  # Where &amp;#39;plumber.R&amp;#39; is the location of the file shown
+ames_api$run(port=8000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;curl -X POST &amp;quot;http://127.0.0.1:8000/predict?ac=Y&amp;amp;year=1990&amp;amp;area=20000&amp;quot; -H  &amp;quot;accept: application/json&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;/div&gt;
+&lt;div id=&#34;pins-package&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;pins-package&#34;&gt;&lt;code&gt;pins&lt;/code&gt; package&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;http://pins.rstudio.com/&#34;&gt;&lt;code&gt;pins&lt;/code&gt;&lt;/a&gt; is a relatively new package for caching and retrieving objects. I heard about it in Alex Gold’s &lt;strong&gt;Deploying End-To-End Data Science with Shiny, Plumber, and Pins&lt;/strong&gt; talk. As he pointed out, pins are good for things you can re-create. The workflow doesn’t necessarily obviate the need for a database / file structure to store data of record. But it can be useful for quickly retrieving model objects or large datasets that are shared across multiple analyses.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(pins)
+
+## create some sample data
+rvalues &amp;lt;-
+  data.frame(
+    key = sample(LETTERS, size = 1e7, replace = TRUE),
+    value = rnbinom(1e7, prob = 0.1, size = 1)
+  )
+
+## two concepts: &amp;quot;pins&amp;quot; and &amp;quot;boards&amp;quot;
+## pins are data objects
+## boards are storage locations
+
+## what board are available
+board_list()
+
+## you can also add new boards with board_register_* functions
+## e.g. board_register_local(); board_register_s3(); board_register_github()
+
+## here we&amp;#39;ll use the &amp;quot;local&amp;quot; board
+pin(rvalues, board = &amp;quot;local&amp;quot;)
+## remove the object from the local environment to prove this is working
+rm(rvalues)
+## retrieve the object
+pin_get(&amp;quot;rvalues&amp;quot;)
+## the above ^ doesn&amp;#39;t store it in the environment though
+## assign the values to an object
+rvalues &amp;lt;- pin_get(&amp;quot;rvalues&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bootstraplib-package&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;bslib&#34;&gt;&lt;code&gt;bootstraplib&lt;/code&gt; package&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;Joe Cheng introduced a new package called &lt;a href=&#34;https://github.com/rstudio/bootstraplib&#34;&gt;&lt;code&gt;bootstraplib&lt;/code&gt;&lt;/a&gt;, which is aimed at making it easier to style Shiny app R markdown html output via Sass and CSS variables. There’s also an interactive theming / color picker UI&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://camo.githubusercontent.com/aec7d2cc30e91cc72d654d708397dbff17c09c08/68747470733a2f2f692e696d6775722e636f6d2f696c366e64384a2e676966&#34; /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;/div&gt;
+&lt;div id=&#34;rolldown-output&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;rolldown&#34;&gt;&lt;code&gt;rolldown&lt;/code&gt; output&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;Yihui Xie delivered an inspiring blitz through 14 R markdown demos. One of the output formats that was new to me was &lt;a href=&#34;https://github.com/yihui/rolldown&#34;&gt;&lt;code&gt;rolldown&lt;/code&gt;&lt;/a&gt;, which wraps a “storytelling” format implemented in JavaScript called &lt;a href=&#34;https://github.com/russellgoldenberg/scrollama&#34;&gt;Scrollama&lt;/a&gt;. With this package you can fix output to stay in the center of the html document, while the code and chunks of text scroll down the side. The package includes a &lt;a href=&#34;https://cran.r-project.org/web/packages/rolldown/vignettes/scrollama-sidebar.html&#34;&gt;vignette with this sidebar layout as an example&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Another bonus for me was learning about &lt;code&gt;rmarkdown::draft()&lt;/code&gt;. This function stubs out an R markdown document from scratch or from a template:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## stub out templated rolldown file
+rmarkdown::draft(&amp;quot;draft.Rmd&amp;quot;, 
+                 template = &amp;quot;scrollama-sidebar&amp;quot;, 
+                 package = &amp;quot;rolldown&amp;quot;,
+                 edit = FALSE)
+
+## stub out templated rolldown file AND interactively edit
+rmarkdown::draft(&amp;quot;draft2.Rmd&amp;quot;, 
+                 template = &amp;quot;scrollama-sidebar&amp;quot;, 
+                 package = &amp;quot;rolldown&amp;quot;,
+                 edit = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;&lt;a href=&#34;/notes/rstudioconf2019/&#34;&gt;rstudio::conf 2019 recap&lt;/a&gt;&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;Image borrowed from &lt;a href=&#34;https://github.com/rstudio/bootstraplib/blob/master/README.md&#34;&gt;&lt;code&gt;boostraplib&lt;/code&gt; README&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Create a GIF with R</title>
       <link>/notes/gifs-in-r/</link>
       <pubDate>Wed, 27 Nov 2019 08:38:31 -0400</pubDate>
@@ -1082,231 +1411,6 @@ server {
 &lt;li&gt;&lt;code&gt;location&lt;/code&gt; … we don’t want to pass any special location to the base URL since we’re defining an &lt;code&gt;app_dir&lt;/code&gt; (see below) … so &lt;code&gt;location /&lt;/code&gt; should work fine&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;app_dir&lt;/code&gt; … rather than serving up an entire directory of apps, we just have one … make sure the &lt;code&gt;app_dir&lt;/code&gt; specifies the directory where the app is on the host machine (usually &lt;code&gt;/srv/shiny-server/{app-name}&lt;/code&gt;)&lt;/li&gt;
 &lt;/ul&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>rstudio::conf 2019</title>
-      <link>/notes/rstudioconf2019/</link>
-      <pubDate>Mon, 11 Feb 2019 17:14:59 +0000</pubDate>
-      
-      <guid>/notes/rstudioconf2019/</guid>
-      <description>
-
-
-&lt;p&gt;This past January I was able to attend &lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019&#34;&gt;rstudio::conf 2019&lt;/a&gt; in Austin. I was there for the full week, taking the &lt;em&gt;Building Tidy Tools&lt;/em&gt; workshop and attending as many of the main conference program sessions as possible.&lt;/p&gt;
-&lt;p&gt;Here is a collection of highlights/takeaways from the conference …&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#shortcuts&#34;&gt;Shortcuts&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#rstudio12&#34;&gt;RStudio 1.2 features&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#tidyeval&#34;&gt;Tidy eval&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#separaterows&#34;&gt;&lt;code&gt;separate_rows&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#rmdpp&#34;&gt;.Rmd to .pptx&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#newpkgs&#34;&gt;New packages&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div id=&#34;shortcuts&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;&lt;a name=&#34;shortcuts&#34;&gt;&lt;/a&gt;Shortcuts&lt;/h3&gt;
-&lt;p&gt;Coming into &lt;strong&gt;rstudio::conf&lt;/strong&gt; I had a few keyboard shortcuts memorized. Things like copying a line of code down (&lt;code&gt;CMD + SHIFT + DOWN ARROW&lt;/code&gt;) … inserting the pipe operator (&lt;code&gt;CMD + SHIFT + M&lt;/code&gt;) … and inserting a code chunk (&lt;code&gt;CMD + OPTION + I&lt;/code&gt;).&lt;/p&gt;
-&lt;p&gt;But there are so many more … a few handy ones that I picked up:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Maximize an Rstudio pane: &lt;code&gt;SHIFT + CTRL + 1&lt;/code&gt; (1,2,3,4 for each pane clockwise)&lt;/li&gt;
-&lt;li&gt;Build a package: &lt;code&gt;SHIFT + CMD + B&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;Load functions from package after building: &lt;code&gt;SHIFT + CMD + L&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;My friends (and fellow &lt;a href=&#34;https://www.meetup.com/UVa-R-Users-Group/&#34;&gt;Charlottesville R Users&lt;/a&gt;) Jeff Boichuk and Steve Mortimer have also developed an R package (&lt;a href=&#34;https://github.com/jeffboichuk/crossr&#34;&gt;&lt;code&gt;CrossR&lt;/code&gt;&lt;/a&gt;) that includes a data frame with all Rstudio shortcuts:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;devtools::install_github(&amp;quot;jeffboichuk/CrossR&amp;quot;)
-library(CrossR)
-
-shortcuts&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 122 x 4
-##    category description        mac             windows         
-##    &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;              &amp;lt;chr&amp;gt;           &amp;lt;chr&amp;gt;           
-##  1 Build    Build All          Shift + Cmd + B Ctrl + Shift + B
-##  2 Build    Check Package      Shift + Cmd + E Ctrl + Shift + E
-##  3 Build    Compile PDF        Shift + Cmd + K Ctrl + Shift + K
-##  4 Build    Devtools Load All  Shift + Cmd + L Ctrl + Shift + L
-##  5 Build    Knit Document      Shift + Cmd + K Ctrl + Shift + K
-##  6 Build    Preview HTML       Shift + Cmd + K Ctrl + Shift + K
-##  7 Build    Roxygenize Package Shift + Cmd + D Ctrl + Shift + D
-##  8 Build    Test Package       Shift + Cmd + T Ctrl + Shift + T
-##  9 Console  Console Clear      Ctrl + L        Ctrl + L        
-## 10 Debug    Debug Breakpoint   Shift + F9      Shift + F9      
-## # … with 112 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;find_shortcuts(&amp;quot;roxygen&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 3
-##   category      description             mac                  
-##   &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;                   &amp;lt;chr&amp;gt;                
-## 1 Build         Roxygenize Package      Shift + Cmd + D      
-## 2 Source Editor Insert Roxygen Skeleton Shift + Alt + Cmd + R&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;rstudio-1.2-features&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;&lt;a name=&#34;rstudio12&#34;&gt;&lt;/a&gt;RStudio 1.2 features&lt;/h3&gt;
-&lt;p&gt;The RStudio team is working to make the RStudio IDE an even more comprehensive data science toolkit. Version 1.2 introduces features to support multiple languages, including python, SQL and D3. Jonathan McPherson gave a tour of the new multilingual support:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio&#34; class=&#34;uri&#34;&gt;https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;I put together a trivial example of what this looks workflow looks like for passing R objects to python (and vice versa) from chunk-to-chunk in an R markdown document:&lt;/p&gt;
-&lt;pre class=&#34;python&#34;&gt;&lt;code&gt;```{r setup}
-  library(reticulate)
-  use_python(&amp;quot;/usr/bin/python&amp;quot;, required = TRUE)
-```
-
-```{python}
-  import random
-  x = random.randint(1,99)
-  print x
-```
-
-```{r}
-  # access the object &amp;#39;x&amp;#39; from python environment with py$x
-  py$x
-
-  y &amp;lt;- py$x^2
-
-  y
-```
-
-```{python}
-  # access the object &amp;#39;y&amp;#39; from r environment with r.y
-  print r.y
-
-  import math
-  z = math.sqrt(r.y)
-
-  print z
-```&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;For a more complete example (including D3 and SQL chunks), take a look at the &lt;code&gt;spenders.Rmd&lt;/code&gt; example:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/jmcphers/rstudio-1.2-features/blob/master/spenders.Rmd&#34; class=&#34;uri&#34;&gt;https://github.com/jmcphers/rstudio-1.2-features/blob/master/spenders.Rmd&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio?wvideo=86143vxqwr&#34;&gt;New language features in RStudio - Jonathan McPherson&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio?wvideo=86143vxqwr&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/96f8273424b64b06534e9828ebddc37e.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
-&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;tidy-eval&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;&lt;a name=&#34;tidyeval&#34;&gt;&lt;/a&gt;Tidy eval&lt;/h3&gt;
-&lt;p&gt;Programming with &lt;a href=&#34;https://tidyeval.tidyverse.org/&#34;&gt;&lt;code&gt;tidy eval&lt;/code&gt;&lt;/a&gt; can seem daunting. One of the sessions of the &lt;code&gt;Building Tidy Tools&lt;/code&gt; workshop focused on tidy eval. That talk demystified the quoting/unquoting workflow. Maybe more importantly for me, I found out that Rstudio is compiling a list of use-cases/examples of tidy eval in the wild:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://community.rstudio.com/t/interesting-tidy-eval-use-cases/21121&#34; class=&#34;uri&#34;&gt;https://community.rstudio.com/t/interesting-tidy-eval-use-cases/21121&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/working-with-names-and-expressions-in-your-tidy-eval-code?wvideo=ebj7te6m65&#34;&gt;Working with names and expressions in your tidy eval code - Lionel Henry&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/working-with-names-and-expressions-in-your-tidy-eval-code?wvideo=ebj7te6m65&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/b866337a304ea75d56f980cdf8cbe125.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
-&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;separate_rows&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;&lt;a name=&#34;separaterows&#34;&gt;&lt;/a&gt;&lt;code&gt;separate_rows()&lt;/code&gt;&lt;/h3&gt;
-&lt;p&gt;The &lt;code&gt;tidyr&lt;/code&gt; &lt;code&gt;separate_rows()&lt;/code&gt; function isn’t a new by any means, but it’s one that I picked up during a demo at the conference. This will be for handy “wide-to-long” transformations on data that is packed into a single column (and separated by a common delimiter):&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyr)
-
-
-dat &amp;lt;-
-  data.frame(
-    id = 1:5,
-    diagnosis = c(NA, &amp;quot;A,B,C&amp;quot;, &amp;quot;D&amp;quot;, &amp;quot;B,E,F&amp;quot;, &amp;quot;A&amp;quot;)
-  )
-
-dat&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##   id diagnosis
-## 1  1      &amp;lt;NA&amp;gt;
-## 2  2     A,B,C
-## 3  3         D
-## 4  4     B,E,F
-## 5  5         A&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;separate_rows(dat, diagnosis, sep = &amp;quot;,&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##   id diagnosis
-## 1  1      &amp;lt;NA&amp;gt;
-## 2  2         A
-## 3  2         B
-## 4  2         C
-## 5  3         D
-## 6  4         B
-## 7  4         E
-## 8  4         F
-## 9  5         A&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;rmd-to-.pptx&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;&lt;a name=&#34;rmdpp&#34;&gt;&lt;/a&gt; .Rmd to .pptx&lt;/h3&gt;
-&lt;p&gt;Again … not a new feature, but new to me:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html&#34; class=&#34;uri&#34;&gt;https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;You can convert R markdown to PowerPoint by specifying &lt;code&gt;powerpoint_presentation&lt;/code&gt; as the output format in the YAML header:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;---
-title: &amp;quot;Figs&amp;quot;
-author: &amp;quot;VP Nagraj&amp;quot;
-date: &amp;quot;3/10/2019&amp;quot;
-output: powerpoint_presentation
----&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;strong&gt;nb&lt;/strong&gt; this output format requires Pandoc 2.x&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;new-packages&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;&lt;a name=&#34;newpkgs&#34;&gt;&lt;/a&gt;New packages&lt;/h3&gt;
-&lt;p&gt;There were a ton of new (or at least new-ish) packages introduced at &lt;strong&gt;rstudio::conf&lt;/strong&gt;.&lt;/p&gt;
-&lt;div id=&#34;ungeviz&#34; class=&#34;section level4&#34;&gt;
-&lt;h4&gt;&lt;code&gt;ungeviz&lt;/code&gt;&lt;/h4&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/wilkelab/ungeviz&#34; class=&#34;uri&#34;&gt;https://github.com/wilkelab/ungeviz&lt;/a&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Tools for visualizing uncertainty with ggplot2.
-This package is meant to provide helpful add-on functionality for ggplot2 to visualize uncertainty. The package is particularly focused on hypothetical outcome plots (HOPs) and provides bootstrapping and sampling functionality that integrates well with the ggplot2 API.
-The package name comes from the German word “Ungewissheit”, which means uncertainty.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/wilkelab/ungeviz/master/man/figures/README-cacao-samples-anim-1.gif&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/visualizing-uncertainty-with-hypothetical-outcomes-plots?wvideo=8m9hzvc38u&#34;&gt;Visualizing uncertainty with hypothetical outcomes plots - Claus Wilke&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/visualizing-uncertainty-with-hypothetical-outcomes-plots?wvideo=8m9hzvc38u&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/8b966c08ac6371481bdfa04f1efe09d859c1dc5b.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
-&lt;/p&gt;
-&lt;hr /&gt;
-&lt;/div&gt;
-&lt;div id=&#34;tidymodels&#34; class=&#34;section level4&#34;&gt;
-&lt;h4&gt;&lt;code&gt;tidymodels&lt;/code&gt;&lt;/h4&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/tidymodels/tidymodels&#34; class=&#34;uri&#34;&gt;https://github.com/tidymodels/tidymodels&lt;/a&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;tidymodels is a “meta-package” for modeling and statistical analysis that share the underlying design philosophy, grammar, and data structures of the tidyverse.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;
-&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/solving-the-model-representation-problem-with-broom?wvideo=silfkxh9is&#34;&gt;Solving the model representation problem with broom - Alex Hayes&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/solving-the-model-representation-problem-with-broom?wvideo=silfkxh9is&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/832c41240142f36a8084d511730cf28a9c5baea8.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/parsnip-a-tidy-model-interface?wvideo=xs5oz0b7p2&#34;&gt;parsnip A tidy model interface - Max Kuhn&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/parsnip-a-tidy-model-interface?wvideo=xs5oz0b7p2&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/7283540419338367c2732f4a2d4c434c5cdefaed.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
-&lt;/p&gt;
-&lt;hr /&gt;
-&lt;/div&gt;
-&lt;div id=&#34;gt&#34; class=&#34;section level4&#34;&gt;
-&lt;h4&gt;&lt;code&gt;gt&lt;/code&gt;&lt;/h4&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/gt&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/gt&lt;/a&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;With the gt package, anyone can make wonderful-looking tables using the R programming language. The gt philosophy: we can construct a wide variety of useful tables with a cohesive set of table parts. These include the table header, the stub, the stub head, the column labels, the table body, and the table footer.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&#34;https://github.com/rstudio/gt/raw/master/man/figures/gt_parts_of_a_table.svg?sanitize=true&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/introducing-the-gt-package?wvideo=d38rerkbwb&#34;&gt;Introducing the gt package - Rich Iannone&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/introducing-the-gt-package?wvideo=d38rerkbwb&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/f54d2b6ffcb5dcf913e67031d060ea98.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
-&lt;/p&gt;
-&lt;hr /&gt;
-&lt;/div&gt;
-&lt;div id=&#34;pagedown&#34; class=&#34;section level4&#34;&gt;
-&lt;h4&gt;&lt;code&gt;pagedown&lt;/code&gt;&lt;/h4&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/rstudio/pagedown&#34; class=&#34;uri&#34;&gt;https://github.com/rstudio/pagedown&lt;/a&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Paginate the HTML Output of R Markdown with CSS for Print. You only need a modern web browser (e.g., Google Chrome) to generate PDF. No need to install LaTeX to get beautiful PDFs.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&#34;https://user-images.githubusercontent.com/163582/46879762-7a34a500-ce0c-11e8-87e3-496f3577ff05.png&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/pagedown-creating-beautiful-pdfs-with-r-markdown-and-css?wvideo=oxxk6afhtz&#34;&gt;pagedown Creating beautiful PDFs with R Markdown and CSS - Yihui Xie&lt;/a&gt;
-&lt;/p&gt;
-&lt;p&gt;
-&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2019/pagedown-creating-beautiful-pdfs-with-r-markdown-and-css?wvideo=oxxk6afhtz&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/77d268f4eb298d5f472a509610ee3fcf.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
-&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
 </description>
     </item>
     

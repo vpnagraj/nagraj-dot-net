@@ -1,0 +1,327 @@
+---
+title: "rstudio::conf 2020"
+date: 2020-01-31T17:14:59+00:00
+categories: ["notes"]
+tags: ["R"]
+summary: "highlights from rstudio::conf 2020"
+---
+
+
+
+<p>This past January I was able to attend <a href="https://blog.rstudio.com/2019/07/15/rstudio-conf-2020/">rstudio::conf 2020</a><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> in San Francisco. I was there for the full week, taking the <strong>Applied Machine Learning</strong> workshop and attending as many of the main conference program sessions as possible.</p>
+<p>Here is a collection of highlights/takeaways from the conference:</p>
+<ul>
+<li><a href="#debug-with-browser">Debugging with <code>browser()</code></a></li>
+<li><a href="#tech-debt">Technical Debt</a></li>
+<li><a href="#tunneling">Tunneling with <em>tidyeval</em></a></li>
+<li><a href="#ggplot-null"><code>ggplot + NULL</code></a></li>
+<li><a href="#plumber"><code>plumber</code> for building APIs</a></li>
+<li><a href="#pins-package"><code>pins</code> package</a></li>
+<li><a href="#bslib"><code>boostraplib</code> package</a></li>
+<li><a href="#rolldown"><code>rolldown</code> output</a></li>
+</ul>
+<hr />
+<div id="debugging-with-browser" class="section level3">
+<h3><a name="debug-with-browser">Debugging with <code>browser()</code></a></h3>
+<p><a href="https://speakerdeck.com/jennybc/object-of-type-closure-is-not-subsettable">Jenny Bryan’s <strong>Object of Type Closure Is Not Subsettable</strong></a> was one of my favorite talks at the conference. My debugging practices have been … crude, at best. I wish I would have taken the time to learn about some of the tools she covered a <em>long</em> time ago.</p>
+<p>Moving forward I’ll definitely be using <code>browser()</code>. When you drop it in inside a function, you can step through each call in the stack until it fails or succeeds. Along the way you can interactively update objects in the function environment to test fixes.</p>
+<p>An example:</p>
+<pre class="r"><code>## define our function
+fix_me &lt;- function(.data) {
+  x &lt;- head(.data)
+  y &lt;- colSums(x)
+  x[which.max(y),]
+}
+
+## try it with a data.frame
+fix_me(mtcars)</code></pre>
+<pre><code>##             mpg cyl disp hp drat   wt  qsec vs am gear carb
+## Datsun 710 22.8   4  108 93 3.85 2.32 18.61  1  1    4    1</code></pre>
+<pre class="r"><code>## now try it with a vector
+## doesn&#39;t work :(
+fix_me(1:3)</code></pre>
+<pre><code>## Error in colSums(x): &#39;x&#39; must be an array of at least two dimensions</code></pre>
+<pre class="r"><code>## add in call to browser() to see where it breaks
+fix_me &lt;- function(.data) {
+  browser()
+  x &lt;- head(.data)
+  y &lt;- colSums(x)
+  x[which.max(y),]
+}
+
+## run again to prompt browser
+fix_me(1:3)</code></pre>
+<pre class="r"><code>## add in logic and messaging for dim check
+fix_me &lt;- function(.data) {
+  if(is.null(dim(.data))) {
+    stop(&quot;Your argument to `.data` must have at least 2 dimensions (columns and rows).&quot;)
+  }
+  x &lt;- head(.data)
+  y &lt;- colSums(x)
+  x[which.max(y),]
+}
+
+## still doesn&#39;t work :(
+## but now it at least issues a message!
+fix_me(1:3)</code></pre>
+<pre><code>## Error in fix_me(1:3): Your argument to `.data` must have at least 2 dimensions (columns and rows).</code></pre>
+<pre class="r"><code>## and this still works!
+fix_me(mtcars)</code></pre>
+<pre><code>##             mpg cyl disp hp drat   wt  qsec vs am gear carb
+## Datsun 710 22.8   4  108 93 3.85 2.32 18.61  1  1    4    1</code></pre>
+<hr />
+</div>
+<div id="technical-debt" class="section level3">
+<h3><a name="tech-debt">Technical Debt</a></h3>
+<p><a href="https://github.com/GShotwell/technical_debt">Gordon Shotwell’s talk</a> might have been the least technical and most important talk I saw at rstudio::conf. Technical debt abounds. There’s no doubt that my own development practices have led to more work for folks (including myself) down the line. It’s easy to take shortcuts in documentation, testing, and up-front efforts when scoping a project. It’s even easier to be cynical or blame a former maintainer (including yourself) for these shortcomings. But as Gordon pointed out, <strong>technical debt is a good sign</strong> … if there is a motivation to salvage, refactor, or otherwise optimize a codebase, then it means the underlying ideas hold value. The talk outlined a number of ways to avoid and/or remedy technical debt. One suggestion: build tools that are fun to use. Gordon gave the example of R markdown’s ability to give new users two very important features:</p>
+<ol style="list-style-type: decimal">
+<li>Ease-of-use</li>
+<li>Path to mastery</li>
+</ol>
+<hr />
+</div>
+<div id="tunneling-with-tidyeval" class="section level3">
+<h3><a name="tunneling">Tunneling with <em>tidyeval</em></a></h3>
+<p>Lionel Henry’s talk reviewed the history, design, and current features <em>tidyeval</em> (i.e. masking) in R. The new feature that resonated most with me was the “tunneling” syntax with <code>{{ variable }}</code>.</p>
+<p>The code below outlines a simple use-case where we want to use <code>dplyr</code> syntax in a function that can accept <em>bare</em> variable names as arguments. This example function (<code>most()</code>) will try to find the maximum value for a given variable, stratified by a category:</p>
+<pre class="r"><code>## make sure dplyr is loaded
+## NOTE: dplyr includes the starwars dataset
+library(dplyr)
+
+## define function *without* tunneling 
+most &lt;- function(.data, var, by) {
+  .data %&gt;%
+    group_by(by) %&gt;%
+    summarise(max(var, na.rm = TRUE)) %&gt;%
+    arrange(desc(var))
+}
+
+## this should produce an error ...
+most(starwars, height, species)</code></pre>
+<pre><code>## Error: Column `by` is unknown</code></pre>
+<pre class="r"><code>## try defining the function with tunneling
+most &lt;- function(.data, var, by = NULL) {
+  .data %&gt;%
+    group_by({{ by }}) %&gt;%
+    summarise(max({{ var }}, na.rm = TRUE)) %&gt;%
+    arrange(desc({{ var }}))
+}
+
+## still getting an error? ...
+most(starwars, height, species)</code></pre>
+<pre><code>## Error in ~height: object &#39;height&#39; not found</code></pre>
+<pre class="r"><code>## make sure we&#39;re passing in tunneled name for the summarise variable we create
+most &lt;- function(.data, var, by = NULL) {
+  .data %&gt;%
+    group_by({{ by }}) %&gt;%
+    summarise({{ var }} := max({{ var }}, na.rm = TRUE)) %&gt;%
+    arrange(desc({{ var }}))
+}
+
+## works !
+most(starwars, height, species)</code></pre>
+<pre><code>## # A tibble: 38 x 2
+##    species  height
+##    &lt;chr&gt;     &lt;int&gt;
+##  1 Quermian    264
+##  2 Wookiee     234
+##  3 Kaminoan    229
+##  4 Gungan      224
+##  5 Kaleesh     216
+##  6 Pau&#39;an      206
+##  7 Human       202
+##  8 Droid       200
+##  9 Besalisk    198
+## 10 Cerean      198
+## # … with 28 more rows</code></pre>
+<p>In the Q&amp;A Lionel clarified that the tunneling syntax meant to make tidyeval easier for folks to use … and will not necessarily supersede or replace the existing <code>quo</code>, <code>enquo</code>, <code>!!</code>, etc features.</p>
+<hr />
+</div>
+<div id="ggplot-null" class="section level3">
+<h3><a name="ggplot-null"><code>ggplot + NULL</code></a></h3>
+<p>I didn’t know that adding <code>NULL</code> to a <code>ggplot2</code> layer would produce the same plot as if it weren’t added at all:</p>
+<pre class="r"><code>library(ggplot2)
+
+p &lt;-
+  ggplot(msleep, aes(name, sleep_total)) +
+  geom_col() +
+  coord_polar()
+
+q &lt;-
+  ggplot(msleep, aes(name, sleep_total)) +
+  geom_col() +
+  coord_polar() +
+  NULL
+
+all.equal(p,q)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>Dewey Dunnington pointed this out in the context of tips for programming with <code>ggplot2</code>. As an example, if you were writing your own function you might add an option for facetting but still maintain the same API:</p>
+<pre class="r"><code>## define polar plot
+polar_plot &lt;- function(.data, x, y, by = NULL) {
+  
+  if(!is.null(by)) {
+    facet &lt;- facet_wrap(~ .data[[by]])
+  } else {
+    facet &lt;- NULL
+  }
+  
+  ggplot(.data, aes(.data[[x]], .data[[y]])) +
+    geom_col() +
+    coord_polar() +
+    facet
+}
+
+## works !
+polar_plot(msleep, &quot;name&quot;, &quot;sleep_total&quot;)</code></pre>
+<p><img src="/notes/rstudioconf2020_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>## works !
+polar_plot(msleep, &quot;name&quot;, &quot;sleep_total&quot;, by = &quot;vore&quot;)</code></pre>
+<p><img src="/notes/rstudioconf2020_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<p>Given the notes around <em>tidyeval</em> above, it’s worth pointing out that the method Dewey used (<code>.data[[&quot;variable&quot;]]</code>) does <em>not</em> allow for bare variable names.</p>
+<p>Could we use the tunneling approach to do that? Kind of …</p>
+<pre class="r"><code>## define polar_plot() with tunneling
+polar_plot &lt;- function(.data, x, y, by = NULL) {
+  
+  if(!is.null(by)) {
+    facet &lt;- facet_wrap(~ {{ by }})
+  } else {
+    facet &lt;- NULL
+  }
+  
+  ggplot(.data, aes({{x}}, {{y}})) +
+    geom_col() +
+    coord_polar() +
+    facet
+}
+
+## works !
+polar_plot(msleep, name, sleep_total)</code></pre>
+<p><img src="/notes/rstudioconf2020_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>## doesn&#39;t work :(
+polar_plot(msleep, name, sleep_total, vore)</code></pre>
+<pre><code>## Error in polar_plot(msleep, name, sleep_total, vore): object &#39;vore&#39; not found</code></pre>
+<p>The second call to the function doesn’t work. Where is this breaking? <code>if(!is.null(by)</code> … thanks <code>browser()</code>!</p>
+<p>To get this working we probably need to dive deeper into <a href="https://rlang.r-lib.org/reference/quasiquotation.html">quasiquotation</a>. Maybe a topic for another post …</p>
+<hr />
+</div>
+<div id="plumber-for-building-apis" class="section level3">
+<h3><a name="plumber"><code>plumber</code> for building APIs</a></h3>
+<p><a href="https://www.rplumber.io/"><code>plumber</code></a> came up several in several talks.</p>
+<blockquote>
+<p>plumber allows you to create a REST API by merely decorating your existing R source code with special comments.</p>
+</blockquote>
+<p>The example below uses the following procedure:</p>
+<ol style="list-style-type: decimal">
+<li>Fit a model and save it to an R object</li>
+<li>Write <code>plumber</code> code that loads model and defines API endpoints</li>
+<li>Run the API locally at port <code>8000</code></li>
+<li>Query the API with <code>curl</code> to return predicted value</li>
+</ol>
+<pre class="r"><code>library(dplyr)
+library(AmesHousing)
+
+ames &lt;- make_ames()
+
+ames_train &lt;-
+  ames %&gt;%
+  select(Sale_Price, Gr_Liv_Area, Year_Built, Central_Air)
+
+ames_fit &lt;- lm(Sale_Price ~ ., data  = ames_train)
+save(ames_fit, file = &quot;ames_fit.rda&quot;)</code></pre>
+<pre class="r"><code># plumber.R
+load(&quot;ames_fit.rda&quot;)
+
+#* Echo back the input
+#* @param msg The message to echo
+#* @get /echo
+function(msg=&quot;&quot;){
+  list(msg = paste0(&quot;The message is: &#39;&quot;, msg, &quot;&#39;&quot;))
+}
+
+#* Return r squared
+#* @get /rsq
+function(){
+  summary(ames_fit)$r.squared
+}
+
+#* Return the predicted sale price in dollars
+#* @param area The total area of home in square feet
+#* @param year The year the home was built
+#* @param ac Whether or not the home has Central Air (&quot;Y&quot; or &quot;N&quot;)
+#* @post /predict
+function(area, year, ac){
+  newdata &lt;- 
+    data.frame(Gr_Liv_Area = as.numeric(area),
+               Year_Built = as.numeric(year),
+               Central_Air = ac)
+  
+  predict(ames_fit, newdata = newdata)[[1]]
+}</code></pre>
+<pre class="r"><code>library(plumber)
+ames_api &lt;- plumb(&quot;plumber.R&quot;)  # Where &#39;plumber.R&#39; is the location of the file shown
+ames_api$run(port=8000)</code></pre>
+<pre class="bash"><code>curl -X POST &quot;http://127.0.0.1:8000/predict?ac=Y&amp;year=1990&amp;area=20000&quot; -H  &quot;accept: application/json&quot;</code></pre>
+<hr />
+</div>
+<div id="pins-package" class="section level3">
+<h3><a name="pins-package"><code>pins</code> package</a></h3>
+<p><a href="http://pins.rstudio.com/"><code>pins</code></a> is a relatively new package for caching and retrieving objects. I heard about it in Alex Gold’s <strong>Deploying End-To-End Data Science with Shiny, Plumber, and Pins</strong> talk. As he pointed out, pins are good for things you can re-create. The workflow doesn’t necessarily obviate the need for a database / file structure to store data of record. But it can be useful for quickly retrieving model objects or large datasets that are shared across multiple analyses.</p>
+<pre class="r"><code>library(pins)
+
+## create some sample data
+rvalues &lt;-
+  data.frame(
+    key = sample(LETTERS, size = 1e7, replace = TRUE),
+    value = rnbinom(1e7, prob = 0.1, size = 1)
+  )
+
+## two concepts: &quot;pins&quot; and &quot;boards&quot;
+## pins are data objects
+## boards are storage locations
+
+## what board are available
+board_list()
+
+## you can also add new boards with board_register_* functions
+## e.g. board_register_local(); board_register_s3(); board_register_github()
+
+## here we&#39;ll use the &quot;local&quot; board
+pin(rvalues, board = &quot;local&quot;)
+## remove the object from the local environment to prove this is working
+rm(rvalues)
+## retrieve the object
+pin_get(&quot;rvalues&quot;)
+## the above ^ doesn&#39;t store it in the environment though
+## assign the values to an object
+rvalues &lt;- pin_get(&quot;rvalues&quot;)</code></pre>
+<hr />
+</div>
+<div id="bootstraplib-package" class="section level3">
+<h3><a name="bslib"><code>bootstraplib</code> package</a></h3>
+<p>Joe Cheng introduced a new package called <a href="https://github.com/rstudio/bootstraplib"><code>bootstraplib</code></a>, which is aimed at making it easier to style Shiny app R markdown html output via Sass and CSS variables. There’s also an interactive theming / color picker UI<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>:</p>
+<p><img src="https://camo.githubusercontent.com/aec7d2cc30e91cc72d654d708397dbff17c09c08/68747470733a2f2f692e696d6775722e636f6d2f696c366e64384a2e676966" /></p>
+<hr />
+</div>
+<div id="rolldown-output" class="section level3">
+<h3><a name="rolldown"><code>rolldown</code> output</a></h3>
+<p>Yihui Xie delivered an inspiring blitz through 14 R markdown demos. One of the output formats that was new to me was <a href="https://github.com/yihui/rolldown"><code>rolldown</code></a>, which wraps a “storytelling” format implemented in JavaScript called <a href="https://github.com/russellgoldenberg/scrollama">Scrollama</a>. With this package you can fix output to stay in the center of the html document, while the code and chunks of text scroll down the side. The package includes a <a href="https://cran.r-project.org/web/packages/rolldown/vignettes/scrollama-sidebar.html">vignette with this sidebar layout as an example</a>.</p>
+<p>Another bonus for me was learning about <code>rmarkdown::draft()</code>. This function stubs out an R markdown document from scratch or from a template:</p>
+<pre class="r"><code>## stub out templated rolldown file
+rmarkdown::draft(&quot;draft.Rmd&quot;, 
+                 template = &quot;scrollama-sidebar&quot;, 
+                 package = &quot;rolldown&quot;,
+                 edit = FALSE)
+
+## stub out templated rolldown file AND interactively edit
+rmarkdown::draft(&quot;draft2.Rmd&quot;, 
+                 template = &quot;scrollama-sidebar&quot;, 
+                 package = &quot;rolldown&quot;,
+                 edit = TRUE)</code></pre>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p><a href="/notes/rstudioconf2019/">rstudio::conf 2019 recap</a><a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>Image borrowed from <a href="https://github.com/rstudio/bootstraplib/blob/master/README.md"><code>boostraplib</code> README</a><a href="#fnref2" class="footnote-back">↩</a></p></li>
+</ol>
+</div>

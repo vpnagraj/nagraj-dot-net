@@ -13,6 +13,15 @@
     
     
     <item>
+      <title>rstudio::conf 2020</title>
+      <link>/notes/rstudioconf2020/</link>
+      <pubDate>Fri, 31 Jan 2020 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/rstudioconf2020/</guid>
+      <description>highlights from rstudio::conf 2020</description>
+    </item>
+    
+    <item>
       <title>Create a GIF with R</title>
       <link>/notes/gifs-in-r/</link>
       <pubDate>Wed, 27 Nov 2019 08:38:31 -0400</pubDate>
