@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 This past January I was able to attend [rstudio::conf 2019](https://resources.rstudio.com/rstudio-conf-2019) in Austin. I was there for the full week, taking the *Building Tidy Tools* workshop and attending as many of the main conference program sessions as possible.
 
-Here is a collection of highlights/takeaways from the conference ...
+Here is a collection of highlights/takeaways from the conference:
 
 - [Shortcuts](#shortcuts)
 - [RStudio 1.2 features](#rstudio12)
@@ -20,6 +20,8 @@ Here is a collection of highlights/takeaways from the conference ...
 - [`separate_rows`](#separaterows)
 - [.Rmd to .pptx](#rmdpp)
 - [New packages](#newpkgs)
+
+---
 
 ### <a name="shortcuts"></a>Shortcuts
 
@@ -41,6 +43,8 @@ shortcuts
 
 find_shortcuts("roxygen")
 ```
+
+---
 
 ### <a name="rstudio12"></a>RStudio 1.2 features
 
@@ -91,6 +95,8 @@ For a more complete example (including D3 and SQL chunks), take a look at the `s
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio?wvideo=86143vxqwr">New language features in RStudio - Jonathan McPherson</a></p>
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/new-language-features-in-rstudio?wvideo=86143vxqwr"><img src="https://embedwistia-a.akamaihd.net/deliveries/96f8273424b64b06534e9828ebddc37e.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
 
+---
+
 ### <a name="tidyeval"></a>Tidy eval
 
 Programming with [`tidy eval`](https://tidyeval.tidyverse.org/) can seem daunting. One of the sessions of the `Building Tidy Tools` workshop focused on tidy eval. That talk demystified the quoting/unquoting workflow. Maybe more importantly for me, I found out that Rstudio is compiling a list of use-cases/examples of tidy eval in the wild:
@@ -99,6 +105,8 @@ Programming with [`tidy eval`](https://tidyeval.tidyverse.org/) can seem dauntin
 
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/working-with-names-and-expressions-in-your-tidy-eval-code?wvideo=ebj7te6m65">Working with names and expressions in your tidy eval code - Lionel Henry</a></p>
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/working-with-names-and-expressions-in-your-tidy-eval-code?wvideo=ebj7te6m65"><img src="https://embedwistia-a.akamaihd.net/deliveries/b866337a304ea75d56f980cdf8cbe125.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
+
+---
 
 ### <a name="separaterows"></a>`separate_rows()`
 
@@ -119,6 +127,8 @@ dat
 separate_rows(dat, diagnosis, sep = ",")
 ```
 
+---
+
 ### <a name="rmdpp"></a> .Rmd to .pptx
 
 Again ... not a new feature, but new to me:
@@ -138,6 +148,8 @@ output: powerpoint_presentation
 
 **nb** this output format requires Pandoc 2.x
 
+---
+
 ### <a name="newpkgs"></a>New packages
 
 There were a ton of new (or at least new-ish) packages introduced at **rstudio::conf**.
@@ -155,8 +167,6 @@ The package name comes from the German word “Ungewissheit”, which means unce
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/visualizing-uncertainty-with-hypothetical-outcomes-plots?wvideo=8m9hzvc38u">Visualizing uncertainty with hypothetical outcomes plots - Claus Wilke</a></p>
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/visualizing-uncertainty-with-hypothetical-outcomes-plots?wvideo=8m9hzvc38u"><img src="https://embedwistia-a.akamaihd.net/deliveries/8b966c08ac6371481bdfa04f1efe09d859c1dc5b.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
 
----
-
 #### `tidymodels`
 
 <https://github.com/tidymodels/tidymodels>
@@ -170,8 +180,6 @@ The package name comes from the German word “Ungewissheit”, which means unce
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/parsnip-a-tidy-model-interface?wvideo=xs5oz0b7p2">parsnip A tidy model interface - Max Kuhn</a></p>
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/parsnip-a-tidy-model-interface?wvideo=xs5oz0b7p2"><img src="https://embedwistia-a.akamaihd.net/deliveries/7283540419338367c2732f4a2d4c434c5cdefaed.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
 
----
-
 #### `gt`
 
 <https://github.com/rstudio/gt>
@@ -182,7 +190,7 @@ The package name comes from the German word “Ungewissheit”, which means unce
 
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/introducing-the-gt-package?wvideo=d38rerkbwb">Introducing the gt package - Rich Iannone</a></p>
 <p><a href="https://resources.rstudio.com/rstudio-conf-2019/introducing-the-gt-package?wvideo=d38rerkbwb"><img src="https://embedwistia-a.akamaihd.net/deliveries/f54d2b6ffcb5dcf913e67031d060ea98.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
----
+
 #### `pagedown`
 
 <https://github.com/rstudio/pagedown>
