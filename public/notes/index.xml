@@ -13,6 +13,15 @@
     
     
     <item>
+      <title>tmux Basics</title>
+      <link>/notes/tmux-basics/</link>
+      <pubDate>Tue, 11 Feb 2020 08:38:31 -0400</pubDate>
+      
+      <guid>/notes/tmux-basics/</guid>
+      <description>a demonstration of some basic usage for tmux</description>
+    </item>
+    
+    <item>
       <title>rstudio::conf 2020</title>
       <link>/notes/rstudioconf2020/</link>
       <pubDate>Fri, 31 Jan 2020 17:14:59 +0000</pubDate>

@@ -19,6 +19,60 @@
     </item>
     
     <item>
+      <title>tmux Basics</title>
+      <link>/notes/tmux-basics/</link>
+      <pubDate>Tue, 11 Feb 2020 08:38:31 -0400</pubDate>
+      
+      <guid>/notes/tmux-basics/</guid>
+      <description>
+
+
+&lt;blockquote&gt;
+&lt;p&gt;tmux is a terminal multiplexer for Unix-like operating systems. It allows multiple terminal sessions to be accessed simultaneously in a single window. It is useful for running more than one command-line program at the same time. It can also be used to detach processes from their controlling terminals, allowing SSH sessions to remain active without being visible.&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;There are a lot of great cheatsheets, demos, and resources for how to use &lt;code&gt;tmux&lt;/code&gt;&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;&lt;a href=&#34;#fn3&#34; class=&#34;footnote-ref&#34; id=&#34;fnref3&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;&lt;a href=&#34;#fn4&#34; class=&#34;footnote-ref&#34; id=&#34;fnref4&#34;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In general &lt;code&gt;tmux&lt;/code&gt; can help manage three components:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;sessions&lt;/li&gt;
+&lt;li&gt;windows&lt;/li&gt;
+&lt;li&gt;panes&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;What follows will be a series of commands that starts a session with &lt;code&gt;ping&lt;/code&gt;, the &lt;code&gt;tmux&lt;/code&gt; clock, and &lt;code&gt;htop&lt;/code&gt; running with the pane layout customized to look like the following:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/tmux.png&#34; /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;Start a new tmux session called “demo”:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;tmux new-session -s demo&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Start running ping:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ping stackoverflow.com&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Split vertically to create a second pane:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ctrl-b&lt;/code&gt; + &lt;code&gt;%&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Start the big clock:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ctrl-b&lt;/code&gt; + &lt;code&gt;t&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Split horizontally to create a third pane:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ctrl-b&lt;/code&gt; + &lt;code&gt;&amp;quot;&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Do something else (in this case open htop):&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;htop&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Resize the pane beneath the clock:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ctrl-b&lt;/code&gt; + &lt;code&gt;:resize-pane -U 5&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Remove the pane beneath the clock:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ctrl-b&lt;/code&gt; + &lt;code&gt;x&lt;/code&gt; + &lt;code&gt;y&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Detach from the session:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ctrl-b&lt;/code&gt; + &lt;code&gt;:detach&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Kill the session altogether:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;tmux kill-session -t demo&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;From &lt;a href=&#34;https://en.wikipedia.org/wiki/Tmux&#34;&gt;tmux&lt;/a&gt; by &lt;a href=&#34;https://en.wikipedia.org/&#34;&gt;Wikipedia&lt;/a&gt; licensed under &lt;a href=&#34;https://creativecommons.org/licenses/by-sa/3.0/us/&#34;&gt;CC BY-SA 3.0&lt;/a&gt;.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://gist.github.com/MohamedAlaa/2961058&#34; class=&#34;uri&#34;&gt;https://gist.github.com/MohamedAlaa/2961058&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn3&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://medium.com/@bill.feng/how-to-tmux-2136b663df45&#34; class=&#34;uri&#34;&gt;https://medium.com/@bill.feng/how-to-tmux-2136b663df45&lt;/a&gt;&lt;a href=&#34;#fnref3&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn4&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://linuxize.com/post/getting-started-with-tmux/&#34; class=&#34;uri&#34;&gt;https://linuxize.com/post/getting-started-with-tmux/&lt;/a&gt;&lt;a href=&#34;#fnref4&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>rstudio::conf 2020</title>
       <link>/notes/rstudioconf2020/</link>
       <pubDate>Fri, 31 Jan 2020 17:14:59 +0000</pubDate>
@@ -1362,55 +1416,6 @@ ToothGrowth %&amp;gt;%
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/notes/summary-se_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Hosting a Single App with Shiny Server</title>
-      <link>/notes/single-app-shiny-server/</link>
-      <pubDate>Fri, 08 Mar 2019 11:26:40 -0500</pubDate>
-      
-      <guid>/notes/single-app-shiny-server/</guid>
-      <description>
-
-
-&lt;p&gt;If you’ve written a Shiny app and have reached a point where you would like to share it with others … you have a few options:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://shiny.rstudio.com/deploy/&#34; class=&#34;uri&#34;&gt;https://shiny.rstudio.com/deploy/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Given that you have hardware (or a cloud setup) to install a server, &lt;a href=&#34;https://www.rstudio.com/products/shiny/download-server/&#34;&gt;Shiny Server Open Source&lt;/a&gt; may be a good solution.&lt;/p&gt;
-&lt;p&gt;I’ve deployed dozens of apps on different Shiny servers. In some cases, I may need a single server that hosts an entire directory of apps. With this configuration (the default for Shiny Server Open Source) each app is available at {url}/{app-name}.&lt;/p&gt;
-&lt;p&gt;However, I occassionally want a server to host a single application that will be available at {url}. In this case, I just need to adjust a few parameters in server configuration. Below is an example &lt;code&gt;shiny-server.conf&lt;/code&gt; file for an app called “prod” that lives in &lt;code&gt;/srv/shiny-server/prod&lt;/code&gt; on the host machine:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# Define the user we should use when spawning R Shiny processes
-run_as shiny;
-
-# disable idle timeout to retain connection
-app_idle_timeout 0;
-
-# Define a top-level server which will listen on a port
-server {
-  # Instruct this server to listen on port 80. The app at dokku-alt need expose PORT 80, or 500 e etc. See the docs
-  listen 80;
-
-  # Define the location available at the base URL
-  location / {
-
-    # Run this location in &amp;#39;site_dir&amp;#39; mode, which hosts the entire directory
-    # tree at &amp;#39;/srv/shiny-server&amp;#39;
-    app_dir /srv/shiny-server/prod;
-    
-    # Define where we should put the log files for this location
-    log_dir /var/log/shiny-server;
-    
-    # Should we list the contents of a (non-Shiny-App) directory when the user 
-    # visits the corresponding URL?
-    directory_index on;
-  }
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Note that the parameters of interest for this post are:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;listen&lt;/code&gt; … explicitly tell the server to &lt;code&gt;listen 80&lt;/code&gt; so that apps are served at port 80 … otherwise you’ll need to specify the port number after the url (i.e. {url}:3737)&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;location&lt;/code&gt; … we don’t want to pass any special location to the base URL since we’re defining an &lt;code&gt;app_dir&lt;/code&gt; (see below) … so &lt;code&gt;location /&lt;/code&gt; should work fine&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;app_dir&lt;/code&gt; … rather than serving up an entire directory of apps, we just have one … make sure the &lt;code&gt;app_dir&lt;/code&gt; specifies the directory where the app is on the host machine (usually &lt;code&gt;/srv/shiny-server/{app-name}&lt;/code&gt;)&lt;/li&gt;
-&lt;/ul&gt;
 </description>
     </item>
     

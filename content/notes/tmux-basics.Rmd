@@ -1,0 +1,76 @@
+---
+title: "tmux Basics"
+date: 2020-02-11T08:38:31-04:00
+tags: ["bash"]
+categories: ["notes"]
+summary: 'a demonstration of some basic usage for tmux'
+---
+
+```{r, include = FALSE}
+library(knitr)
+opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, eval = FALSE)
+```
+
+
+> tmux is a terminal multiplexer for Unix-like operating systems. It allows multiple terminal sessions to be accessed simultaneously in a single window. It is useful for running more than one command-line program at the same time. It can also be used to detach processes from their controlling terminals, allowing SSH sessions to remain active without being visible.[^1]
+
+There are a lot of great cheatsheets, demos, and resources for how to use `tmux`[^2][^3][^4]. 
+
+In general `tmux` can help manage three components: 
+
+- sessions
+- windows
+- panes
+
+What follows will be a series of commands that starts a session with `ping`, the `tmux` clock, and `htop` running with the pane layout customized to look like the following:
+
+![](/img/tmux.png)
+
+
+--- 
+
+Start a new tmux session called "demo":
+
+`tmux new-session -s demo`
+
+Start running ping:
+
+`ping stackoverflow.com`
+
+Split vertically to create a second pane:
+
+`ctrl-b` +  `%`
+
+Start the big clock:
+
+`ctrl-b` + `t`
+
+Split horizontally to create a third pane:
+
+`ctrl-b` + `"`
+
+Do something else (in this case open htop):
+
+`htop`
+
+Resize the pane beneath the clock:
+
+`ctrl-b` + `:resize-pane -U 5`
+
+Remove the pane beneath the clock:
+
+`ctrl-b` + `x` + `y`
+
+Detach from the session:
+
+`ctrl-b` + `:detach`
+
+Kill the session altogether:
+
+`tmux kill-session -t demo`
+
+
+[^1]:From [tmux](https://en.wikipedia.org/wiki/Tmux) by [Wikipedia](https://en.wikipedia.org/) licensed under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/us/).
+[^2]: https://gist.github.com/MohamedAlaa/2961058
+[^3]: https://medium.com/@bill.feng/how-to-tmux-2136b663df45
+[^4]: https://linuxize.com/post/getting-started-with-tmux/

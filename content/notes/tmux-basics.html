@@ -1,0 +1,52 @@
+---
+title: "tmux Basics"
+date: 2020-02-11T08:38:31-04:00
+tags: ["bash"]
+categories: ["notes"]
+summary: 'a demonstration of some basic usage for tmux'
+---
+
+
+
+<blockquote>
+<p>tmux is a terminal multiplexer for Unix-like operating systems. It allows multiple terminal sessions to be accessed simultaneously in a single window. It is useful for running more than one command-line program at the same time. It can also be used to detach processes from their controlling terminals, allowing SSH sessions to remain active without being visible.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+</blockquote>
+<p>There are a lot of great cheatsheets, demos, and resources for how to use <code>tmux</code><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a><a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.</p>
+<p>In general <code>tmux</code> can help manage three components:</p>
+<ul>
+<li>sessions</li>
+<li>windows</li>
+<li>panes</li>
+</ul>
+<p>What follows will be a series of commands that starts a session with <code>ping</code>, the <code>tmux</code> clock, and <code>htop</code> running with the pane layout customized to look like the following:</p>
+<p><img src="/img/tmux.png" /></p>
+<hr />
+<p>Start a new tmux session called “demo”:</p>
+<p><code>tmux new-session -s demo</code></p>
+<p>Start running ping:</p>
+<p><code>ping stackoverflow.com</code></p>
+<p>Split vertically to create a second pane:</p>
+<p><code>ctrl-b</code> + <code>%</code></p>
+<p>Start the big clock:</p>
+<p><code>ctrl-b</code> + <code>t</code></p>
+<p>Split horizontally to create a third pane:</p>
+<p><code>ctrl-b</code> + <code>&quot;</code></p>
+<p>Do something else (in this case open htop):</p>
+<p><code>htop</code></p>
+<p>Resize the pane beneath the clock:</p>
+<p><code>ctrl-b</code> + <code>:resize-pane -U 5</code></p>
+<p>Remove the pane beneath the clock:</p>
+<p><code>ctrl-b</code> + <code>x</code> + <code>y</code></p>
+<p>Detach from the session:</p>
+<p><code>ctrl-b</code> + <code>:detach</code></p>
+<p>Kill the session altogether:</p>
+<p><code>tmux kill-session -t demo</code></p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>From <a href="https://en.wikipedia.org/wiki/Tmux">tmux</a> by <a href="https://en.wikipedia.org/">Wikipedia</a> licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/us/">CC BY-SA 3.0</a>.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p><a href="https://gist.github.com/MohamedAlaa/2961058" class="uri">https://gist.github.com/MohamedAlaa/2961058</a><a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p><a href="https://medium.com/@bill.feng/how-to-tmux-2136b663df45" class="uri">https://medium.com/@bill.feng/how-to-tmux-2136b663df45</a><a href="#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p><a href="https://linuxize.com/post/getting-started-with-tmux/" class="uri">https://linuxize.com/post/getting-started-with-tmux/</a><a href="#fnref4" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
