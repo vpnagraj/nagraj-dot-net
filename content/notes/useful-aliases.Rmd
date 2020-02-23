@@ -33,7 +33,7 @@ alias wcl="wc -l"
 
 From `man wc`:
 
-```
+```text
      -l      The number of lines in each input file is written to the standard
              output.
 ```
@@ -48,7 +48,7 @@ Listing contents of a directory with `ls` doesn't show file size/permissions or 
 
 From `man ls`:
 
-```
+```text
      -l      (The lowercase letter ``ell''.)  List in long format.  (See
              below.)  If the output is to a terminal, a total sum for all the
              file sizes is output on a line before the long listing.

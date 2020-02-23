@@ -49,7 +49,7 @@ If you're using `bash` (and not another shell) then you could also rely on the `
 
 `man basename` describes the "suffix" argument:
 
-```
+```text
 BASENAME(1)               BSD General Commands Manual              BASENAME(1)
 
 NAME

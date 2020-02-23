@@ -632,7 +632,7 @@ anim_save(&amp;quot;tx-sales-gganimate.gif&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;alias wcl=&amp;quot;wc -l&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;code&gt;wcl&lt;/code&gt; will return the number of lines in file. This can be helpful for debugging (i.e. when the length of expected output is known) an output file or input from a &lt;code&gt;|&lt;/code&gt;. It also may be worth considering something like &lt;code&gt;alias wcc=&#39;wc -c&#39;&lt;/code&gt; to get file size in bytes.&lt;/p&gt;
 &lt;p&gt;From &lt;code&gt;man wc&lt;/code&gt;:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;     -l      The number of lines in each input file is written to the standard
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;     -l      The number of lines in each input file is written to the standard
              output.&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;ll&#34; class=&#34;section level3&#34;&gt;
@@ -640,7 +640,7 @@ anim_save(&amp;quot;tx-sales-gganimate.gif&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;alias ll=&amp;quot;ls -lathp&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Listing contents of a directory with &lt;code&gt;ls&lt;/code&gt; doesn’t show file size/permissions or hidden files. A “long list” (&lt;code&gt;ls -la&lt;/code&gt;) will include&lt;/p&gt;
 &lt;p&gt;From &lt;code&gt;man ls&lt;/code&gt;:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;     -l      (The lowercase letter ``ell&amp;#39;&amp;#39;.)  List in long format.  (See
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;     -l      (The lowercase letter ``ell&amp;#39;&amp;#39;.)  List in long format.  (See
              below.)  If the output is to a terminal, a total sum for all the
              file sizes is output on a line before the long listing.
      -a      Include directory entries whose names begin with a dot (.).
@@ -698,7 +698,7 @@ echo ${f%.*}&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The code above stores the filename and directory in a variable (&lt;code&gt;f&lt;/code&gt;) and then uses subsequent &lt;a href=&#34;http://tldp.org/LDP/LG/issue18/bash.html&#34;&gt;string substitution expressions&lt;/a&gt; to pull out the file name without extension.&lt;/p&gt;
 &lt;p&gt;If you’re using &lt;code&gt;bash&lt;/code&gt; (and not another shell) then you could also rely on the &lt;code&gt;basename&lt;/code&gt; function to do something similar.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;man basename&lt;/code&gt; describes the “suffix” argument:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;BASENAME(1)               BSD General Commands Manual              BASENAME(1)
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;BASENAME(1)               BSD General Commands Manual              BASENAME(1)
 
 NAME
      basename, dirname -- return filename or directory portion of pathname
@@ -910,7 +910,7 @@ rbind(df1,df2) %&amp;gt;%
 
 &lt;p&gt;When performing repetitive file manipulation operations, it can be useful to write a loop.&lt;/p&gt;
 &lt;p&gt;Let’s assume you have a file structure organized as follows:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;.
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;.
 +-- loop.sh
 +-- loop.R
 +-- raw
@@ -959,7 +959,7 @@ for (f in files) {
   
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Both of the above should work and yield the following:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;.
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;.
 +-- loop.sh
 +-- loop.R
 +-- raw

@@ -14,7 +14,7 @@ When performing repetitive file manipulation operations, it can be useful to wri
 
 Let's assume you have a file structure organized as follows:
 
-```
+```text
 .
 +-- loop.sh
 +-- loop.R
@@ -76,7 +76,7 @@ for (f in files) {
 
 Both of the above should work and yield the following: 
 
-```
+```text
 .
 +-- loop.sh
 +-- loop.R
