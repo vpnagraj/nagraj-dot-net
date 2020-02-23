@@ -69,6 +69,12 @@ fix_me(1:3)</code></pre>
 fix_me(mtcars)</code></pre>
 <pre><code>##             mpg cyl disp hp drat   wt  qsec vs am gear carb
 ## Datsun 710 22.8   4  108 93 3.85 2.32 18.61  1  1    4    1</code></pre>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/object-of-type-closure-is-not-subsettable-jenny-bryan?wvideo=3eryv8gcor">Object of type ‘closure’ is not subsettable - Jenny Bryan</a>
+</p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/object-of-type-closure-is-not-subsettable-jenny-bryan?wvideo=3eryv8gcor"><img src="https://embedwistia-a.akamaihd.net/deliveries/2e2c4f025a70aaa1659fa66786570766f9f0f11a.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a>
+</p>
 <hr />
 </div>
 <div id="technical-debt" class="section level3">
@@ -78,6 +84,12 @@ fix_me(mtcars)</code></pre>
 <li>Ease-of-use</li>
 <li>Path to mastery</li>
 </ol>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/technical-debt-is-a-social-problem-gordon-shotwell-2?wvideo=4ne2qh57f4">Technical Debt is a Social Problem - Mr. Gordon Shotwell</a>
+</p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/technical-debt-is-a-social-problem-gordon-shotwell-2?wvideo=4ne2qh57f4"><img src="https://embed-fastly.wistia.com/deliveries/a156fcdda7809f78507dd3c55f2d6a23.webp" width="400" height="225" style="width: 400px; height: 225px;"></a>
+</p>
 <hr />
 </div>
 <div id="tunneling-with-tidyeval" class="section level3">
@@ -135,6 +147,12 @@ most(starwars, height, species)</code></pre>
 ## 10 Cerean      198
 ## # … with 28 more rows</code></pre>
 <p>In the Q&amp;A Lionel clarified that the tunneling syntax meant to make tidyeval easier for folks to use … and will not necessarily supersede or replace the existing <code>quo</code>, <code>enquo</code>, <code>!!</code>, etc features.</p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/interactivity-and-programming-in-the-tidyverse-lionel-henry?wvideo=bvpm9z2tdf">Interactivity and Programming in the Tidyverse - Lionel Henry</a>
+</p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/interactivity-and-programming-in-the-tidyverse-lionel-henry?wvideo=bvpm9z2tdf"><img src="https://embedwistia-a.akamaihd.net/deliveries/d00e2f6f28cf4d4cc5ab402bb7e89530.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a>
+</p>
 <hr />
 </div>
 <div id="ggplot-null" class="section level3">
@@ -202,6 +220,12 @@ polar_plot(msleep, name, sleep_total, vore)</code></pre>
 <pre><code>## Error in polar_plot(msleep, name, sleep_total, vore): object &#39;vore&#39; not found</code></pre>
 <p>The second call to the function doesn’t work. Where is this breaking? <code>if(!is.null(by)</code> … thanks <code>browser()</code>!</p>
 <p>To get this working we probably need to dive deeper into <a href="https://rlang.r-lib.org/reference/quasiquotation.html">quasiquotation</a>. Maybe a topic for another post …</p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/best-practices-for-programming-with-ggplot2-dewey-dunnington?wvideo=t2plmmey43">Best practices for programming with ggplot2 - Dewey Dunnington</a>
+</p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/best-practices-for-programming-with-ggplot2-dewey-dunnington?wvideo=t2plmmey43"><img src="https://embedwistia-a.akamaihd.net/deliveries/4bcc97a2edf5b0a53da27ec1fa5072a8.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a>
+</p>
 <hr />
 </div>
 <div id="plumber-for-building-apis" class="section level3">
@@ -261,6 +285,12 @@ function(area, year, ac){
 ames_api &lt;- plumb(&quot;plumber.R&quot;)  # Where &#39;plumber.R&#39; is the location of the file shown
 ames_api$run(port=8000)</code></pre>
 <pre class="bash"><code>curl -X POST &quot;http://127.0.0.1:8000/predict?ac=Y&amp;year=1990&amp;area=20000&quot; -H  &quot;accept: application/json&quot;</code></pre>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/practical-plumber-patterns-james-blair?wvideo=93tbn5tkic">Practical Plumber Patterns - James Blair</a>
+</p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/practical-plumber-patterns-james-blair?wvideo=93tbn5tkic"><img src="https://embedwistia-a.akamaihd.net/deliveries/32b4d8b1558500d4cc005a41c54227a624c6cd5f.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a>
+</p>
 <hr />
 </div>
 <div id="pins-package" class="section level3">
@@ -294,12 +324,24 @@ pin_get(&quot;rvalues&quot;)
 ## the above ^ doesn&#39;t store it in the environment though
 ## assign the values to an object
 rvalues &lt;- pin_get(&quot;rvalues&quot;)</code></pre>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/deploying-end-to-end-data-science-with-shiny-plumber-and-pins-alex-gold?wvideo=nqnwoujit0">Deploying End-To-End Data Science with Shiny, Plumber, and Pins - Alex Gold</a>
+</p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/deploying-end-to-end-data-science-with-shiny-plumber-and-pins-alex-gold?wvideo=nqnwoujit0"><img src="https://embedwistia-a.akamaihd.net/deliveries/619365e14b7191a4f7f4955bbedb6ea6.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a>
+</p>
 <hr />
 </div>
 <div id="bootstraplib-package" class="section level3">
 <h3><a name="bslib"><code>bootstraplib</code> package</a></h3>
 <p>Joe Cheng introduced a new package called <a href="https://github.com/rstudio/bootstraplib"><code>bootstraplib</code></a>, which is aimed at making it easier to style Shiny app R markdown html output via Sass and CSS variables. There’s also an interactive theming / color picker UI<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>:</p>
 <p><img src="https://camo.githubusercontent.com/aec7d2cc30e91cc72d654d708397dbff17c09c08/68747470733a2f2f692e696d6775722e636f6d2f696c366e64384a2e676966" /></p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/styling-shiny-apps-with-sass-and-bootstrap-4-joe-cheng?wvideo=906lcaj2mi">Styling Shiny apps with Sass and Bootstrap 4 - Joe Cheng</a>
+</p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/styling-shiny-apps-with-sass-and-bootstrap-4-joe-cheng?wvideo=906lcaj2mi"><img src="https://embedwistia-a.akamaihd.net/deliveries/7f29bc9b76f72e738fd23db117341cc1.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a>
+</p>
 <hr />
 </div>
 <div id="rolldown-output" class="section level3">
@@ -317,6 +359,12 @@ rmarkdown::draft(&quot;draft2.Rmd&quot;,
                  template = &quot;scrollama-sidebar&quot;, 
                  package = &quot;rolldown&quot;,
                  edit = TRUE)</code></pre>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/one-r-markdown-document-fourteen-demosyihui-xie?wvideo=aj3deolth1">One R Markdown Document, Fourteen Demos - Yihui Xie</a>
+</p>
+<p>
+<a href="https://resources.rstudio.com/rstudio-conf-2020/one-r-markdown-document-fourteen-demosyihui-xie?wvideo=aj3deolth1"><img src="https://embedwistia-a.akamaihd.net/deliveries/995470d4b099ae9b3421014c31c22716.jpg?image_play_button_size=2x&amp;image_crop_resized=960x539&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a>
+</p>
 </div>
 <div class="footnotes">
 <hr />

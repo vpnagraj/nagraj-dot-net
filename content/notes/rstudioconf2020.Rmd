@@ -81,6 +81,9 @@ fix_me(1:3)
 fix_me(mtcars)
 ```
 
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/object-of-type-closure-is-not-subsettable-jenny-bryan?wvideo=3eryv8gcor">Object of type ‘closure’ is not subsettable - Jenny Bryan</a></p>
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/object-of-type-closure-is-not-subsettable-jenny-bryan?wvideo=3eryv8gcor"><img src="https://embedwistia-a.akamaihd.net/deliveries/2e2c4f025a70aaa1659fa66786570766f9f0f11a.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
+
 --- 
 
 ### <a name="tech-debt">Technical Debt</a>
@@ -89,6 +92,9 @@ fix_me(mtcars)
 
 1. Ease-of-use
 2. Path to mastery
+
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/technical-debt-is-a-social-problem-gordon-shotwell-2?wvideo=4ne2qh57f4">Technical Debt is a Social Problem - Mr. Gordon Shotwell</a></p>
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/technical-debt-is-a-social-problem-gordon-shotwell-2?wvideo=4ne2qh57f4"><img src="https://embed-fastly.wistia.com/deliveries/a156fcdda7809f78507dd3c55f2d6a23.webp" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
 
 --- 
 
@@ -139,6 +145,9 @@ most(starwars, height, species)
 ```
 
 In the Q&A Lionel clarified that the tunneling syntax meant to make tidyeval easier for folks to use ... and will not necessarily supersede or replace the existing `quo`, `enquo`, `!!`, etc features.
+
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/interactivity-and-programming-in-the-tidyverse-lionel-henry?wvideo=bvpm9z2tdf">Interactivity and Programming in the Tidyverse - Lionel Henry</a></p>
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/interactivity-and-programming-in-the-tidyverse-lionel-henry?wvideo=bvpm9z2tdf"><img src="https://embedwistia-a.akamaihd.net/deliveries/d00e2f6f28cf4d4cc5ab402bb7e89530.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
 
 --- 
 
@@ -219,6 +228,9 @@ The second call to the function doesn't work. Where is this breaking? `if(!is.nu
 
 To get this working we probably need to dive deeper into [quasiquotation](https://rlang.r-lib.org/reference/quasiquotation.html). Maybe a topic for another post ...
 
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/best-practices-for-programming-with-ggplot2-dewey-dunnington?wvideo=t2plmmey43">Best practices for programming with ggplot2 - Dewey Dunnington</a></p>
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/best-practices-for-programming-with-ggplot2-dewey-dunnington?wvideo=t2plmmey43"><img src="https://embedwistia-a.akamaihd.net/deliveries/4bcc97a2edf5b0a53da27ec1fa5072a8.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
+
 --- 
 
 ### <a name="plumber">`plumber` for building APIs</a>
@@ -291,6 +303,9 @@ ames_api$run(port=8000)
 curl -X POST "http://127.0.0.1:8000/predict?ac=Y&year=1990&area=20000" -H  "accept: application/json"
 ```
 
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/practical-plumber-patterns-james-blair?wvideo=93tbn5tkic">Practical Plumber Patterns - James Blair</a></p>
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/practical-plumber-patterns-james-blair?wvideo=93tbn5tkic"><img src="https://embedwistia-a.akamaihd.net/deliveries/32b4d8b1558500d4cc005a41c54227a624c6cd5f.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
+
 ---
 
 ### <a name="pins-package">`pins` package</a>
@@ -328,6 +343,8 @@ pin_get("rvalues")
 rvalues <- pin_get("rvalues")
 ```
 
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/deploying-end-to-end-data-science-with-shiny-plumber-and-pins-alex-gold?wvideo=nqnwoujit0">Deploying End-To-End Data Science with Shiny, Plumber, and Pins - Alex Gold</a></p>
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/deploying-end-to-end-data-science-with-shiny-plumber-and-pins-alex-gold?wvideo=nqnwoujit0"><img src="https://embedwistia-a.akamaihd.net/deliveries/619365e14b7191a4f7f4955bbedb6ea6.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
 ---
 
 ### <a name="bslib">`bootstraplib` package</a>
@@ -335,6 +352,9 @@ rvalues <- pin_get("rvalues")
 Joe Cheng introduced a new package called [`bootstraplib`](https://github.com/rstudio/bootstraplib), which is aimed at making it easier to style Shiny app R markdown html output via Sass and CSS variables. There's also an interactive theming / color picker UI[^bsgif]:
 
 ![](https://camo.githubusercontent.com/aec7d2cc30e91cc72d654d708397dbff17c09c08/68747470733a2f2f692e696d6775722e636f6d2f696c366e64384a2e676966)
+
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/styling-shiny-apps-with-sass-and-bootstrap-4-joe-cheng?wvideo=906lcaj2mi">Styling Shiny apps with Sass and Bootstrap 4 - Joe Cheng</a></p>
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/styling-shiny-apps-with-sass-and-bootstrap-4-joe-cheng?wvideo=906lcaj2mi"><img src="https://embedwistia-a.akamaihd.net/deliveries/7f29bc9b76f72e738fd23db117341cc1.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
 
 ---
 
@@ -359,6 +379,8 @@ rmarkdown::draft("draft2.Rmd",
                  edit = TRUE)
 ```
 
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/one-r-markdown-document-fourteen-demosyihui-xie?wvideo=aj3deolth1">One R Markdown Document, Fourteen Demos - Yihui Xie</a></p>
+<p><a href="https://resources.rstudio.com/rstudio-conf-2020/one-r-markdown-document-fourteen-demosyihui-xie?wvideo=aj3deolth1"><img src="https://embedwistia-a.akamaihd.net/deliveries/995470d4b099ae9b3421014c31c22716.jpg?image_play_button_size=2x&amp;image_crop_resized=960x539&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 400px; height: 225px;"></a></p>
 
 [^rstudioconf2019]: [rstudio::conf 2019 recap](/notes/rstudioconf2019/)
 [^bsgif]: Image borrowed from [`boostraplib` README](https://github.com/rstudio/bootstraplib/blob/master/README.md)

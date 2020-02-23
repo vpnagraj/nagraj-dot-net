@@ -221,6 +221,12 @@ fix_me(1:3)&lt;/code&gt;&lt;/pre&gt;
 fix_me(mtcars)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##             mpg cyl disp hp drat   wt  qsec vs am gear carb
 ## Datsun 710 22.8   4  108 93 3.85 2.32 18.61  1  1    4    1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/object-of-type-closure-is-not-subsettable-jenny-bryan?wvideo=3eryv8gcor&#34;&gt;Object of type ‘closure’ is not subsettable - Jenny Bryan&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/object-of-type-closure-is-not-subsettable-jenny-bryan?wvideo=3eryv8gcor&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/2e2c4f025a70aaa1659fa66786570766f9f0f11a.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
+&lt;/p&gt;
 &lt;hr /&gt;
 &lt;/div&gt;
 &lt;div id=&#34;technical-debt&#34; class=&#34;section level3&#34;&gt;
@@ -230,6 +236,12 @@ fix_me(mtcars)&lt;/code&gt;&lt;/pre&gt;
 &lt;li&gt;Ease-of-use&lt;/li&gt;
 &lt;li&gt;Path to mastery&lt;/li&gt;
 &lt;/ol&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/technical-debt-is-a-social-problem-gordon-shotwell-2?wvideo=4ne2qh57f4&#34;&gt;Technical Debt is a Social Problem - Mr. Gordon Shotwell&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/technical-debt-is-a-social-problem-gordon-shotwell-2?wvideo=4ne2qh57f4&#34;&gt;&lt;img src=&#34;https://embed-fastly.wistia.com/deliveries/a156fcdda7809f78507dd3c55f2d6a23.webp&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
+&lt;/p&gt;
 &lt;hr /&gt;
 &lt;/div&gt;
 &lt;div id=&#34;tunneling-with-tidyeval&#34; class=&#34;section level3&#34;&gt;
@@ -287,6 +299,12 @@ most(starwars, height, species)&lt;/code&gt;&lt;/pre&gt;
 ## 10 Cerean      198
 ## # … with 28 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In the Q&amp;amp;A Lionel clarified that the tunneling syntax meant to make tidyeval easier for folks to use … and will not necessarily supersede or replace the existing &lt;code&gt;quo&lt;/code&gt;, &lt;code&gt;enquo&lt;/code&gt;, &lt;code&gt;!!&lt;/code&gt;, etc features.&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/interactivity-and-programming-in-the-tidyverse-lionel-henry?wvideo=bvpm9z2tdf&#34;&gt;Interactivity and Programming in the Tidyverse - Lionel Henry&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/interactivity-and-programming-in-the-tidyverse-lionel-henry?wvideo=bvpm9z2tdf&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/d00e2f6f28cf4d4cc5ab402bb7e89530.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
+&lt;/p&gt;
 &lt;hr /&gt;
 &lt;/div&gt;
 &lt;div id=&#34;ggplot-null&#34; class=&#34;section level3&#34;&gt;
@@ -354,6 +372,12 @@ polar_plot(msleep, name, sleep_total, vore)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Error in polar_plot(msleep, name, sleep_total, vore): object &amp;#39;vore&amp;#39; not found&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The second call to the function doesn’t work. Where is this breaking? &lt;code&gt;if(!is.null(by)&lt;/code&gt; … thanks &lt;code&gt;browser()&lt;/code&gt;!&lt;/p&gt;
 &lt;p&gt;To get this working we probably need to dive deeper into &lt;a href=&#34;https://rlang.r-lib.org/reference/quasiquotation.html&#34;&gt;quasiquotation&lt;/a&gt;. Maybe a topic for another post …&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/best-practices-for-programming-with-ggplot2-dewey-dunnington?wvideo=t2plmmey43&#34;&gt;Best practices for programming with ggplot2 - Dewey Dunnington&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/best-practices-for-programming-with-ggplot2-dewey-dunnington?wvideo=t2plmmey43&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/4bcc97a2edf5b0a53da27ec1fa5072a8.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
+&lt;/p&gt;
 &lt;hr /&gt;
 &lt;/div&gt;
 &lt;div id=&#34;plumber-for-building-apis&#34; class=&#34;section level3&#34;&gt;
@@ -413,6 +437,12 @@ function(area, year, ac){
 ames_api &amp;lt;- plumb(&amp;quot;plumber.R&amp;quot;)  # Where &amp;#39;plumber.R&amp;#39; is the location of the file shown
 ames_api$run(port=8000)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;curl -X POST &amp;quot;http://127.0.0.1:8000/predict?ac=Y&amp;amp;year=1990&amp;amp;area=20000&amp;quot; -H  &amp;quot;accept: application/json&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/practical-plumber-patterns-james-blair?wvideo=93tbn5tkic&#34;&gt;Practical Plumber Patterns - James Blair&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/practical-plumber-patterns-james-blair?wvideo=93tbn5tkic&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/32b4d8b1558500d4cc005a41c54227a624c6cd5f.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
+&lt;/p&gt;
 &lt;hr /&gt;
 &lt;/div&gt;
 &lt;div id=&#34;pins-package&#34; class=&#34;section level3&#34;&gt;
@@ -446,12 +476,24 @@ pin_get(&amp;quot;rvalues&amp;quot;)
 ## the above ^ doesn&amp;#39;t store it in the environment though
 ## assign the values to an object
 rvalues &amp;lt;- pin_get(&amp;quot;rvalues&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/deploying-end-to-end-data-science-with-shiny-plumber-and-pins-alex-gold?wvideo=nqnwoujit0&#34;&gt;Deploying End-To-End Data Science with Shiny, Plumber, and Pins - Alex Gold&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/deploying-end-to-end-data-science-with-shiny-plumber-and-pins-alex-gold?wvideo=nqnwoujit0&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/619365e14b7191a4f7f4955bbedb6ea6.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
+&lt;/p&gt;
 &lt;hr /&gt;
 &lt;/div&gt;
 &lt;div id=&#34;bootstraplib-package&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;&lt;a name=&#34;bslib&#34;&gt;&lt;code&gt;bootstraplib&lt;/code&gt; package&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;Joe Cheng introduced a new package called &lt;a href=&#34;https://github.com/rstudio/bootstraplib&#34;&gt;&lt;code&gt;bootstraplib&lt;/code&gt;&lt;/a&gt;, which is aimed at making it easier to style Shiny app R markdown html output via Sass and CSS variables. There’s also an interactive theming / color picker UI&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://camo.githubusercontent.com/aec7d2cc30e91cc72d654d708397dbff17c09c08/68747470733a2f2f692e696d6775722e636f6d2f696c366e64384a2e676966&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/styling-shiny-apps-with-sass-and-bootstrap-4-joe-cheng?wvideo=906lcaj2mi&#34;&gt;Styling Shiny apps with Sass and Bootstrap 4 - Joe Cheng&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/styling-shiny-apps-with-sass-and-bootstrap-4-joe-cheng?wvideo=906lcaj2mi&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/7f29bc9b76f72e738fd23db117341cc1.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x540&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
+&lt;/p&gt;
 &lt;hr /&gt;
 &lt;/div&gt;
 &lt;div id=&#34;rolldown-output&#34; class=&#34;section level3&#34;&gt;
@@ -469,6 +511,12 @@ rmarkdown::draft(&amp;quot;draft2.Rmd&amp;quot;,
                  template = &amp;quot;scrollama-sidebar&amp;quot;, 
                  package = &amp;quot;rolldown&amp;quot;,
                  edit = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/one-r-markdown-document-fourteen-demosyihui-xie?wvideo=aj3deolth1&#34;&gt;One R Markdown Document, Fourteen Demos - Yihui Xie&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://resources.rstudio.com/rstudio-conf-2020/one-r-markdown-document-fourteen-demosyihui-xie?wvideo=aj3deolth1&#34;&gt;&lt;img src=&#34;https://embedwistia-a.akamaihd.net/deliveries/995470d4b099ae9b3421014c31c22716.jpg?image_play_button_size=2x&amp;amp;image_crop_resized=960x539&amp;amp;image_play_button=1&amp;amp;image_play_button_color=4287c7e0&#34; width=&#34;400&#34; height=&#34;225&#34; style=&#34;width: 400px; height: 225px;&#34;&gt;&lt;/a&gt;
+&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&#34;footnotes&#34;&gt;
 &lt;hr /&gt;
