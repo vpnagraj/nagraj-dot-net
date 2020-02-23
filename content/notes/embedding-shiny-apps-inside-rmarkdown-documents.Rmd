@@ -8,7 +8,7 @@ summary: "recap of how to make interactive r markdown documents"
 
 I'd [read about 'interactive' documents](http://shiny.rstudio.com/articles/interactive-docs.html) before, and saw a presentation that used them at the [Shiny Developer Conference](http://www.gettinggeneticsdone.com/2016/02/shiny-developer-conference-2016-recap.html). Thought it was a cool idea but figured it was too complicated to put into practice.
 
-All it takes is one extra line in the YAML front matter for the R Markdown ...
+All it takes is one extra line in the YAML front matter for the R Markdown:
 
 `runtime: shiny`
 

@@ -1,0 +1,116 @@
+---
+title: "table function in bash"
+date: 2020-02-20T17:14:59+00:00
+categories: ["notes"]
+tags: ["bash"]
+summary: "convenience for viewing delimited text files"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, eval = FALSE)
+```
+
+The bash `cat` command will output the contents of a text file. If the text is tabular (i.e. rows and columns), the output will include delimiters. That may be informative, but sometimes it is helpful to view the output more legibly.
+
+## `t2`
+
+`t2()` is a custom function that uses `cat` and `column` to output the contents of a text file in a consistent (tab-separated) format regardless of the original delimiter. The function is defined such that as a default it will look for comma (`,`), tab (`\t`), and semicolon (`;`) delimiters. The first argument is the file name to be parsed. If there is a second argument passed, it will override the default delimiters.
+
+```{bash}
+t2 () {
+  
+  if [[ -n "$2" ]]
+    then
+      local sep=$2
+    else
+      local sep=",$'\t'$';'"
+  fi
+  
+  cat "$1" | column -t -s $sep;
+
+}
+```
+
+## Examples
+
+To motivate usage, first create tabular text files with different delimiters. The data used here will be a the first 5 rows of the built-in `ToothGrowth` data in R. 
+
+```{r}
+library(readr)
+
+littletooth <- head(ToothGrowth, n=5)
+
+## comma separated
+write_csv(littletooth, "littletooth.csv")
+## semi-colon separated
+write_delim(littletooth, "littletooth.semi", delim = ";")
+## pipe separated
+write_delim(littletooth, "littletooth.pipe", delim = "|")
+```
+
+Let's see what the `.csv` output looks like with `cat`:
+
+```{bash}
+cat littletooth.csv
+```
+
+```text
+len,supp,dose
+4.2,VC,0.5
+11.5,VC,0.5
+7.3,VC,0.5
+5.8,VC,0.5
+6.4,VC,0.5
+```
+
+`t2` standardizes output format regardless of delimiter:
+
+```{bash}
+t2 littletooth.csv
+```
+
+```text
+len   supp  dose
+4.2   VC    0.5
+11.5  VC    0.5
+7.3   VC    0.5
+5.8   VC    0.5
+6.4   VC    0.5
+```
+
+```{bash}
+t2 littletooth.semi
+```
+
+```text
+len   supp  dose
+4.2   VC    0.5
+11.5  VC    0.5
+7.3   VC    0.5
+5.8   VC    0.5
+6.4   VC    0.5
+```
+
+```{bash}
+t2 littletooth.pipe "|"
+```
+
+```text
+len   supp  dose
+4.2   VC    0.5
+11.5  VC    0.5
+7.3   VC    0.5
+5.8   VC    0.5
+6.4   VC    0.5
+```
+
+**NOTE**: The `t2` function is useful for "pretty-printing" ... from `man column`:
+
+```text
+     -t      Determine the number of columns the input contains and create a ta-
+             ble.  Columns are delimited with whitespace, by default, or with the
+             characters supplied using the -s option.  Useful for pretty-printing
+             displays.
+```
+
+If you were to redirect output to a file, the contents would *not* be tab-separated.

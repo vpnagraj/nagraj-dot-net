@@ -9,7 +9,7 @@ summary: "recap of how to make interactive r markdown documents"
 
 
 <p>I’d <a href="http://shiny.rstudio.com/articles/interactive-docs.html">read about ‘interactive’ documents</a> before, and saw a presentation that used them at the <a href="http://www.gettinggeneticsdone.com/2016/02/shiny-developer-conference-2016-recap.html">Shiny Developer Conference</a>. Thought it was a cool idea but figured it was too complicated to put into practice.</p>
-<p>All it takes is one extra line in the YAML front matter for the R Markdown …</p>
+<p>All it takes is one extra line in the YAML front matter for the R Markdown:</p>
 <p><code>runtime: shiny</code></p>
 <p>… and that’s pretty much it.</p>
 <p>To host the document you do need a Shiny Server running on top of a version of R with the <strong>rmarkdown</strong> package installed. But besides that there’s no additional server configuration necessary. The main thing to note is that you don’t actually knit the document to HTML to host it. Just drop the .Rmd file in a subdirectory of your <code>shiny-server</code> root (i.e. where you keep all of the other apps) and the Shiny Server will take care of the rest.</p>

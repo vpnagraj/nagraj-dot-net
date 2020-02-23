@@ -13,6 +13,15 @@
     
     
     <item>
+      <title>table function in bash</title>
+      <link>/notes/table-shell-function/</link>
+      <pubDate>Thu, 20 Feb 2020 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/table-shell-function/</guid>
+      <description>convenience for viewing delimited text files</description>
+    </item>
+    
+    <item>
       <title>tmux Basics</title>
       <link>/notes/tmux-basics/</link>
       <pubDate>Tue, 11 Feb 2020 08:38:31 -0400</pubDate>
