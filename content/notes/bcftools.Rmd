@@ -1,0 +1,346 @@
+---
+title: "bcftools Primer"
+date: 2020-02-28T18:14:59+00:00
+categories: ["notes"]
+tags: ["bioinformatics"]
+summary: "some simple recipes for vcf data manipulation with bcftools"
+---
+
+
+```{r setup, include=FALSE}
+library(knitr)
+library(tidyverse)
+library(here)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, eval = FALSE)
+```
+
+```{r, eval = TRUE, echo = FALSE}
+morestuff <- function(.data, original_rows = 6, extra_rows = 2, placeholder = ".") {
+  
+  dat <- head(.data, original_rows)
+  
+  if(nrow(.data) > original_rows) {
+    stuff <- as.data.frame(matrix(placeholder, ncol = ncol(.data), nrow = extra_rows))
+    names(stuff) <- names(.data)
+    dat <- rbind(head(.data, original_rows), stuff)
+  } else {
+    dat <- .data
+  }
+  
+  dat
+}
+```
+
+```{r, eval = TRUE, echo = FALSE}
+header_cols <- read_lines("data/bcftools/NA20536.out")
+header_cols <- gsub("#", "", header_cols)
+header_cols <- str_split(header_cols, "\\t", simplify = TRUE)[1,]
+```
+
+`bcftools` provides utilities for working with data in variant calling (`.vcf`) format. The [manual](https://samtools.github.io/bcftools/bcftools.html) fully documents the arguments and features, and the developers have written their own ["HowTo" page](https://samtools.github.io/bcftools/howtos/index.html). The goal of this post is to walk through some scenarios with a reproducible dataset to showcase the `bcftools` functionality I use regularly. 
+
+Note that this will *not* be an exhaustive demonstration of all `bcftools` features, nor will it include other `.vcf` parsing/manipulation tools or linux utilities (i.e. `awk`, `sed`) that can be handy for working with variant calling data. 
+
+The examples should be reproducible given setup described below. However, the output at the command line will look slightly different than the inline output in this post. For legibility, I've run each of the commands, exluded the header, and read the results back in as a text file. The inline output in this post will show a max of 6 rows with a final placeholder row (`. . . . . . . . . . .`) if necessary.
+
+
+- [How do I concatenate multiple vcf files?](#concat)
+- [How do I subset for individual samples by name?](#samplename)
+- [How do I restrict a vcf to only include INDELs?](#indels)
+- [How do I filter a vcf by SNP ID?](#rsid)
+- [How do I filter a vcf by genomic coordinates?](#chrpos)
+- [How do I format the genotype as nucleotide in a vcf?](#tgt)
+- [How do I merge multiple vcf files?](#merge)
+- [How do I extract genotypes for multiple samples from a single vcf?](#parsemulti)
+- [How do I change the chromosome names in a vcf?](#renamechr)
+- [How do I inspect a vcf without the header?](#noheader)
+- [How do I view *only* the header in a vcf?](#onlyheader)
+
+---
+
+## Setup
+
+To get started we need to find some data to work with and do a bit of pre-processing:
+
+1. Download all of the files for the [20130502 release of the 1000 Genomes Project](ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/) (these are in compressed `.vcf.gz` format, each with `.tbi` index)
+2. Download a `.vcf.gz` (and `.tbi`) for sites annotated by [ClinVar](https://www.ncbi.nlm.nih.gov/clinvar/)[^clinvar]
+3. Create `.vcf.gz` files for each chromosome (1-22) filtered to only include the ClinVar sites
+4. Create tabix index for each of the newly created `.vcf.gz` files
+
+The code that follows will perform all of the steps described above. Keep in mind that the each step (especially downloading and filtering the 1000 Genomes data) may take quite a while as these files are large (~ 20GB total). You'll need a system with sufficient storage, and has `wget`, `parallel`, `bcftools`, and `tabix` installed.
+
+```{bash}
+## download 1000 genomes vcf files
+wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/*.vcf.gz*
+
+## download clinvar vcf
+wget ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/clinvar.vcf.gz*
+
+## use parallel to restrict each chromosome (chr1 to chr22) to clinvar sites
+find . -type f -name "ALL.chr[1-9]*vcf.gz" | parallel "bcftools view {} -R clinvar.vcf.gz --output-type z --output {}.clinvar.vcf.gz"
+
+## make sure all vcf.gz files are tabix indexed
+find . -type f -name "ALL.chr[1-9]*.clinvar.vcf.gz" | parallel "tabix {}"
+```
+
+With the data processed we can move onto the scenarios. 
+
+All subsequent code will use `bcftools` version 1.10.
+
+```{bash}
+bcftools --version
+```
+
+```text
+bcftools 1.10.2-27-g9d66868
+Using htslib 1.10.2-33-g1bbcd02
+Copyright (C) 2019 Genome Research Ltd.
+License Expat: The MIT/Expat license
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+```
+
+---
+
+## Scenarios
+
+### <a name="concat"></a>Concatenate multiple files together
+
+If we wanted to concatenate (i.e. "stack") mutliple `.vcf` files together we can use `bcftools concat`, so long as the input files share the same fields. In this example, we'll combine all of the chromosomes (1-22) into a single file. 
+
+The `--output-type z` argument specifies that the output will be compressed, and the `--output` flag allows us to explicitly name the resulting file:
+
+```{bash}
+bcftools concat ALL.chr*.clinvar.vcf.gz --output-type z --output all.clinvar.vcf.gz
+```
+
+**NOTE**: `bcftools concat` is *not* equivalent `bcftools merge`. For an example of the latter [see below](#merge).
+
+### <a name="samplename"></a>Select individual samples by name
+
+`bcftools view -s` allows for subsetting by sample ID. 
+
+The combined `all.clinvar.vcf.gz` file above contains multiple samples. Here we'll create individual compressed `.vcf` files for NA20536 and HG03718 samples, along with a tabix index for each file (using `bcftools index -t`):
+
+```{bash}
+bcftools view -s NA20536 all.clinvar.vcf.gz --output-type z --output NA20536.clinvar.vcf.gz
+bcftools view -s HG03718 all.clinvar.vcf.gz --output-type z --output HG03718.clinvar.vcf.gz
+
+## note: bcftools index -t is equivalent to tabix here
+bcftools index -t NA20536.clinvar.vcf.gz
+bcftools index -t HG03718.clinvar.vcf.gz
+```
+
+### <a name="indels"></a>Filter to only include INDELs
+
+`bcftools view -v` will restrict the file to specified variant types: "snps", "indels", "mnps", or "other".
+
+We can use the command to filter the `.vcf` to only include INDELs:
+
+```{bash}
+bcftools view -v indels NA20536.clinvar.vcf.gz
+```
+
+```{r, eval = TRUE, echo = FALSE}
+## bcftools view -H -v indels NA20536.clinvar.vcf.gz | head > indels.out
+## indels.out
+read_tsv("data/bcftools/indels.out", 
+         col_names = header_cols) %>%
+  morestuff(., original_rows = 6, extra_rows = 1, placeholder = ".") %>%
+  kable(.)
+```
+
+### <a name="rsid"></a>Filter by rsid
+
+With `bcftools` you can filter a `.vcf` file for certain sites by passing in a file that contains the IDs to be retained.
+
+Assuming we have the following RSIDs in a file called `snps.list`[^rsid]:
+
+```text
+rs145413551
+rs34610323
+rs79548709
+rs371163239
+rs148716910
+rs374704178
+```
+
+We can use `snps.list` to filter with `bcftools view`:
+
+```{bash}
+bcftools view --include ID==@snps.list NA20536.clinvar.vcf.gz
+```
+
+```{r, eval = TRUE, echo = FALSE}
+## bcftools view -H --include ID==@snps.list NA20536.clinvar.vcf.gz | head > rsids.out
+## rsids.out
+
+read_tsv("data/bcftools/rsids.out", 
+         col_names = header_cols) %>%
+  morestuff(., original_rows = 6, extra_rows = 1, placeholder = ".") %>%
+  kable(.)
+```
+
+### <a name="chrpos"></a>Filter by chromosome and/or position
+
+The `--regions` flag takes input chromosome and/or position coordinates to filter the `.vcf`.
+
+If we wanted to restrict to chromosome 5:
+
+```{bash}
+bcftools view --regions 5 NA20536.vcf.gz 
+```
+
+```{r, eval = TRUE, echo = FALSE}
+## bcftools view -H --regions 5 NA20536.clinvar.vcf.gz | head > chr5.out
+## chr5.out
+read_tsv("data/bcftools/chr5.out", 
+         col_names = header_cols) %>%
+  morestuff(., original_rows = 6, extra_rows = 1, placeholder = ".") %>%
+  kable(.)
+```
+
+And if we were interested in a speficic region (let's say chromosome 10, anywhere between positions 800000:900000):
+
+```{bash}
+bcftools view --regions 10:800000-900000 NA20536.clinvar.vcf.gz
+```
+
+```{r, eval = TRUE, echo = FALSE}
+##bcftools view -H --regions 10:800000-900000 NA20536.clinvar.vcf.gz | head > chr10region.out
+## chr10region.out
+read_tsv("data/bcftools/chr10region.out", 
+         col_names = header_cols) %>%
+  morestuff(., original_rows = 6, extra_rows = 1, placeholder = ".") %>%
+  kable(.)
+```
+
+### <a name="tgt"></a>Format translated genotype output
+
+`bcftools query` will output contents of the `.vcf` in text format. The contents can be specified in a string that includes fields to extract, separators, and line endings.
+
+In this scenario, we'll pull out the ID (RSID), chromosome, position, a translated genotype, and the "type" (SNP, INDEL, etc.) in tab-separated format:
+
+```{bash}
+bcftools query -f "%ID\t%CHROM\t%POS[\t%TGT]\t%TYPE\n" NA20536.clinvar.vcf.gz
+```
+
+```{r, eval = TRUE, echo = FALSE}
+## bcftools query -f "%ID\t%CHROM\t%POS[\t%TGT]\t%TYPE\n" NA20536.clinvar.vcf.gz | head > gt.out
+## gt.out
+read_tsv("data/bcftools/gt.out", 
+         col_names = c("ID", "CHROM", "POS", "GT", "TYPE")) %>%
+  morestuff(., original_rows = 6, extra_rows = 1, placeholder = ".") %>%
+  kable(.)
+```
+
+### <a name="merge"></a>Merge vcf files together
+
+`bcftools merge` will combine data from multiple files.
+
+To merge individual sample `.vcf` files into one:
+
+```{bash}
+bcftools merge NA20536.clinvar.vcf.gz HG03718.clinvar.vcf.gz --output-type z --output NA20536.HG03718.clinvar.vcf.gz
+```
+
+```{r, eval = TRUE, echo = FALSE}
+## bcftools view -H NA20536.HG03718.clinvar.vcf.gz | head > merged.out
+## merged.out
+read_tsv("data/bcftools/merged.out", 
+         col_names = c(header_cols, "HG03718")) %>%
+  morestuff(., original_rows = 6, extra_rows = 1, placeholder = ".") %>%
+  kable(.)
+```
+
+### <a name="parsemulti"></a>Parse genotypes for multiple samples
+
+Given that you have a mutli-sample `.vcf` you can parse genotypes for each individual: 
+
+```{bash}
+bcftools query -f '[%CHROM\t%POS\t%SAMPLE\t%TGT\n]' NA20536.HG03718.clinvar.vcf.gz
+```
+
+```{r, eval = TRUE, echo = FALSE}
+## bcftools query -f '[%CHROM\t%POS\t%SAMPLE\t%TGT\n]' NA20536.HG03718.clinvar.vcf.gz | head > gtmulti.out
+## gtmulti.out
+read_tsv("data/bcftools/gtmulti.out", 
+         col_names = c("CHROM", "POS", "SAMPLE", "GT")) %>%
+  morestuff(., original_rows = 6, extra_rows = 1, placeholder = ".") %>%
+  kable(.)
+```
+
+### <a name="renamechr"></a>Edit chromosome names
+
+You can rename chromosomes with `bcftools annotate --rename-chrs`. The command requires that you supply a tab-separated file with the desired naming convention, organized as "old\\tnew":
+
+```txt
+1\tchr1
+2\tchr2
+3\tchr3
+4\tchr4
+5\tchr5
+6\tchr6
+7\tchr7
+8\tchr8
+9\tchr9
+10\tchr10
+11\tchr11
+12\tchr12
+13\tchr13
+14\tchr14
+15\tchr15
+16\tchr16
+17\tchr17
+18\tchr18
+19\tchr19
+20\tchr20
+21\tchr21
+22\tchr22
+```
+
+```{bash}
+bcftools annotate --rename-chrs chromosomes.txt NA20536.clinvar.vcf.gz
+```
+
+```{r, eval = TRUE, echo = FALSE}
+## bcftools annotate --rename-chrs chromosomes.txt NA20536.clinvar.vcf.gz | bcftools view -H  | head > renamechr.out
+## renamechr.out
+read_tsv("data/bcftools/renamechr.out", 
+         col_names = header_cols) %>%
+  morestuff(., original_rows = 6, extra_rows = 1, placeholder = ".") %>%
+  kable(.)
+```
+
+### <a name="noheader"></a>View without header
+
+To view *only the results without header* (i.e. remove the header) use the `-H` flag:
+
+```{bash}
+bcftools view -H NA20536.HG03718.clinvar.vcf.gz
+```
+
+```{r, eval = TRUE, echo = FALSE}
+## bcftools query -f '[%CHROM\t%POS\t%SAMPLE\t%TGT\n]' NA20536.HG03718.clinvar.vcf.gz | head > gtmulti.out
+## gtmulti.out
+read_tsv("data/bcftools/noheader.out", 
+         col_names = FALSE) %>%
+  morestuff(., original_rows = 6, extra_rows = 1, placeholder = ".") %>%
+  kable(.)
+```
+
+### <a name="onlyheader"></a>View only header
+
+To view *only the header* (i.e. extract header) use the `-h` flag:
+
+```{bash}
+bcftools view -h clinvar.vcf.gz
+```
+
+```{r, eval = TRUE, echo = FALSE}
+read_lines("data/bcftools/onlyheader.out") %>%
+  cat(., sep = "\n")
+```
+
+[^clinvar]: From [ClinVar vcf documentation](https://www.ncbi.nlm.nih.gov/variation/docs/ClinVar_vcf_files/): *This file contains variations submitted through clinical channels. The variations contained in this file are therefore a mixture of variations asserted to be pathogenic as well as those known to be non-pathogenic. The user should note that any variant may have different assertions regarding clinical significance and that this file will contain only those that are the most "pathogenic"*.
+[^rsid]: This solution is based on a Biostars post: <https://www.biostars.org/p/373852/>

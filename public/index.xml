@@ -19,6 +19,1018 @@
     </item>
     
     <item>
+      <title>bcftools Primer</title>
+      <link>/notes/bcftools/</link>
+      <pubDate>Fri, 28 Feb 2020 18:14:59 +0000</pubDate>
+      
+      <guid>/notes/bcftools/</guid>
+      <description>
+
+
+&lt;p&gt;&lt;code&gt;bcftools&lt;/code&gt; provides utilities for working with data in variant calling (&lt;code&gt;.vcf&lt;/code&gt;) format. The &lt;a href=&#34;https://samtools.github.io/bcftools/bcftools.html&#34;&gt;manual&lt;/a&gt; fully documents the arguments and features, and the developers have written their own &lt;a href=&#34;https://samtools.github.io/bcftools/howtos/index.html&#34;&gt;“HowTo” page&lt;/a&gt;. The goal of this post is to walk through some scenarios with a reproducible dataset to showcase the &lt;code&gt;bcftools&lt;/code&gt; functionality I use regularly.&lt;/p&gt;
+&lt;p&gt;Note that this will &lt;em&gt;not&lt;/em&gt; be an exhaustive demonstration of all &lt;code&gt;bcftools&lt;/code&gt; features, nor will it include other &lt;code&gt;.vcf&lt;/code&gt; parsing/manipulation tools or linux utilities (i.e. &lt;code&gt;awk&lt;/code&gt;, &lt;code&gt;sed&lt;/code&gt;) that can be handy for working with variant calling data.&lt;/p&gt;
+&lt;p&gt;The examples should be reproducible given setup described below. However, the output at the command line will look slightly different than the inline output in this post. For legibility, I’ve run each of the commands, exluded the header, and read the results back in as a text file. The inline output in this post will show a max of 6 rows with a final placeholder row (&lt;code&gt;. . . . . . . . . . .&lt;/code&gt;) if necessary.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#concat&#34;&gt;How do I concatenate multiple vcf files?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#samplename&#34;&gt;How do I subset for individual samples by name?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#indels&#34;&gt;How do I restrict a vcf to only include INDELs?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#rsid&#34;&gt;How do I filter a vcf by SNP ID?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#chrpos&#34;&gt;How do I filter a vcf by genomic coordinates?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#tgt&#34;&gt;How do I format the genotype as nucleotide in a vcf?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#merge&#34;&gt;How do I merge multiple vcf files?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#parsemulti&#34;&gt;How do I extract genotypes for multiple samples from a single vcf?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#renamechr&#34;&gt;How do I change the chromosome names in a vcf?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#noheader&#34;&gt;How do I inspect a vcf without the header?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#onlyheader&#34;&gt;How do I view &lt;em&gt;only&lt;/em&gt; the header in a vcf?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;div id=&#34;setup&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Setup&lt;/h2&gt;
+&lt;p&gt;To get started we need to find some data to work with and do a bit of pre-processing:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Download all of the files for the &lt;a href=&#34;ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/&#34;&gt;20130502 release of the 1000 Genomes Project&lt;/a&gt; (these are in compressed &lt;code&gt;.vcf.gz&lt;/code&gt; format, each with &lt;code&gt;.tbi&lt;/code&gt; index)&lt;/li&gt;
+&lt;li&gt;Download a &lt;code&gt;.vcf.gz&lt;/code&gt; (and &lt;code&gt;.tbi&lt;/code&gt;) for sites annotated by &lt;a href=&#34;https://www.ncbi.nlm.nih.gov/clinvar/&#34;&gt;ClinVar&lt;/a&gt;&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Create &lt;code&gt;.vcf.gz&lt;/code&gt; files for each chromosome (1-22) filtered to only include the ClinVar sites&lt;/li&gt;
+&lt;li&gt;Create tabix index for each of the newly created &lt;code&gt;.vcf.gz&lt;/code&gt; files&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The code that follows will perform all of the steps described above. Keep in mind that the each step (especially downloading and filtering the 1000 Genomes data) may take quite a while as these files are large (~ 20GB total). You’ll need a system with sufficient storage, and has &lt;code&gt;wget&lt;/code&gt;, &lt;code&gt;parallel&lt;/code&gt;, &lt;code&gt;bcftools&lt;/code&gt;, and &lt;code&gt;tabix&lt;/code&gt; installed.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;## download 1000 genomes vcf files
+wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/*.vcf.gz*
+
+## download clinvar vcf
+wget ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/clinvar.vcf.gz*
+
+## use parallel to restrict each chromosome (chr1 to chr22) to clinvar sites
+find . -type f -name &amp;quot;ALL.chr[1-9]*vcf.gz&amp;quot; | parallel &amp;quot;bcftools view {} -R clinvar.vcf.gz --output-type z --output {}.clinvar.vcf.gz&amp;quot;
+
+## make sure all vcf.gz files are tabix indexed
+find . -type f -name &amp;quot;ALL.chr[1-9]*.clinvar.vcf.gz&amp;quot; | parallel &amp;quot;tabix {}&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With the data processed we can move onto the scenarios.&lt;/p&gt;
+&lt;p&gt;All subsequent code will use &lt;code&gt;bcftools&lt;/code&gt; version 1.10.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;bcftools --version&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;bcftools 1.10.2-27-g9d66868
+Using htslib 1.10.2-33-g1bbcd02
+Copyright (C) 2019 Genome Research Ltd.
+License Expat: The MIT/Expat license
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;/div&gt;
+&lt;div id=&#34;scenarios&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Scenarios&lt;/h2&gt;
+&lt;div id=&#34;concatenate-multiple-files-together&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;concat&#34;&gt;&lt;/a&gt;Concatenate multiple files together&lt;/h3&gt;
+&lt;p&gt;If we wanted to concatenate (i.e. “stack”) mutliple &lt;code&gt;.vcf&lt;/code&gt; files together we can use &lt;code&gt;bcftools concat&lt;/code&gt;, so long as the input files share the same fields. In this example, we’ll combine all of the chromosomes (1-22) into a single file.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;--output-type z&lt;/code&gt; argument specifies that the output will be compressed, and the &lt;code&gt;--output&lt;/code&gt; flag allows us to explicitly name the resulting file:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;bcftools concat ALL.chr*.clinvar.vcf.gz --output-type z --output all.clinvar.vcf.gz&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;: &lt;code&gt;bcftools concat&lt;/code&gt; is &lt;em&gt;not&lt;/em&gt; equivalent &lt;code&gt;bcftools merge&lt;/code&gt;. For an example of the latter &lt;a href=&#34;#merge&#34;&gt;see below&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;select-individual-samples-by-name&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;samplename&#34;&gt;&lt;/a&gt;Select individual samples by name&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;bcftools view -s&lt;/code&gt; allows for subsetting by sample ID.&lt;/p&gt;
+&lt;p&gt;The combined &lt;code&gt;all.clinvar.vcf.gz&lt;/code&gt; file above contains multiple samples. Here we’ll create individual compressed &lt;code&gt;.vcf&lt;/code&gt; files for NA20536 and HG03718 samples, along with a tabix index for each file (using &lt;code&gt;bcftools index -t&lt;/code&gt;):&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;bcftools view -s NA20536 all.clinvar.vcf.gz --output-type z --output NA20536.clinvar.vcf.gz
+bcftools view -s HG03718 all.clinvar.vcf.gz --output-type z --output HG03718.clinvar.vcf.gz
+
+## note: bcftools index -t is equivalent to tabix here
+bcftools index -t NA20536.clinvar.vcf.gz
+bcftools index -t HG03718.clinvar.vcf.gz&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;filter-to-only-include-indels&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;indels&#34;&gt;&lt;/a&gt;Filter to only include INDELs&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;bcftools view -v&lt;/code&gt; will restrict the file to specified variant types: “snps”, “indels”, “mnps”, or “other”.&lt;/p&gt;
+&lt;p&gt;We can use the command to filter the &lt;code&gt;.vcf&lt;/code&gt; to only include INDELs:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;bcftools view -v indels NA20536.clinvar.vcf.gz&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;CHROM&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;POS&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;ID&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;REF&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;ALT&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;QUAL&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;FILTER&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;INFO&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;FORMAT&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;NA20536&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;978603&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs35881187&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;CCT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=2;AF=0.479233;AN=2;NS=2504;DP=14705;EAS_AF=0.8036;AMR_AF=0.6412;AFR_AF=0.0348;EUR_AF=0.5487;SAS_AF=0.5593;VT=INDEL&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1|1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;984171&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs140904842&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;CAG&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=2;AF=0.920527;AN=2;NS=2504;DP=7127;EAS_AF=0.9891;AMR_AF=0.9769;AFR_AF=0.7602;EUR_AF=0.9742;SAS_AF=0.9714;VT=INDEL&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1|1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1168239&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs533071750&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;CG&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.000599042;AN=2;NS=2504;DP=9648;EAS_AF=0;AMR_AF=0.0029;AFR_AF=0;EUR_AF=0.001;SAS_AF=0;AA=?|GGGGGGG|GGGGGGGG|unsure;VT=INDEL;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2343991&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs570192538&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;CCA&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.00459265;AN=2;NS=2504;DP=9045;EAS_AF=0;AMR_AF=0;AFR_AF=0.0174;EUR_AF=0;SAS_AF=0;VT=INDEL&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2435830&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs555614613&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;TTCC&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;T&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.00579073;AN=2;NS=2504;DP=15005;EAS_AF=0;AMR_AF=0.0029;AFR_AF=0.0204;EUR_AF=0;SAS_AF=0;VT=INDEL;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2492946&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs149579135&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AG&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.00359425;AN=2;NS=2504;DP=17775;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0129;EUR_AF=0;SAS_AF=0;AA=G|G|-|deletion;VT=INDEL&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div id=&#34;filter-by-rsid&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;rsid&#34;&gt;&lt;/a&gt;Filter by rsid&lt;/h3&gt;
+&lt;p&gt;With &lt;code&gt;bcftools&lt;/code&gt; you can filter a &lt;code&gt;.vcf&lt;/code&gt; file for certain sites by passing in a file that contains the IDs to be retained.&lt;/p&gt;
+&lt;p&gt;Assuming we have the following RSIDs in a file called &lt;code&gt;snps.list&lt;/code&gt;&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;rs145413551
+rs34610323
+rs79548709
+rs371163239
+rs148716910
+rs374704178&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can use &lt;code&gt;snps.list&lt;/code&gt; to filter with &lt;code&gt;bcftools view&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;bcftools view --include ID==@snps.list NA20536.clinvar.vcf.gz&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;right&#34;&gt;CHROM&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;POS&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;ID&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;REF&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;ALT&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;QUAL&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;FILTER&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;INFO&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;FORMAT&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;NA20536&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;17&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;648546&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs34610323&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;T&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.0159744;AN=2;NS=2504;DP=21874;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0575;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;31620566&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs145413551&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;T&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.000199681;AN=2;NS=2504;DP=19652;EAS_AF=0;AMR_AF=0;AFR_AF=0.0008;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;21&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;45707000&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs374704178&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.000399361;AN=2;NS=2504;DP=11479;EAS_AF=0;AMR_AF=0;AFR_AF=0.0015;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;151721&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs148716910&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.00279553;AN=2;NS=2504;DP=18789;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0098;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;8&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1841816&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs79548709&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;T&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.00519169;AN=2;NS=2504;DP=16683;EAS_AF=0;AMR_AF=0;AFR_AF=0.0197;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;8&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3889458&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs371163239&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;T&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.000199681;AN=2;NS=2504;DP=15669;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div id=&#34;filter-by-chromosome-andor-position&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;chrpos&#34;&gt;&lt;/a&gt;Filter by chromosome and/or position&lt;/h3&gt;
+&lt;p&gt;The &lt;code&gt;--regions&lt;/code&gt; flag takes input chromosome and/or position coordinates to filter the &lt;code&gt;.vcf&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;If we wanted to restrict to chromosome 5:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;bcftools view --regions 5 NA20536.vcf.gz &lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;CHROM&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;POS&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;ID&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;REF&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;ALT&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;QUAL&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;FILTER&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;INFO&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;FORMAT&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;NA20536&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;40417&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;esv3603720;esv3603721&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;CN0&gt;,&lt;CN2&gt;&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0,0;AF=0.000199681,0.000798722;AN=2;CS=DUP_uwash;END=176437;NS=2504;SVTYPE=CNV;DP=16231;EAS_AF=0,0;AMR_AF=0,0;AFR_AF=0,0;EUR_AF=0,0.003;SAS_AF=0.001,0.001;VT=SV;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;124186&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;esv3603731&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;T&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;CN2&gt;&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.000199681;AN=2;CS=DUP_gs;END=163795;NS=2504;SVTYPE=DUP;DP=19153;EAS_AF=0;AMR_AF=0;AFR_AF=0;EUR_AF=0.001;SAS_AF=0;VT=SV;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;143490&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs142208662&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;T&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.00279553;AN=2;NS=2504;DP=19664;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0098;EUR_AF=0;SAS_AF=0;AA=c|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;151721&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs148716910&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.00279553;AN=2;NS=2504;DP=18789;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0098;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;156288&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs193920840&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;T&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.000199681;AN=2;NS=2504;DP=17617;EAS_AF=0;AMR_AF=0;AFR_AF=0;EUR_AF=0;SAS_AF=0.001;AA=C|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;162045&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs568109142&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.000199681;AN=2;NS=2504;DP=15391;EAS_AF=0.001;AMR_AF=0;AFR_AF=0;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;And if we were interested in a speficic region (let’s say chromosome 10, anywhere between positions 800000:900000):&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;bcftools view --regions 10:800000-900000 NA20536.clinvar.vcf.gz&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;right&#34;&gt;CHROM&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;POS&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;ID&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;REF&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;ALT&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;QUAL&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;FILTER&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;INFO&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;FORMAT&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;NA20536&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;10&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;859076&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs144565605&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;T&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.000199681;AN=2;NS=2504;DP=15608;EAS_AF=0;AMR_AF=0;AFR_AF=0.0008;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;10&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;860990&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs144883024&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.00259585;AN=2;NS=2504;DP=18990;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0091;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;10&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;871816&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs79707128&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;T&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.0211661;AN=2;NS=2504;DP=21039;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0703;EUR_AF=0;SAS_AF=0.0092;AA=T|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div id=&#34;format-translated-genotype-output&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;tgt&#34;&gt;&lt;/a&gt;Format translated genotype output&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;bcftools query&lt;/code&gt; will output contents of the &lt;code&gt;.vcf&lt;/code&gt; in text format. The contents can be specified in a string that includes fields to extract, separators, and line endings.&lt;/p&gt;
+&lt;p&gt;In this scenario, we’ll pull out the ID (RSID), chromosome, position, a translated genotype, and the “type” (SNP, INDEL, etc.) in tab-separated format:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;bcftools query -f &amp;quot;%ID\t%CHROM\t%POS[\t%TGT]\t%TYPE\n&amp;quot; NA20536.clinvar.vcf.gz&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;ID&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;CHROM&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;POS&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;GT&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;TYPE&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rs41285790&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;865628&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G|G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;SNP&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rs113383096&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;879481&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G|G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;SNP&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rs112433394&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;880944&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G|G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;SNP&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rs113226136&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;887409&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G|G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;SNP&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rs112966263&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;887989&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A|A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;SNP&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rs58931985&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;889450&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C|C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;SNP&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div id=&#34;merge-vcf-files-together&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;merge&#34;&gt;&lt;/a&gt;Merge vcf files together&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;bcftools merge&lt;/code&gt; will combine data from multiple files.&lt;/p&gt;
+&lt;p&gt;To merge individual sample &lt;code&gt;.vcf&lt;/code&gt; files into one:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;bcftools merge NA20536.clinvar.vcf.gz HG03718.clinvar.vcf.gz --output-type z --output NA20536.HG03718.clinvar.vcf.gz&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;CHROM&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;POS&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;ID&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;REF&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;ALT&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;QUAL&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;FILTER&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;INFO&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;FORMAT&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;NA20536&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;HG03718&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;865628&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs41285790&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=33950;AF=0.00279553;EAS_AF=0;AMR_AF=0.0072;AFR_AF=0;EUR_AF=0.005;SAS_AF=0.0041;AN=4;AC=0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;879481&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs113383096&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=27530;AF=0.0197684;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0719;EUR_AF=0;SAS_AF=0;AN=4;AC=0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;880944&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs112433394&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=41446;AF=0.00259585;EAS_AF=0;AMR_AF=0;AFR_AF=0.0098;EUR_AF=0;SAS_AF=0;AN=4;AC=0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;887409&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs113226136&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=39832;AF=0.00119808;EAS_AF=0;AMR_AF=0;AFR_AF=0.0045;EUR_AF=0;SAS_AF=0;AN=4;AC=0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;887989&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs112966263&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;NS=2504;AA=G|||;VT=SNP;EX_TARGET;DP=36768;AF=0.00579073;EAS_AF=0;AMR_AF=0;AFR_AF=0.0219;EUR_AF=0;SAS_AF=0;AN=4;AC=0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;889450&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs58931985&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;NS=2504;AA=C|||;VT=SNP;EX_TARGET;DP=32298;AF=0.00159744;EAS_AF=0;AMR_AF=0;AFR_AF=0.0061;EUR_AF=0;SAS_AF=0;AN=4;AC=0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parse-genotypes-for-multiple-samples&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;parsemulti&#34;&gt;&lt;/a&gt;Parse genotypes for multiple samples&lt;/h3&gt;
+&lt;p&gt;Given that you have a mutli-sample &lt;code&gt;.vcf&lt;/code&gt; you can parse genotypes for each individual:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;bcftools query -f &amp;#39;[%CHROM\t%POS\t%SAMPLE\t%TGT\n]&amp;#39; NA20536.HG03718.clinvar.vcf.gz&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;CHROM&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;POS&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;SAMPLE&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;GT&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;865628&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;NA20536&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G|G&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;865628&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;HG03718&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G|G&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;879481&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;NA20536&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G|G&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;879481&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;HG03718&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G|G&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;880944&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;NA20536&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G|G&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;880944&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;HG03718&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G|G&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div id=&#34;edit-chromosome-names&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;renamechr&#34;&gt;&lt;/a&gt;Edit chromosome names&lt;/h3&gt;
+&lt;p&gt;You can rename chromosomes with &lt;code&gt;bcftools annotate --rename-chrs&lt;/code&gt;. The command requires that you supply a tab-separated file with the desired naming convention, organized as “old\tnew”:&lt;/p&gt;
+&lt;pre class=&#34;txt&#34;&gt;&lt;code&gt;1\tchr1
+2\tchr2
+3\tchr3
+4\tchr4
+5\tchr5
+6\tchr6
+7\tchr7
+8\tchr8
+9\tchr9
+10\tchr10
+11\tchr11
+12\tchr12
+13\tchr13
+14\tchr14
+15\tchr15
+16\tchr16
+17\tchr17
+18\tchr18
+19\tchr19
+20\tchr20
+21\tchr21
+22\tchr22&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;bcftools annotate --rename-chrs chromosomes.txt NA20536.clinvar.vcf.gz&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;CHROM&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;POS&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;ID&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;REF&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;ALT&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;QUAL&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;FILTER&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;INFO&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;FORMAT&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;NA20536&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;chr1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;865628&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs41285790&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.00279553;AN=2;NS=2504;DP=16975;EAS_AF=0;AMR_AF=0.0072;AFR_AF=0;EUR_AF=0.005;SAS_AF=0.0041;AA=g|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;chr1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;879481&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs113383096&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.0197684;AN=2;NS=2504;DP=13765;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0719;EUR_AF=0;SAS_AF=0;AA=g|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;chr1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;880944&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs112433394&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.00259585;AN=2;NS=2504;DP=20723;EAS_AF=0;AMR_AF=0;AFR_AF=0.0098;EUR_AF=0;SAS_AF=0;AA=g|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;chr1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;887409&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs113226136&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.00119808;AN=2;NS=2504;DP=19916;EAS_AF=0;AMR_AF=0;AFR_AF=0.0045;EUR_AF=0;SAS_AF=0;AA=g|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;chr1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;887989&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs112966263&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.00579073;AN=2;NS=2504;DP=18384;EAS_AF=0;AMR_AF=0;AFR_AF=0.0219;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;chr1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;889450&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs58931985&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;AC=0;AF=0.00159744;AN=2;NS=2504;DP=16149;EAS_AF=0;AMR_AF=0;AFR_AF=0.0061;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;EX_TARGET&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div id=&#34;view-without-header&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;noheader&#34;&gt;&lt;/a&gt;View without header&lt;/h3&gt;
+&lt;p&gt;To view &lt;em&gt;only the results without header&lt;/em&gt; (i.e. remove the header) use the &lt;code&gt;-H&lt;/code&gt; flag:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;bcftools view -H NA20536.HG03718.clinvar.vcf.gz&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;X1&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;X2&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;X3&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;X4&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;X5&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;X6&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;X7&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;X8&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;X9&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;X10&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;X11&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;865628&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs41285790&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=33950;AF=0.00279553;EAS_AF=0;AMR_AF=0.0072;AFR_AF=0;EUR_AF=0.005;SAS_AF=0.0041;AN=4;AC=0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;879481&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs113383096&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=27530;AF=0.0197684;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0719;EUR_AF=0;SAS_AF=0;AN=4;AC=0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;880944&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs112433394&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=41446;AF=0.00259585;EAS_AF=0;AMR_AF=0;AFR_AF=0.0098;EUR_AF=0;SAS_AF=0;AN=4;AC=0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;887409&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs113226136&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=39832;AF=0.00119808;EAS_AF=0;AMR_AF=0;AFR_AF=0.0045;EUR_AF=0;SAS_AF=0;AN=4;AC=0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;887989&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs112966263&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;G&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;NS=2504;AA=G|||;VT=SNP;EX_TARGET;DP=36768;AF=0.00579073;EAS_AF=0;AMR_AF=0;AFR_AF=0.0219;EUR_AF=0;SAS_AF=0;AN=4;AC=0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;889450&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rs58931985&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;100&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;PASS&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;NS=2504;AA=C|||;VT=SNP;EX_TARGET;DP=32298;AF=0.00159744;EAS_AF=0;AMR_AF=0;AFR_AF=0.0061;EUR_AF=0;SAS_AF=0;AN=4;AC=0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;GT&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0|0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div id=&#34;view-only-header&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;a name=&#34;onlyheader&#34;&gt;&lt;/a&gt;View only header&lt;/h3&gt;
+&lt;p&gt;To view &lt;em&gt;only the header&lt;/em&gt; (i.e. extract header) use the &lt;code&gt;-h&lt;/code&gt; flag:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;bcftools view -h clinvar.vcf.gz&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ##fileformat=VCFv4.1
+## ##FILTER=&amp;lt;ID=PASS,Description=&amp;quot;All filters passed&amp;quot;&amp;gt;
+## ##fileDate=2020-02-17
+## ##source=ClinVar
+## ##reference=GRCh37
+## ##ID=&amp;lt;Description=&amp;quot;ClinVar Variation ID&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=AF_ESP,Number=1,Type=Float,Description=&amp;quot;allele frequencies from GO-ESP&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=AF_EXAC,Number=1,Type=Float,Description=&amp;quot;allele frequencies from ExAC&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=AF_TGP,Number=1,Type=Float,Description=&amp;quot;allele frequencies from TGP&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=ALLELEID,Number=1,Type=Integer,Description=&amp;quot;the ClinVar Allele ID&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=CLNDN,Number=.,Type=String,Description=&amp;quot;ClinVar&amp;#39;s preferred disease name for the concept specified by disease identifiers in CLNDISDB&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=CLNDNINCL,Number=.,Type=String,Description=&amp;quot;For included Variant : ClinVar&amp;#39;s preferred disease name for the concept specified by disease identifiers in CLNDISDB&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=CLNDISDB,Number=.,Type=String,Description=&amp;quot;Tag-value pairs of disease database name and identifier, e.g. OMIM:NNNNNN&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=CLNDISDBINCL,Number=.,Type=String,Description=&amp;quot;For included Variant: Tag-value pairs of disease database name and identifier, e.g. OMIM:NNNNNN&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=CLNHGVS,Number=.,Type=String,Description=&amp;quot;Top-level (primary assembly, alt, or patch) HGVS expression.&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=CLNREVSTAT,Number=.,Type=String,Description=&amp;quot;ClinVar review status for the Variation ID&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=CLNSIG,Number=.,Type=String,Description=&amp;quot;Clinical significance for this single variant&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=CLNSIGCONF,Number=.,Type=String,Description=&amp;quot;Conflicting clinical significance for this single variant&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=CLNSIGINCL,Number=.,Type=String,Description=&amp;quot;Clinical significance for a haplotype or genotype that includes this variant. Reported as pairs of VariationID:clinical significance.&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=CLNVC,Number=1,Type=String,Description=&amp;quot;Variant type&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=CLNVCSO,Number=1,Type=String,Description=&amp;quot;Sequence Ontology id for variant type&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=CLNVI,Number=.,Type=String,Description=&amp;quot;the variant&amp;#39;s clinical sources reported as tag-value pairs of database and variant identifier&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=DBVARID,Number=.,Type=String,Description=&amp;quot;nsv accessions from dbVar for the variant&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=GENEINFO,Number=1,Type=String,Description=&amp;quot;Gene(s) for the variant reported as gene symbol:gene id. The gene symbol and id are delimited by a colon (:) and each pair is delimited by a vertical bar (|)&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=MC,Number=.,Type=String,Description=&amp;quot;comma separated list of molecular consequence in the form of Sequence Ontology ID|molecular_consequence&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=ORIGIN,Number=.,Type=String,Description=&amp;quot;Allele origin. One or more of the following values may be added: 0 - unknown; 1 - germline; 2 - somatic; 4 - inherited; 8 - paternal; 16 - maternal; 32 - de-novo; 64 - biparental; 128 - uniparental; 256 - not-tested; 512 - tested-inconclusive; 1073741824 - other&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=RS,Number=.,Type=String,Description=&amp;quot;dbSNP ID (i.e. rs number)&amp;quot;&amp;gt;
+## ##INFO=&amp;lt;ID=SSR,Number=1,Type=Integer,Description=&amp;quot;Variant Suspect Reason Codes. One or more of the following values may be added: 0 - unspecified, 1 - Paralog, 2 - byEST, 4 - oldAlign, 8 - Para_EST, 16 - 1kg_failed, 1024 - other&amp;quot;&amp;gt;
+## ##contig=&amp;lt;ID=1&amp;gt;
+## ##contig=&amp;lt;ID=2&amp;gt;
+## ##contig=&amp;lt;ID=3&amp;gt;
+## ##contig=&amp;lt;ID=4&amp;gt;
+## ##contig=&amp;lt;ID=5&amp;gt;
+## ##contig=&amp;lt;ID=6&amp;gt;
+## ##contig=&amp;lt;ID=7&amp;gt;
+## ##contig=&amp;lt;ID=8&amp;gt;
+## ##contig=&amp;lt;ID=9&amp;gt;
+## ##contig=&amp;lt;ID=10&amp;gt;
+## ##contig=&amp;lt;ID=11&amp;gt;
+## ##contig=&amp;lt;ID=12&amp;gt;
+## ##contig=&amp;lt;ID=13&amp;gt;
+## ##contig=&amp;lt;ID=14&amp;gt;
+## ##contig=&amp;lt;ID=15&amp;gt;
+## ##contig=&amp;lt;ID=16&amp;gt;
+## ##contig=&amp;lt;ID=17&amp;gt;
+## ##contig=&amp;lt;ID=18&amp;gt;
+## ##contig=&amp;lt;ID=19&amp;gt;
+## ##contig=&amp;lt;ID=20&amp;gt;
+## ##contig=&amp;lt;ID=21&amp;gt;
+## ##contig=&amp;lt;ID=22&amp;gt;
+## ##contig=&amp;lt;ID=X&amp;gt;
+## ##contig=&amp;lt;ID=Y&amp;gt;
+## ##contig=&amp;lt;ID=MT&amp;gt;
+## ##bcftools_viewVersion=1.10.2-27-g9d66868+htslib-1.10.2-33-g1bbcd02
+## ##bcftools_viewCommand=view -h clinvar.vcf.gz; Date=Fri Feb 28 19:06:40 2020
+## #CHROM   POS ID  REF ALT QUAL    FILTER  INFO&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;From &lt;a href=&#34;https://www.ncbi.nlm.nih.gov/variation/docs/ClinVar_vcf_files/&#34;&gt;ClinVar vcf documentation&lt;/a&gt;: &lt;em&gt;This file contains variations submitted through clinical channels. The variations contained in this file are therefore a mixture of variations asserted to be pathogenic as well as those known to be non-pathogenic. The user should note that any variant may have different assertions regarding clinical significance and that this file will contain only those that are the most “pathogenic”&lt;/em&gt;.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;This solution is based on a Biostars post: &lt;a href=&#34;https://www.biostars.org/p/373852/&#34; class=&#34;uri&#34;&gt;https://www.biostars.org/p/373852/&lt;/a&gt;&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>table function in bash</title>
       <link>/notes/table-shell-function/</link>
       <pubDate>Thu, 20 Feb 2020 17:14:59 +0000</pubDate>
@@ -1252,166 +2264,6 @@ starwars&lt;/code&gt;&lt;/pre&gt;
 ##  9 Zabrak   2 (2%)     
 ## 10 Aleena   1 (1%)     
 ## # … with 28 more rows&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Circular Barplots</title>
-      <link>/notes/circular-barplots/</link>
-      <pubDate>Sun, 16 Jun 2019 17:14:59 +0000</pubDate>
-      
-      <guid>/notes/circular-barplots/</guid>
-      <description>
-
-
-&lt;p&gt;While preparing figures for a manuscript recently, the first author proposed a plot to compare several phenotypes from every donor in the study. One suggestion was a series of circular barplots (normalized since each phenotype was on a different scale) side-by-side.&lt;/p&gt;
-&lt;p&gt;Using &lt;code&gt;ggplot2&lt;/code&gt; that might look something like this:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
-library(tidyr)
-library(dplyr)
-
-msleep %&amp;gt;%
-  select(name,sleep_total,brainwt,bodywt) %&amp;gt;%
-  filter(complete.cases(.)) %&amp;gt;%
-  gather(key,value, -name) %&amp;gt;%
-  group_by(key) %&amp;gt;%
-  mutate(value = percent_rank(value)) %&amp;gt;%
-  ggplot(aes(name,value)) +
-  geom_col() +
-  coord_polar() +
-  facet_wrap(~ key, ncol = 3) +
-  labs(x = NULL,
-       y = &amp;quot;Percentile&amp;quot;) +
-  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/notes/circular-barplots_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;The figure isn’t easy to interpret in this configuration. Even if the canvases of each of the facets were bigger, the labels would need to be rotated for legibility. With that done, it may still be hard to visually connect phenotypes across individuals. In this example, you have to squint at all three facets consecutively, and even do some jumping back and forth. Eventually you may see that some of the largest animals (in terms of both brain and body weight) actually rank quite low in terms of total sleep … and vice versa.&lt;/p&gt;
-&lt;p&gt;One alternative is to plot the bars as concentric circles, with the bars for phenotypes lined up at each individual.&lt;/p&gt;
-&lt;p&gt;This is where I stepped away from &lt;code&gt;ggplot2&lt;/code&gt; and started using the &lt;a href=&#34;https://cran.r-project.org/web/packages/circlize/index.html&#34;&gt;&lt;code&gt;circlize&lt;/code&gt; package&lt;/a&gt;. The syntax took some getting used to … but overall I found the package to be quite useful. There was plenty of documentation in &lt;a href=&#34;https://jokergoo.github.io/circlize_book/book/index.html&#34;&gt;the &lt;code&gt;circlize&lt;/code&gt; book&lt;/a&gt;. And I was able to build on some of the examples to get where I needed to go:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(circlize)
-library(ComplexHeatmap)
-library(gridBase)
-library(ggplot2)
-library(tidyr)
-library(dplyr)
-
-sleep_size &amp;lt;-
-  msleep %&amp;gt;%
-  select(name,sleep_total,brainwt,bodywt) %&amp;gt;%
-  filter(complete.cases(.)) %&amp;gt;%
-  mutate(sleep_total = percent_rank(sleep_total),
-         brainwt = percent_rank(brainwt),
-         bodywt = percent_rank(bodywt),
-         index = 1) %&amp;gt;%
-  arrange(desc(sleep_total)) %&amp;gt;%
-  mutate(name = factor(name))
-
-sleep_size$name &amp;lt;- factor(sleep_size$name, 
-                          levels = as.character(sleep_size$name))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# barplot colors
-barcols  &amp;lt;- c(&amp;quot;firebrick&amp;quot;,&amp;quot;steelblue&amp;quot;,&amp;quot;goldenrod&amp;quot;)
-
-# parameters for each of the concentric plots
-circos.par(cell.padding = c(0.02, 0, 0.02, 0),
-           gap.after = c(rep(1, nrow(sleep_size)-1), 20),
-           start.degree = 80,
-           track.height = 0.3)
-
-# initialize
-# at each level of the factor (in this case animal name) plot at index (x=1 for all animals)
-# make sure the limit is set to give room one either side of x for each plot
-circos.initialize(factors = sleep_size$name, 
-                  x = sleep_size$index, 
-                  xlim = c(0,2))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create &amp;quot;track&amp;quot; region for and add lines for with y values for scaled sleep total
-circos.trackPlotRegion(factors = sleep_size$name, 
-                       y = sleep_size$sleep_total, 
-                       panel.fun = function(x, y) {
-  
-  name = get.cell.meta.data(&amp;quot;sector.index&amp;quot;)
-  i = get.cell.meta.data(&amp;quot;sector.numeric.index&amp;quot;)
-  xlim = get.cell.meta.data(&amp;quot;xlim&amp;quot;)
-  ylim = get.cell.meta.data(&amp;quot;ylim&amp;quot;)
-  
-  #text direction (dd) and adjusmtents (aa)
-  theta = circlize(mean(xlim), 1.3)[1, 1] %% 360
-  dd &amp;lt;- ifelse(theta &amp;lt; 90 || theta &amp;gt; 270, &amp;quot;clockwise&amp;quot;, &amp;quot;reverse.clockwise&amp;quot;)
-  aa = c(1, 0.5)
-  if(theta &amp;lt; 90 || theta &amp;gt; 270)  aa = c(0, 0.5)
-  
-  #plot country labels
-  circos.text(x=mean(xlim), y=1.2, labels=name, facing = dd, cex=0.6,  adj = aa)
-  
-  #plot main sector
-  
-  circos.axis(labels=FALSE, major.tick=FALSE)
-  circos.yaxis(side = &amp;quot;left&amp;quot;, at = seq(0, 1, by = 0.25),
-               sector.index = get.all.sector.index()[1], labels.cex = 0.4, labels.niceFacing = FALSE)
-  
-})
-
-circos.trackLines(factors = sleep_size$name, 
-                  x = sleep_size$index, 
-                  y = sleep_size$sleep_total, 
-                  pch=20, 
-                  cex=2, 
-                  col = barcols[1],
-                  type=&amp;quot;h&amp;quot;, 
-                  lwd = 6)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# ... same as above but for body weight
-circos.trackPlotRegion(factors = sleep_size$name, 
-                       y = sleep_size$bodywt, 
-                       panel.fun = function(x, y) {
-                         
-  circos.axis(labels=FALSE, major.tick=FALSE)
-                         
-})
-
-circos.trackLines(factors = sleep_size$name, 
-                  x = sleep_size$index, 
-                  y = sleep_size$bodywt, 
-                  pch=20, 
-                  cex=2, 
-                  col = barcols[2],
-                  type=&amp;quot;h&amp;quot;, 
-                  lwd = 4)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# ... same as above but for brain weight
-circos.trackPlotRegion(factors = sleep_size$name, 
-                       y = sleep_size$brainwt, 
-                       panel.fun = function(x, y) {
-                         
-  circos.axis(labels=FALSE, major.tick=FALSE)
-                         
-})
-
-circos.trackLines(factors = sleep_size$name, 
-                  x = sleep_size$index, 
-                  y = sleep_size$brainwt, 
-                  pch=20, 
-                  cex=2, 
-                  col = barcols[3],
-                  type=&amp;quot;h&amp;quot;, 
-                  lwd = 2)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;circos.clear()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# add legend using complex heatmap
-# http://jokergoo.github.io/blog/html/add_legend_to_circlize.html
-lgd_lines = Legend(at = colnames(sleep_size)[2:4],
-                   type = &amp;quot;lines&amp;quot;,
-                   legend_gp = gpar(col = barcols, lwd = 2),
-                   title_position = &amp;quot;topleft&amp;quot;,
-                   labels_gp = gpar(fontsize = 14, lex = 4),
-                   title = &amp;quot;Phenotype&amp;quot;)
-
-lgd_list_vertical = packLegend(lgd_lines)
-
-
-pushViewport(viewport(x = unit(10, &amp;quot;mm&amp;quot;), y = unit(4, &amp;quot;mm&amp;quot;),
-                      width = grobWidth(lgd_list_vertical),
-                      height = grobHeight(lgd_list_vertical),
-                      just = c(&amp;quot;left&amp;quot;, &amp;quot;bottom&amp;quot;)))
-
-grid.draw(lgd_list_vertical)
-upViewport()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/img/sleep_bar.png&#34; /&gt;&lt;/p&gt;
 </description>
     </item>
     

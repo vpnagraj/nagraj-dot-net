@@ -1,0 +1,1010 @@
+---
+title: "bcftools Primer"
+date: 2020-02-28T18:14:59+00:00
+categories: ["notes"]
+tags: ["bioinformatics"]
+summary: "some simple recipes for vcf data manipulation with bcftools"
+---
+
+
+
+<p><code>bcftools</code> provides utilities for working with data in variant calling (<code>.vcf</code>) format. The <a href="https://samtools.github.io/bcftools/bcftools.html">manual</a> fully documents the arguments and features, and the developers have written their own <a href="https://samtools.github.io/bcftools/howtos/index.html">“HowTo” page</a>. The goal of this post is to walk through some scenarios with a reproducible dataset to showcase the <code>bcftools</code> functionality I use regularly.</p>
+<p>Note that this will <em>not</em> be an exhaustive demonstration of all <code>bcftools</code> features, nor will it include other <code>.vcf</code> parsing/manipulation tools or linux utilities (i.e. <code>awk</code>, <code>sed</code>) that can be handy for working with variant calling data.</p>
+<p>The examples should be reproducible given setup described below. However, the output at the command line will look slightly different than the inline output in this post. For legibility, I’ve run each of the commands, exluded the header, and read the results back in as a text file. The inline output in this post will show a max of 6 rows with a final placeholder row (<code>. . . . . . . . . . .</code>) if necessary.</p>
+<ul>
+<li><a href="#concat">How do I concatenate multiple vcf files?</a></li>
+<li><a href="#samplename">How do I subset for individual samples by name?</a></li>
+<li><a href="#indels">How do I restrict a vcf to only include INDELs?</a></li>
+<li><a href="#rsid">How do I filter a vcf by SNP ID?</a></li>
+<li><a href="#chrpos">How do I filter a vcf by genomic coordinates?</a></li>
+<li><a href="#tgt">How do I format the genotype as nucleotide in a vcf?</a></li>
+<li><a href="#merge">How do I merge multiple vcf files?</a></li>
+<li><a href="#parsemulti">How do I extract genotypes for multiple samples from a single vcf?</a></li>
+<li><a href="#renamechr">How do I change the chromosome names in a vcf?</a></li>
+<li><a href="#noheader">How do I inspect a vcf without the header?</a></li>
+<li><a href="#onlyheader">How do I view <em>only</em> the header in a vcf?</a></li>
+</ul>
+<hr />
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<p>To get started we need to find some data to work with and do a bit of pre-processing:</p>
+<ol style="list-style-type: decimal">
+<li>Download all of the files for the <a href="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/">20130502 release of the 1000 Genomes Project</a> (these are in compressed <code>.vcf.gz</code> format, each with <code>.tbi</code> index)</li>
+<li>Download a <code>.vcf.gz</code> (and <code>.tbi</code>) for sites annotated by <a href="https://www.ncbi.nlm.nih.gov/clinvar/">ClinVar</a><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
+<li>Create <code>.vcf.gz</code> files for each chromosome (1-22) filtered to only include the ClinVar sites</li>
+<li>Create tabix index for each of the newly created <code>.vcf.gz</code> files</li>
+</ol>
+<p>The code that follows will perform all of the steps described above. Keep in mind that the each step (especially downloading and filtering the 1000 Genomes data) may take quite a while as these files are large (~ 20GB total). You’ll need a system with sufficient storage, and has <code>wget</code>, <code>parallel</code>, <code>bcftools</code>, and <code>tabix</code> installed.</p>
+<pre class="bash"><code>## download 1000 genomes vcf files
+wget ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/*.vcf.gz*
+
+## download clinvar vcf
+wget ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh37/clinvar.vcf.gz*
+
+## use parallel to restrict each chromosome (chr1 to chr22) to clinvar sites
+find . -type f -name &quot;ALL.chr[1-9]*vcf.gz&quot; | parallel &quot;bcftools view {} -R clinvar.vcf.gz --output-type z --output {}.clinvar.vcf.gz&quot;
+
+## make sure all vcf.gz files are tabix indexed
+find . -type f -name &quot;ALL.chr[1-9]*.clinvar.vcf.gz&quot; | parallel &quot;tabix {}&quot;</code></pre>
+<p>With the data processed we can move onto the scenarios.</p>
+<p>All subsequent code will use <code>bcftools</code> version 1.10.</p>
+<pre class="bash"><code>bcftools --version</code></pre>
+<pre class="text"><code>bcftools 1.10.2-27-g9d66868
+Using htslib 1.10.2-33-g1bbcd02
+Copyright (C) 2019 Genome Research Ltd.
+License Expat: The MIT/Expat license
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.</code></pre>
+<hr />
+</div>
+<div id="scenarios" class="section level2">
+<h2>Scenarios</h2>
+<div id="concatenate-multiple-files-together" class="section level3">
+<h3><a name="concat"></a>Concatenate multiple files together</h3>
+<p>If we wanted to concatenate (i.e. “stack”) mutliple <code>.vcf</code> files together we can use <code>bcftools concat</code>, so long as the input files share the same fields. In this example, we’ll combine all of the chromosomes (1-22) into a single file.</p>
+<p>The <code>--output-type z</code> argument specifies that the output will be compressed, and the <code>--output</code> flag allows us to explicitly name the resulting file:</p>
+<pre class="bash"><code>bcftools concat ALL.chr*.clinvar.vcf.gz --output-type z --output all.clinvar.vcf.gz</code></pre>
+<p><strong>NOTE</strong>: <code>bcftools concat</code> is <em>not</em> equivalent <code>bcftools merge</code>. For an example of the latter <a href="#merge">see below</a>.</p>
+</div>
+<div id="select-individual-samples-by-name" class="section level3">
+<h3><a name="samplename"></a>Select individual samples by name</h3>
+<p><code>bcftools view -s</code> allows for subsetting by sample ID.</p>
+<p>The combined <code>all.clinvar.vcf.gz</code> file above contains multiple samples. Here we’ll create individual compressed <code>.vcf</code> files for NA20536 and HG03718 samples, along with a tabix index for each file (using <code>bcftools index -t</code>):</p>
+<pre class="bash"><code>bcftools view -s NA20536 all.clinvar.vcf.gz --output-type z --output NA20536.clinvar.vcf.gz
+bcftools view -s HG03718 all.clinvar.vcf.gz --output-type z --output HG03718.clinvar.vcf.gz
+
+## note: bcftools index -t is equivalent to tabix here
+bcftools index -t NA20536.clinvar.vcf.gz
+bcftools index -t HG03718.clinvar.vcf.gz</code></pre>
+</div>
+<div id="filter-to-only-include-indels" class="section level3">
+<h3><a name="indels"></a>Filter to only include INDELs</h3>
+<p><code>bcftools view -v</code> will restrict the file to specified variant types: “snps”, “indels”, “mnps”, or “other”.</p>
+<p>We can use the command to filter the <code>.vcf</code> to only include INDELs:</p>
+<pre class="bash"><code>bcftools view -v indels NA20536.clinvar.vcf.gz</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">CHROM</th>
+<th align="left">POS</th>
+<th align="left">ID</th>
+<th align="left">REF</th>
+<th align="left">ALT</th>
+<th align="left">QUAL</th>
+<th align="left">FILTER</th>
+<th align="left">INFO</th>
+<th align="left">FORMAT</th>
+<th align="left">NA20536</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">978603</td>
+<td align="left">rs35881187</td>
+<td align="left">CCT</td>
+<td align="left">C</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=2;AF=0.479233;AN=2;NS=2504;DP=14705;EAS_AF=0.8036;AMR_AF=0.6412;AFR_AF=0.0348;EUR_AF=0.5487;SAS_AF=0.5593;VT=INDEL</td>
+<td align="left">GT</td>
+<td align="left">1|1</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">984171</td>
+<td align="left">rs140904842</td>
+<td align="left">CAG</td>
+<td align="left">C</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=2;AF=0.920527;AN=2;NS=2504;DP=7127;EAS_AF=0.9891;AMR_AF=0.9769;AFR_AF=0.7602;EUR_AF=0.9742;SAS_AF=0.9714;VT=INDEL</td>
+<td align="left">GT</td>
+<td align="left">1|1</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">1168239</td>
+<td align="left">rs533071750</td>
+<td align="left">C</td>
+<td align="left">CG</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.000599042;AN=2;NS=2504;DP=9648;EAS_AF=0;AMR_AF=0.0029;AFR_AF=0;EUR_AF=0.001;SAS_AF=0;AA=?|GGGGGGG|GGGGGGGG|unsure;VT=INDEL;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">2343991</td>
+<td align="left">rs570192538</td>
+<td align="left">CCA</td>
+<td align="left">C</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.00459265;AN=2;NS=2504;DP=9045;EAS_AF=0;AMR_AF=0;AFR_AF=0.0174;EUR_AF=0;SAS_AF=0;VT=INDEL</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">2435830</td>
+<td align="left">rs555614613</td>
+<td align="left">TTCC</td>
+<td align="left">T</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.00579073;AN=2;NS=2504;DP=15005;EAS_AF=0;AMR_AF=0.0029;AFR_AF=0.0204;EUR_AF=0;SAS_AF=0;VT=INDEL;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">2492946</td>
+<td align="left">rs149579135</td>
+<td align="left">AG</td>
+<td align="left">A</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.00359425;AN=2;NS=2504;DP=17775;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0129;EUR_AF=0;SAS_AF=0;AA=G|G|-|deletion;VT=INDEL</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="filter-by-rsid" class="section level3">
+<h3><a name="rsid"></a>Filter by rsid</h3>
+<p>With <code>bcftools</code> you can filter a <code>.vcf</code> file for certain sites by passing in a file that contains the IDs to be retained.</p>
+<p>Assuming we have the following RSIDs in a file called <code>snps.list</code><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>:</p>
+<pre class="text"><code>rs145413551
+rs34610323
+rs79548709
+rs371163239
+rs148716910
+rs374704178</code></pre>
+<p>We can use <code>snps.list</code> to filter with <code>bcftools view</code>:</p>
+<pre class="bash"><code>bcftools view --include ID==@snps.list NA20536.clinvar.vcf.gz</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">CHROM</th>
+<th align="right">POS</th>
+<th align="left">ID</th>
+<th align="left">REF</th>
+<th align="left">ALT</th>
+<th align="right">QUAL</th>
+<th align="left">FILTER</th>
+<th align="left">INFO</th>
+<th align="left">FORMAT</th>
+<th align="left">NA20536</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">17</td>
+<td align="right">648546</td>
+<td align="left">rs34610323</td>
+<td align="left">C</td>
+<td align="left">T</td>
+<td align="right">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.0159744;AN=2;NS=2504;DP=21874;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0575;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">31620566</td>
+<td align="left">rs145413551</td>
+<td align="left">G</td>
+<td align="left">T</td>
+<td align="right">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.000199681;AN=2;NS=2504;DP=19652;EAS_AF=0;AMR_AF=0;AFR_AF=0.0008;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="right">21</td>
+<td align="right">45707000</td>
+<td align="left">rs374704178</td>
+<td align="left">G</td>
+<td align="left">A</td>
+<td align="right">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.000399361;AN=2;NS=2504;DP=11479;EAS_AF=0;AMR_AF=0;AFR_AF=0.0015;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="right">151721</td>
+<td align="left">rs148716910</td>
+<td align="left">G</td>
+<td align="left">A</td>
+<td align="right">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.00279553;AN=2;NS=2504;DP=18789;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0098;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="right">8</td>
+<td align="right">1841816</td>
+<td align="left">rs79548709</td>
+<td align="left">C</td>
+<td align="left">T</td>
+<td align="right">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.00519169;AN=2;NS=2504;DP=16683;EAS_AF=0;AMR_AF=0;AFR_AF=0.0197;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="right">3889458</td>
+<td align="left">rs371163239</td>
+<td align="left">T</td>
+<td align="left">A</td>
+<td align="right">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.000199681;AN=2;NS=2504;DP=15669;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="filter-by-chromosome-andor-position" class="section level3">
+<h3><a name="chrpos"></a>Filter by chromosome and/or position</h3>
+<p>The <code>--regions</code> flag takes input chromosome and/or position coordinates to filter the <code>.vcf</code>.</p>
+<p>If we wanted to restrict to chromosome 5:</p>
+<pre class="bash"><code>bcftools view --regions 5 NA20536.vcf.gz </code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">CHROM</th>
+<th align="left">POS</th>
+<th align="left">ID</th>
+<th align="left">REF</th>
+<th align="left">ALT</th>
+<th align="left">QUAL</th>
+<th align="left">FILTER</th>
+<th align="left">INFO</th>
+<th align="left">FORMAT</th>
+<th align="left">NA20536</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">40417</td>
+<td align="left">esv3603720;esv3603721</td>
+<td align="left">G</td>
+<td align="left"><CN0>,<CN2></td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0,0;AF=0.000199681,0.000798722;AN=2;CS=DUP_uwash;END=176437;NS=2504;SVTYPE=CNV;DP=16231;EAS_AF=0,0;AMR_AF=0,0;AFR_AF=0,0;EUR_AF=0,0.003;SAS_AF=0.001,0.001;VT=SV;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">124186</td>
+<td align="left">esv3603731</td>
+<td align="left">T</td>
+<td align="left"><CN2></td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.000199681;AN=2;CS=DUP_gs;END=163795;NS=2504;SVTYPE=DUP;DP=19153;EAS_AF=0;AMR_AF=0;AFR_AF=0;EUR_AF=0.001;SAS_AF=0;VT=SV;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">143490</td>
+<td align="left">rs142208662</td>
+<td align="left">C</td>
+<td align="left">T</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.00279553;AN=2;NS=2504;DP=19664;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0098;EUR_AF=0;SAS_AF=0;AA=c|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">151721</td>
+<td align="left">rs148716910</td>
+<td align="left">G</td>
+<td align="left">A</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.00279553;AN=2;NS=2504;DP=18789;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0098;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">156288</td>
+<td align="left">rs193920840</td>
+<td align="left">C</td>
+<td align="left">T</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.000199681;AN=2;NS=2504;DP=17617;EAS_AF=0;AMR_AF=0;AFR_AF=0;EUR_AF=0;SAS_AF=0.001;AA=C|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">162045</td>
+<td align="left">rs568109142</td>
+<td align="left">G</td>
+<td align="left">A</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.000199681;AN=2;NS=2504;DP=15391;EAS_AF=0.001;AMR_AF=0;AFR_AF=0;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+</tr>
+</tbody>
+</table>
+<p>And if we were interested in a speficic region (let’s say chromosome 10, anywhere between positions 800000:900000):</p>
+<pre class="bash"><code>bcftools view --regions 10:800000-900000 NA20536.clinvar.vcf.gz</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">CHROM</th>
+<th align="right">POS</th>
+<th align="left">ID</th>
+<th align="left">REF</th>
+<th align="left">ALT</th>
+<th align="right">QUAL</th>
+<th align="left">FILTER</th>
+<th align="left">INFO</th>
+<th align="left">FORMAT</th>
+<th align="left">NA20536</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">10</td>
+<td align="right">859076</td>
+<td align="left">rs144565605</td>
+<td align="left">T</td>
+<td align="left">C</td>
+<td align="right">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.000199681;AN=2;NS=2504;DP=15608;EAS_AF=0;AMR_AF=0;AFR_AF=0.0008;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="right">860990</td>
+<td align="left">rs144883024</td>
+<td align="left">G</td>
+<td align="left">A</td>
+<td align="right">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.00259585;AN=2;NS=2504;DP=18990;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0091;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="right">10</td>
+<td align="right">871816</td>
+<td align="left">rs79707128</td>
+<td align="left">T</td>
+<td align="left">A</td>
+<td align="right">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.0211661;AN=2;NS=2504;DP=21039;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0703;EUR_AF=0;SAS_AF=0.0092;AA=T|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="format-translated-genotype-output" class="section level3">
+<h3><a name="tgt"></a>Format translated genotype output</h3>
+<p><code>bcftools query</code> will output contents of the <code>.vcf</code> in text format. The contents can be specified in a string that includes fields to extract, separators, and line endings.</p>
+<p>In this scenario, we’ll pull out the ID (RSID), chromosome, position, a translated genotype, and the “type” (SNP, INDEL, etc.) in tab-separated format:</p>
+<pre class="bash"><code>bcftools query -f &quot;%ID\t%CHROM\t%POS[\t%TGT]\t%TYPE\n&quot; NA20536.clinvar.vcf.gz</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">ID</th>
+<th align="left">CHROM</th>
+<th align="left">POS</th>
+<th align="left">GT</th>
+<th align="left">TYPE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">rs41285790</td>
+<td align="left">1</td>
+<td align="left">865628</td>
+<td align="left">G|G</td>
+<td align="left">SNP</td>
+</tr>
+<tr class="even">
+<td align="left">rs113383096</td>
+<td align="left">1</td>
+<td align="left">879481</td>
+<td align="left">G|G</td>
+<td align="left">SNP</td>
+</tr>
+<tr class="odd">
+<td align="left">rs112433394</td>
+<td align="left">1</td>
+<td align="left">880944</td>
+<td align="left">G|G</td>
+<td align="left">SNP</td>
+</tr>
+<tr class="even">
+<td align="left">rs113226136</td>
+<td align="left">1</td>
+<td align="left">887409</td>
+<td align="left">G|G</td>
+<td align="left">SNP</td>
+</tr>
+<tr class="odd">
+<td align="left">rs112966263</td>
+<td align="left">1</td>
+<td align="left">887989</td>
+<td align="left">A|A</td>
+<td align="left">SNP</td>
+</tr>
+<tr class="even">
+<td align="left">rs58931985</td>
+<td align="left">1</td>
+<td align="left">889450</td>
+<td align="left">C|C</td>
+<td align="left">SNP</td>
+</tr>
+<tr class="odd">
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="merge-vcf-files-together" class="section level3">
+<h3><a name="merge"></a>Merge vcf files together</h3>
+<p><code>bcftools merge</code> will combine data from multiple files.</p>
+<p>To merge individual sample <code>.vcf</code> files into one:</p>
+<pre class="bash"><code>bcftools merge NA20536.clinvar.vcf.gz HG03718.clinvar.vcf.gz --output-type z --output NA20536.HG03718.clinvar.vcf.gz</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">CHROM</th>
+<th align="left">POS</th>
+<th align="left">ID</th>
+<th align="left">REF</th>
+<th align="left">ALT</th>
+<th align="left">QUAL</th>
+<th align="left">FILTER</th>
+<th align="left">INFO</th>
+<th align="left">FORMAT</th>
+<th align="left">NA20536</th>
+<th align="left">HG03718</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">865628</td>
+<td align="left">rs41285790</td>
+<td align="left">G</td>
+<td align="left">A</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=33950;AF=0.00279553;EAS_AF=0;AMR_AF=0.0072;AFR_AF=0;EUR_AF=0.005;SAS_AF=0.0041;AN=4;AC=0</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">879481</td>
+<td align="left">rs113383096</td>
+<td align="left">G</td>
+<td align="left">C</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=27530;AF=0.0197684;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0719;EUR_AF=0;SAS_AF=0;AN=4;AC=0</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">880944</td>
+<td align="left">rs112433394</td>
+<td align="left">G</td>
+<td align="left">A</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=41446;AF=0.00259585;EAS_AF=0;AMR_AF=0;AFR_AF=0.0098;EUR_AF=0;SAS_AF=0;AN=4;AC=0</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">887409</td>
+<td align="left">rs113226136</td>
+<td align="left">G</td>
+<td align="left">C</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=39832;AF=0.00119808;EAS_AF=0;AMR_AF=0;AFR_AF=0.0045;EUR_AF=0;SAS_AF=0;AN=4;AC=0</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">887989</td>
+<td align="left">rs112966263</td>
+<td align="left">A</td>
+<td align="left">G</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">NS=2504;AA=G|||;VT=SNP;EX_TARGET;DP=36768;AF=0.00579073;EAS_AF=0;AMR_AF=0;AFR_AF=0.0219;EUR_AF=0;SAS_AF=0;AN=4;AC=0</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">889450</td>
+<td align="left">rs58931985</td>
+<td align="left">C</td>
+<td align="left">A</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">NS=2504;AA=C|||;VT=SNP;EX_TARGET;DP=32298;AF=0.00159744;EAS_AF=0;AMR_AF=0;AFR_AF=0.0061;EUR_AF=0;SAS_AF=0;AN=4;AC=0</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="parse-genotypes-for-multiple-samples" class="section level3">
+<h3><a name="parsemulti"></a>Parse genotypes for multiple samples</h3>
+<p>Given that you have a mutli-sample <code>.vcf</code> you can parse genotypes for each individual:</p>
+<pre class="bash"><code>bcftools query -f &#39;[%CHROM\t%POS\t%SAMPLE\t%TGT\n]&#39; NA20536.HG03718.clinvar.vcf.gz</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">CHROM</th>
+<th align="left">POS</th>
+<th align="left">SAMPLE</th>
+<th align="left">GT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">865628</td>
+<td align="left">NA20536</td>
+<td align="left">G|G</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">865628</td>
+<td align="left">HG03718</td>
+<td align="left">G|G</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">879481</td>
+<td align="left">NA20536</td>
+<td align="left">G|G</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">879481</td>
+<td align="left">HG03718</td>
+<td align="left">G|G</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">880944</td>
+<td align="left">NA20536</td>
+<td align="left">G|G</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">880944</td>
+<td align="left">HG03718</td>
+<td align="left">G|G</td>
+</tr>
+<tr class="odd">
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="edit-chromosome-names" class="section level3">
+<h3><a name="renamechr"></a>Edit chromosome names</h3>
+<p>You can rename chromosomes with <code>bcftools annotate --rename-chrs</code>. The command requires that you supply a tab-separated file with the desired naming convention, organized as “old\tnew”:</p>
+<pre class="txt"><code>1\tchr1
+2\tchr2
+3\tchr3
+4\tchr4
+5\tchr5
+6\tchr6
+7\tchr7
+8\tchr8
+9\tchr9
+10\tchr10
+11\tchr11
+12\tchr12
+13\tchr13
+14\tchr14
+15\tchr15
+16\tchr16
+17\tchr17
+18\tchr18
+19\tchr19
+20\tchr20
+21\tchr21
+22\tchr22</code></pre>
+<pre class="bash"><code>bcftools annotate --rename-chrs chromosomes.txt NA20536.clinvar.vcf.gz</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">CHROM</th>
+<th align="left">POS</th>
+<th align="left">ID</th>
+<th align="left">REF</th>
+<th align="left">ALT</th>
+<th align="left">QUAL</th>
+<th align="left">FILTER</th>
+<th align="left">INFO</th>
+<th align="left">FORMAT</th>
+<th align="left">NA20536</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">chr1</td>
+<td align="left">865628</td>
+<td align="left">rs41285790</td>
+<td align="left">G</td>
+<td align="left">A</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.00279553;AN=2;NS=2504;DP=16975;EAS_AF=0;AMR_AF=0.0072;AFR_AF=0;EUR_AF=0.005;SAS_AF=0.0041;AA=g|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="left">chr1</td>
+<td align="left">879481</td>
+<td align="left">rs113383096</td>
+<td align="left">G</td>
+<td align="left">C</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.0197684;AN=2;NS=2504;DP=13765;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0719;EUR_AF=0;SAS_AF=0;AA=g|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="left">chr1</td>
+<td align="left">880944</td>
+<td align="left">rs112433394</td>
+<td align="left">G</td>
+<td align="left">A</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.00259585;AN=2;NS=2504;DP=20723;EAS_AF=0;AMR_AF=0;AFR_AF=0.0098;EUR_AF=0;SAS_AF=0;AA=g|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="left">chr1</td>
+<td align="left">887409</td>
+<td align="left">rs113226136</td>
+<td align="left">G</td>
+<td align="left">C</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.00119808;AN=2;NS=2504;DP=19916;EAS_AF=0;AMR_AF=0;AFR_AF=0.0045;EUR_AF=0;SAS_AF=0;AA=g|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="left">chr1</td>
+<td align="left">887989</td>
+<td align="left">rs112966263</td>
+<td align="left">A</td>
+<td align="left">G</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.00579073;AN=2;NS=2504;DP=18384;EAS_AF=0;AMR_AF=0;AFR_AF=0.0219;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="left">chr1</td>
+<td align="left">889450</td>
+<td align="left">rs58931985</td>
+<td align="left">C</td>
+<td align="left">A</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">AC=0;AF=0.00159744;AN=2;NS=2504;DP=16149;EAS_AF=0;AMR_AF=0;AFR_AF=0.0061;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;EX_TARGET</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="view-without-header" class="section level3">
+<h3><a name="noheader"></a>View without header</h3>
+<p>To view <em>only the results without header</em> (i.e. remove the header) use the <code>-H</code> flag:</p>
+<pre class="bash"><code>bcftools view -H NA20536.HG03718.clinvar.vcf.gz</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">X1</th>
+<th align="left">X2</th>
+<th align="left">X3</th>
+<th align="left">X4</th>
+<th align="left">X5</th>
+<th align="left">X6</th>
+<th align="left">X7</th>
+<th align="left">X8</th>
+<th align="left">X9</th>
+<th align="left">X10</th>
+<th align="left">X11</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">865628</td>
+<td align="left">rs41285790</td>
+<td align="left">G</td>
+<td align="left">A</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=33950;AF=0.00279553;EAS_AF=0;AMR_AF=0.0072;AFR_AF=0;EUR_AF=0.005;SAS_AF=0.0041;AN=4;AC=0</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">879481</td>
+<td align="left">rs113383096</td>
+<td align="left">G</td>
+<td align="left">C</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=27530;AF=0.0197684;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0719;EUR_AF=0;SAS_AF=0;AN=4;AC=0</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">880944</td>
+<td align="left">rs112433394</td>
+<td align="left">G</td>
+<td align="left">A</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=41446;AF=0.00259585;EAS_AF=0;AMR_AF=0;AFR_AF=0.0098;EUR_AF=0;SAS_AF=0;AN=4;AC=0</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">887409</td>
+<td align="left">rs113226136</td>
+<td align="left">G</td>
+<td align="left">C</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">NS=2504;AA=g|||;VT=SNP;EX_TARGET;DP=39832;AF=0.00119808;EAS_AF=0;AMR_AF=0;AFR_AF=0.0045;EUR_AF=0;SAS_AF=0;AN=4;AC=0</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">887989</td>
+<td align="left">rs112966263</td>
+<td align="left">A</td>
+<td align="left">G</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">NS=2504;AA=G|||;VT=SNP;EX_TARGET;DP=36768;AF=0.00579073;EAS_AF=0;AMR_AF=0;AFR_AF=0.0219;EUR_AF=0;SAS_AF=0;AN=4;AC=0</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">889450</td>
+<td align="left">rs58931985</td>
+<td align="left">C</td>
+<td align="left">A</td>
+<td align="left">100</td>
+<td align="left">PASS</td>
+<td align="left">NS=2504;AA=C|||;VT=SNP;EX_TARGET;DP=32298;AF=0.00159744;EAS_AF=0;AMR_AF=0;AFR_AF=0.0061;EUR_AF=0;SAS_AF=0;AN=4;AC=0</td>
+<td align="left">GT</td>
+<td align="left">0|0</td>
+<td align="left">0|0</td>
+</tr>
+<tr class="odd">
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+<td align="left">.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="view-only-header" class="section level3">
+<h3><a name="onlyheader"></a>View only header</h3>
+<p>To view <em>only the header</em> (i.e. extract header) use the <code>-h</code> flag:</p>
+<pre class="bash"><code>bcftools view -h clinvar.vcf.gz</code></pre>
+<pre><code>## ##fileformat=VCFv4.1
+## ##FILTER=&lt;ID=PASS,Description=&quot;All filters passed&quot;&gt;
+## ##fileDate=2020-02-17
+## ##source=ClinVar
+## ##reference=GRCh37
+## ##ID=&lt;Description=&quot;ClinVar Variation ID&quot;&gt;
+## ##INFO=&lt;ID=AF_ESP,Number=1,Type=Float,Description=&quot;allele frequencies from GO-ESP&quot;&gt;
+## ##INFO=&lt;ID=AF_EXAC,Number=1,Type=Float,Description=&quot;allele frequencies from ExAC&quot;&gt;
+## ##INFO=&lt;ID=AF_TGP,Number=1,Type=Float,Description=&quot;allele frequencies from TGP&quot;&gt;
+## ##INFO=&lt;ID=ALLELEID,Number=1,Type=Integer,Description=&quot;the ClinVar Allele ID&quot;&gt;
+## ##INFO=&lt;ID=CLNDN,Number=.,Type=String,Description=&quot;ClinVar&#39;s preferred disease name for the concept specified by disease identifiers in CLNDISDB&quot;&gt;
+## ##INFO=&lt;ID=CLNDNINCL,Number=.,Type=String,Description=&quot;For included Variant : ClinVar&#39;s preferred disease name for the concept specified by disease identifiers in CLNDISDB&quot;&gt;
+## ##INFO=&lt;ID=CLNDISDB,Number=.,Type=String,Description=&quot;Tag-value pairs of disease database name and identifier, e.g. OMIM:NNNNNN&quot;&gt;
+## ##INFO=&lt;ID=CLNDISDBINCL,Number=.,Type=String,Description=&quot;For included Variant: Tag-value pairs of disease database name and identifier, e.g. OMIM:NNNNNN&quot;&gt;
+## ##INFO=&lt;ID=CLNHGVS,Number=.,Type=String,Description=&quot;Top-level (primary assembly, alt, or patch) HGVS expression.&quot;&gt;
+## ##INFO=&lt;ID=CLNREVSTAT,Number=.,Type=String,Description=&quot;ClinVar review status for the Variation ID&quot;&gt;
+## ##INFO=&lt;ID=CLNSIG,Number=.,Type=String,Description=&quot;Clinical significance for this single variant&quot;&gt;
+## ##INFO=&lt;ID=CLNSIGCONF,Number=.,Type=String,Description=&quot;Conflicting clinical significance for this single variant&quot;&gt;
+## ##INFO=&lt;ID=CLNSIGINCL,Number=.,Type=String,Description=&quot;Clinical significance for a haplotype or genotype that includes this variant. Reported as pairs of VariationID:clinical significance.&quot;&gt;
+## ##INFO=&lt;ID=CLNVC,Number=1,Type=String,Description=&quot;Variant type&quot;&gt;
+## ##INFO=&lt;ID=CLNVCSO,Number=1,Type=String,Description=&quot;Sequence Ontology id for variant type&quot;&gt;
+## ##INFO=&lt;ID=CLNVI,Number=.,Type=String,Description=&quot;the variant&#39;s clinical sources reported as tag-value pairs of database and variant identifier&quot;&gt;
+## ##INFO=&lt;ID=DBVARID,Number=.,Type=String,Description=&quot;nsv accessions from dbVar for the variant&quot;&gt;
+## ##INFO=&lt;ID=GENEINFO,Number=1,Type=String,Description=&quot;Gene(s) for the variant reported as gene symbol:gene id. The gene symbol and id are delimited by a colon (:) and each pair is delimited by a vertical bar (|)&quot;&gt;
+## ##INFO=&lt;ID=MC,Number=.,Type=String,Description=&quot;comma separated list of molecular consequence in the form of Sequence Ontology ID|molecular_consequence&quot;&gt;
+## ##INFO=&lt;ID=ORIGIN,Number=.,Type=String,Description=&quot;Allele origin. One or more of the following values may be added: 0 - unknown; 1 - germline; 2 - somatic; 4 - inherited; 8 - paternal; 16 - maternal; 32 - de-novo; 64 - biparental; 128 - uniparental; 256 - not-tested; 512 - tested-inconclusive; 1073741824 - other&quot;&gt;
+## ##INFO=&lt;ID=RS,Number=.,Type=String,Description=&quot;dbSNP ID (i.e. rs number)&quot;&gt;
+## ##INFO=&lt;ID=SSR,Number=1,Type=Integer,Description=&quot;Variant Suspect Reason Codes. One or more of the following values may be added: 0 - unspecified, 1 - Paralog, 2 - byEST, 4 - oldAlign, 8 - Para_EST, 16 - 1kg_failed, 1024 - other&quot;&gt;
+## ##contig=&lt;ID=1&gt;
+## ##contig=&lt;ID=2&gt;
+## ##contig=&lt;ID=3&gt;
+## ##contig=&lt;ID=4&gt;
+## ##contig=&lt;ID=5&gt;
+## ##contig=&lt;ID=6&gt;
+## ##contig=&lt;ID=7&gt;
+## ##contig=&lt;ID=8&gt;
+## ##contig=&lt;ID=9&gt;
+## ##contig=&lt;ID=10&gt;
+## ##contig=&lt;ID=11&gt;
+## ##contig=&lt;ID=12&gt;
+## ##contig=&lt;ID=13&gt;
+## ##contig=&lt;ID=14&gt;
+## ##contig=&lt;ID=15&gt;
+## ##contig=&lt;ID=16&gt;
+## ##contig=&lt;ID=17&gt;
+## ##contig=&lt;ID=18&gt;
+## ##contig=&lt;ID=19&gt;
+## ##contig=&lt;ID=20&gt;
+## ##contig=&lt;ID=21&gt;
+## ##contig=&lt;ID=22&gt;
+## ##contig=&lt;ID=X&gt;
+## ##contig=&lt;ID=Y&gt;
+## ##contig=&lt;ID=MT&gt;
+## ##bcftools_viewVersion=1.10.2-27-g9d66868+htslib-1.10.2-33-g1bbcd02
+## ##bcftools_viewCommand=view -h clinvar.vcf.gz; Date=Fri Feb 28 19:06:40 2020
+## #CHROM   POS ID  REF ALT QUAL    FILTER  INFO</code></pre>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>From <a href="https://www.ncbi.nlm.nih.gov/variation/docs/ClinVar_vcf_files/">ClinVar vcf documentation</a>: <em>This file contains variations submitted through clinical channels. The variations contained in this file are therefore a mixture of variations asserted to be pathogenic as well as those known to be non-pathogenic. The user should note that any variant may have different assertions regarding clinical significance and that this file will contain only those that are the most “pathogenic”</em>.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>This solution is based on a Biostars post: <a href="https://www.biostars.org/p/373852/" class="uri">https://www.biostars.org/p/373852/</a><a href="#fnref2" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
