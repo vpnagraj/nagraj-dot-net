@@ -3,7 +3,7 @@ title = "Vital Sign Ranges in Premature Neonates Using High Resolution Physiolog
 date = "2017-10-01"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["CJ Alonzo", "VP Nagraj","JR Moorman", "DE Lake", "MC Spaeder"]
+authors = ["CJ Alonzo", "**VP Nagraj**","JR Moorman", "DE Lake", "MC Spaeder"]
 
 # Publication type.
 # Legend:

@@ -3,7 +3,7 @@ title = "epicontacts: Handling, visualisation and analysis of epidemiological co
 date = "2018-05-10"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["VP Nagraj", "Nistara Randhawa", "Finlay Campbell", "Thomas Crellen", "Bertrand Sudre", "Thibaut Jombart"]
+authors = ["**VP Nagraj**", "Nistara Randhawa", "Finlay Campbell", "Thomas Crellen", "Bertrand Sudre", "Thibaut Jombart"]
 
 # Publication type.
 # Legend:

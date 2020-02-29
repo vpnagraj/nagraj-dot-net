@@ -3,7 +3,7 @@ title = "hei: Calculate Healthy Eating Index (HEI) Scores"
 date = "2017-10-04"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Tim Folsom", "VP Nagraj"]
+authors = ["Tim Folsom", "**VP Nagraj**"]
 
 # Publication type.
 # Legend:

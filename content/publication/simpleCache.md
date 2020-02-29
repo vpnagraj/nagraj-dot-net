@@ -3,7 +3,7 @@ title = "simpleCache: R caching for reproducible, distributed, large-scale proje
 date = "2018-01-10"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["Nathan Sheffield", "VP Nagraj", "Vince Reuter"]
+authors = ["Nathan Sheffield", "**VP Nagraj**", "Vince Reuter"]
 
 # Publication type.
 # Legend:

@@ -3,7 +3,7 @@ title = "LOLAweb: a containerized web server for interactive genomic locus overl
 date = "2018-06-06"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["VP Nagraj", "Neal Magee", "Nathan Sheffield"]
+authors = ["**VP Nagraj**", "Neal Magee", "Nathan Sheffield"]
 
 # Publication type.
 # Legend:

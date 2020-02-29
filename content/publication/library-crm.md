@@ -3,7 +3,7 @@ title = "Analyzing Library Services Using Customer Relationship Managment Data a
 date = "2015-09-01"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["VP Nagraj", "MS Nunemaker"]
+authors = ["**VP Nagraj**", "MS Nunemaker"]
 
 # Publication type.
 # Legend:

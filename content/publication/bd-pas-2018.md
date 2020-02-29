@@ -3,7 +3,7 @@ title = "Bradycardia and Oxygen Desaturation Events in VLBW infants: Association
 date = "2018-05-03"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["VP Nagraj", "BA Sullivan", "JR Moorman", "DE Lake", "KD Fairchild"]
+authors = ["**VP Nagraj**", "BA Sullivan", "JR Moorman", "DE Lake", "KD Fairchild"]
 
 # Publication type.
 # Legend:

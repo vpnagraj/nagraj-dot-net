@@ -92,9 +92,8 @@
     
     <url>
     
-      <loc>/tags/bash/</loc>
+      <loc>/notes/table-shell-function/</loc>
       <lastmod>2020-02-20T17:14:59+00:00</lastmod>
-      <priority>0</priority>
     </url>
     
   
@@ -102,8 +101,9 @@
     
     <url>
     
-      <loc>/notes/table-shell-function/</loc>
+      <loc>/tags/bash/</loc>
       <lastmod>2020-02-20T17:14:59+00:00</lastmod>
+      <priority>0</priority>
     </url>
     
   
@@ -160,6 +160,15 @@
     
       <loc>/publication/adap-qhp/</loc>
       <lastmod>2019-11-18T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication/bpranges/</loc>
+      <lastmod>2019-11-16T00:00:00+00:00</lastmod>
     </url>
     
   
@@ -695,7 +704,7 @@
     
     <url>
     
-      <loc>/tags/gis/</loc>
+      <loc>/tags/javascript/</loc>
       <lastmod>2016-07-25T09:16:04-04:00</lastmod>
       <priority>0</priority>
     </url>
@@ -705,7 +714,7 @@
     
     <url>
     
-      <loc>/tags/javascript/</loc>
+      <loc>/tags/gis/</loc>
       <lastmod>2016-07-25T09:16:04-04:00</lastmod>
       <priority>0</priority>
     </url>

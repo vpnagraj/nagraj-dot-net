@@ -3,7 +3,7 @@ title = "Evidence from a Multistate Cohort: Enrollment in Affordable Care Act Qu
 date = "2019-10-03"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["KA McManus", "B Christensen", "VP Nagraj", "R Furl", "L Yerkes","S Swindells", "S Weissman", "A Rhodes", "P Targonski", "E Rogawski McQuade", "R Dillingham"]
+authors = ["KA McManus", "B Christensen", "**VP Nagraj**", "R Furl", "L Yerkes","S Swindells", "S Weissman", "A Rhodes", "P Targonski", "E Rogawski McQuade", "R Dillingham"]
 
 # Publication type.
 # Legend:

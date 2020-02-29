@@ -3,7 +3,7 @@ title = "Web Application for Designing and Conducting Phase I Drug Combination S
 date = "2020-05-17"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["NA Wages", "VP Nagraj"]
+authors = ["NA Wages", "**VP Nagraj**"]
 
 # Publication type.
 # Legend:

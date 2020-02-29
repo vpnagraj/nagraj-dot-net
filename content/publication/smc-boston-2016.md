@@ -3,7 +3,7 @@ title = "Integrative genetics of vascular smooth muscle cell phenotypes"
 date = "2016-10-01"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["R Aherrahrou", "L Chen", "N Asby", "VP Nagraj", "J Hinkle", "M Civelek"]
+authors = ["R Aherrahrou", "L Chen", "N Asby", "**VP Nagraj**", "J Hinkle", "M Civelek"]
 
 # Publication type.
 # Legend:

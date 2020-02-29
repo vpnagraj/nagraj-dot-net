@@ -3,7 +3,7 @@ title = "Exit as Strategy: Web Services as the New Websites for Many Libraries"
 date = "2014-09-01"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["A Parker", "VP Nagraj", "D Moody"]
+authors = ["A Parker", "**VP Nagraj**", "D Moody"]
 
 # Publication type.
 # Legend:

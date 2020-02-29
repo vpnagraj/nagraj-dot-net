@@ -3,7 +3,7 @@ title = "Oxygen desaturations in the early neonatal period predict development o
 date = "2018-10-29"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["KD Fairchild", "VP Nagraj", "BA Sullivan", "JR Moorman", "DE Lake"]
+authors = ["KD Fairchild", "**VP Nagraj**", "BA Sullivan", "JR Moorman", "DE Lake"]
 
 # Publication type.
 # Legend:

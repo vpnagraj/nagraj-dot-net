@@ -3,7 +3,7 @@ title = "Recovery from bradycardia and desaturation events at 32 weeks corrected
 date = "2019-07-04"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["VP Nagraj", "RA Sinkin", "DE Lake",  "JR Moorman", "KD Fairchild"]
+authors = ["**VP Nagraj**", "RA Sinkin", "DE Lake",  "JR Moorman", "KD Fairchild"]
 
 # Publication type.
 # Legend:

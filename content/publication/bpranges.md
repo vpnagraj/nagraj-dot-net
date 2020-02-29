@@ -1,9 +1,9 @@
 +++
-title = "National Mental Health Services Survey: Virginia Summary"
-date = "2016-09-01"
+title = "Blood pressure ranges via non-invasive and invasive monitoring techniques in premature neonates using high resolution physiologic data"
+date = "2019-11-16"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["AA Allen", "T Ko", "**VP Nagraj**"]
+authors = ["CJ Alonzo", "**VP Nagraj**", "JV Zschaebitz", "DE Lake", "JR Moorman", "MC Spaeder"]
 
 # Publication type.
 # Legend:
@@ -17,7 +17,7 @@ authors = ["AA Allen", "T Ko", "**VP Nagraj**"]
 publication_types = ["2"]
 
 # Publication name and optional abbreviated version.
-publication = "Developments in Mental Health Law"
+publication = "Journal of Neonatal and Perinatal Medicine"
 # publication_short = "In *ICMEW*"
 
 # Abstract and optional shortened version.
@@ -32,10 +32,10 @@ selected = true
 # Projects (optional).
 #   Associate this publication with one or more of your projects.
 #   Simply enter the filename (excluding '.md') of your project file in `content/project/`.
-# projects = ["example-external-project"]
+# projects = [""]
 
 # Links (optional).
-url_pdf = "https://www.ilppp.virginia.edu/PublicationsAndPolicy/DownloadPDF/82"
+# url_pdf = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6218802/pdf/nihms-994469.pdf"    
 url_preprint = ""
 url_code = ""
 url_dataset = ""
@@ -47,7 +47,7 @@ url_source = ""
 
 # Custom links (optional).
 #   Uncomment line below to enable. For multiple links, use the form `[{...}, {...}, {...}]`.
-# url_custom = [{name = "Custom Link", url = "http://example.org"}]
+url_custom = [{name = "doi.org/10.3233/NPM-190260", url = "http://doi.org/10.3233/NPM-190260"}]
 
 # Does the content use math formatting?
 math = true

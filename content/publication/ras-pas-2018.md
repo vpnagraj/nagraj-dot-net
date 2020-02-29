@@ -3,7 +3,7 @@ title = "Seventh Day Respiratory Acuity Score is a Strong Predictor of BPD in VL
 date = "2018-05-03"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["KD Fairchild", "VP Nagraj", "Y Hong", "BA Sullivan", "JR Moorman", "DE Lake"]
+authors = ["KD Fairchild", "**VP Nagraj**", "Y Hong", "BA Sullivan", "JR Moorman", "DE Lake"]
 
 # Publication type.
 # Legend:

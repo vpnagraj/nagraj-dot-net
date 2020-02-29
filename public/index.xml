@@ -1031,7 +1031,7 @@ rs374704178&lt;/code&gt;&lt;/pre&gt;
     </item>
     
     <item>
-      <title>table function in bash</title>
+      <title>Custom Table Function in bash</title>
       <link>/notes/table-shell-function/</link>
       <pubDate>Thu, 20 Feb 2020 17:14:59 +0000</pubDate>
       
@@ -1663,6 +1663,15 @@ anim_save(&amp;quot;tx-sales-gganimate.gif&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
     </item>
     
     <item>
+      <title>Blood pressure ranges via non-invasive and invasive monitoring techniques in premature neonates using high resolution physiologic data</title>
+      <link>/publication/bpranges/</link>
+      <pubDate>Sat, 16 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/bpranges/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Evidence from a Multistate Cohort: Enrollment in Affordable Care Act Qualified Health Plans Results in Viral Suppression</title>
       <link>/publication/adap-qhp-idweek/</link>
       <pubDate>Thu, 03 Oct 2019 00:00:00 +0000</pubDate>
@@ -2203,67 +2212,6 @@ preterm %&amp;gt;%
 &lt;p&gt;Hamilton BE, Martin JA, Osterman MJK, Rossen LM. Births: Provisional data for 2018. Vital Statistics Rapid Release; no 7. Hyattsville, MD: National Center for Health Statistics. May 2019.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Calculating Proportion with N</title>
-      <link>/notes/prop-with-n/</link>
-      <pubDate>Wed, 26 Jun 2019 17:14:59 +0000</pubDate>
-      
-      <guid>/notes/prop-with-n/</guid>
-      <description>
-
-
-&lt;p&gt;One of the more typical workflows I need to perform is calculating counts within groups. The &lt;strong&gt;dplyr&lt;/strong&gt; &lt;code&gt;group_by() %&amp;gt;% summarise()&lt;/code&gt; pipeline (or just &lt;code&gt;count()&lt;/code&gt;) can easily get aggregated tallies. But occasionally it’s helpful to get count within group along with the proportion overall.&lt;/p&gt;
-&lt;p&gt;Here’s one way to do that:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)
-
-# use the starwars dataset
-# one row per character
-# can be grouped by character species
-starwars&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 87 x 13
-##    name  height  mass hair_color skin_color eye_color birth_year gender
-##    &amp;lt;chr&amp;gt;  &amp;lt;int&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; 
-##  1 Luke…    172    77 blond      fair       blue            19   male  
-##  2 C-3PO    167    75 &amp;lt;NA&amp;gt;       gold       yellow         112   &amp;lt;NA&amp;gt;  
-##  3 R2-D2     96    32 &amp;lt;NA&amp;gt;       white, bl… red             33   &amp;lt;NA&amp;gt;  
-##  4 Dart…    202   136 none       white      yellow          41.9 male  
-##  5 Leia…    150    49 brown      light      brown           19   female
-##  6 Owen…    178   120 brown, gr… light      blue            52   male  
-##  7 Beru…    165    75 brown      light      blue            47   female
-##  8 R5-D4     97    32 &amp;lt;NA&amp;gt;       white, red red             NA   &amp;lt;NA&amp;gt;  
-##  9 Bigg…    183    84 black      light      brown           24   male  
-## 10 Obi-…    182    77 auburn, w… fair       blue-gray       57   male  
-## # … with 77 more rows, and 5 more variables: homeworld &amp;lt;chr&amp;gt;, species &amp;lt;chr&amp;gt;,
-## #   films &amp;lt;list&amp;gt;, vehicles &amp;lt;list&amp;gt;, starships &amp;lt;list&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;starwars %&amp;gt;%
-  # get the count in category with count()
-  count(species, name = &amp;quot;species_n&amp;quot;, sort = TRUE) %&amp;gt;%
-  # add a column that gives you total of all ...
-  # calculate proportion ... 
-  # format n (%)
-  # keep in mind you won&amp;#39;t be able to sort after formatting as character
-  mutate(n = sum(species_n),
-         prop = round(species_n/n * 100, digits = 0),
-         prop_with_n = paste0(species_n, &amp;quot; (&amp;quot;, prop, &amp;quot;%)&amp;quot;)) %&amp;gt;%
-  # return only columns of interest
-  select(species, prop_with_n)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 38 x 2
-##    species  prop_with_n
-##    &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;      
-##  1 Human    35 (40%)   
-##  2 Droid    5 (6%)     
-##  3 &amp;lt;NA&amp;gt;     5 (6%)     
-##  4 Gungan   3 (3%)     
-##  5 Kaminoan 2 (2%)     
-##  6 Mirialan 2 (2%)     
-##  7 Twi&amp;#39;lek  2 (2%)     
-##  8 Wookiee  2 (2%)     
-##  9 Zabrak   2 (2%)     
-## 10 Aleena   1 (1%)     
-## # … with 28 more rows&lt;/code&gt;&lt;/pre&gt;
 </description>
     </item>
     
