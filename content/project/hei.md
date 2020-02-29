@@ -13,7 +13,7 @@ image_preview = "code.png"
 
 # Tags: can be used for filtering projects.
 # Example: `tags = ["machine-learning", "deep-learning"]`
-tags = ["r-packages"]
+tags = []
 
 badges = ["https://travis-ci.org/timfolsom/hei.svg?branch=master", "http://www.r-pkg.org/badges/version/hei", "https://codecov.io/gh/timfolsom/hei/branch/master/graph/badge.svg", 
 "https://cranlogs.r-pkg.org/badges/hei",

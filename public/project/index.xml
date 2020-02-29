@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2018</copyright>
-    <lastBuildDate>Mon, 02 Apr 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 29 Feb 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/project/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>NICU Data Analysis</title>
+      <link>/project/nicu/</link>
+      <pubDate>Sat, 29 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/project/nicu/</guid>
+      <description>I have provided biostatistical support for a number of clinical research projects in the Neonatal Intensive Care Unit (NICU).</description>
+    </item>
     
     <item>
       <title>LOLAweb</title>
@@ -19,24 +28,6 @@
       
       <guid>/project/lolaweb/</guid>
       <description>LOLAweb is a web server and interactive results viewer for enrichment of overlap between a query region set (a bed file) and a database of region sets. It provides an interactive result explorer to visualize the highest ranked enrichments from the database. You can access the web server at &lt;a href=&#34;http://lolaweb.databio.org&#34; target=&#34;_blank&#34;&gt;http://lolaweb.databio.org&lt;/a&gt;</description>
-    </item>
-    
-    <item>
-      <title>R Epidemics Consortium</title>
-      <link>/project/recon/</link>
-      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/project/recon/</guid>
-      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</description>
-    </item>
-    
-    <item>
-      <title>UVa R Users Group</title>
-      <link>/project/rug/</link>
-      <pubDate>Mon, 02 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/project/rug/</guid>
-      <description>Charlottesville / University of Virginia R Users Group Meetup</description>
     </item>
     
     <item>

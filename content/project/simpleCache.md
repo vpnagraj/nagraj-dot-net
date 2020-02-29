@@ -9,11 +9,11 @@ title = "simpleCache"
 summary = "Provides intuitive functions for caching R objects, encouraging reproducible, restartable, and distributed R analysis. The user selects a location to store caches, and then provides nothing more than a cache name and instructions (R code) for how to produce the R object. Also provides some advanced options like environment assignments, recreating or reloading caches, and cluster compute bindings (using the 'batchtools' package) making it flexible enough for use in large-scale data analysis projects."
 
 # Optional image to display on homepage (relative to `static/img/` folder).
-image_preview = "simplecache.png"
+image_preview = "code.png"
 
 # Tags: can be used for filtering projects.
 # Example: `tags = ["machine-learning", "deep-learning"]`
-tags = ["r-packages"]
+tags = ["sw-dev"]
 
 badges = ["https://travis-ci.org/databio/simpleCache.svg?branch=master", "https://cran.r-project.org/package=simpleCache"]
 

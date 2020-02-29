@@ -13,7 +13,7 @@ image_preview = "lolaweb.png"
 
 # Tags: can be used for filtering projects.
 # Example: `tags = ["machine-learning", "deep-learning"]`
-tags = ["other"]
+tags = ["sw-dev", "bioinformatics"]
 
 # Optional external URL for project (replaces project detail page).
 external_link = ""

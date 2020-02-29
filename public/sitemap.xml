@@ -43,8 +43,17 @@
     
     <url>
     
-      <loc>/categories/</loc>
-      <lastmod>2020-02-28T18:14:59+00:00</lastmod>
+      <loc>/project/nicu/</loc>
+      <lastmod>2020-02-29T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/project/</loc>
+      <lastmod>2020-02-29T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -54,6 +63,26 @@
     <url>
     
       <loc>/tags/</loc>
+      <lastmod>2020-02-29T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/biostats/</loc>
+      <lastmod>2020-02-29T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/</loc>
       <lastmod>2020-02-28T18:14:59+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -492,46 +521,8 @@
     
     <url>
     
-      <loc>/project/</loc>
-      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/project/recon/</loc>
-      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/project/rug/</loc>
-      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/project/workshops/</loc>
       <lastmod>2018-04-02T00:00:00+00:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/affiliations/</loc>
-      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
-      <priority>0</priority>
     </url>
     
   
@@ -557,26 +548,6 @@
     
     <url>
     
-      <loc>/tags/other/</loc>
-      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/r-packages/</loc>
-      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/project/rrefine/</loc>
       <lastmod>2018-04-02T00:00:00+00:00</lastmod>
     </url>
@@ -588,6 +559,16 @@
     
       <loc>/project/simplecache/</loc>
       <lastmod>2018-04-02T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/sw-dev/</loc>
+      <lastmod>2018-04-02T00:00:00+00:00</lastmod>
+      <priority>0</priority>
     </url>
     
   

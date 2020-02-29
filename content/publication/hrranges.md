@@ -32,7 +32,7 @@ selected = true
 # Projects (optional).
 #   Associate this publication with one or more of your projects.
 #   Simply enter the filename (excluding '.md') of your project file in `content/project/`.
-# projects = [""]
+projects = ["nicu"]
 
 # Links (optional).
 url_pdf = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6218802/pdf/nihms-994469.pdf"    

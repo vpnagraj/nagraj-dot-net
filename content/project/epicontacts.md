@@ -13,7 +13,7 @@ image_preview = "epicontacts.png"
 
 # Tags: can be used for filtering projects.
 # Example: `tags = ["machine-learning", "deep-learning"]`
-tags = ["r-packages"]
+tags = ["sw-dev"]
 
 badges = ["https://travis-ci.org/reconhub/epicontacts.svg?branch=master", "https://ci.appveyor.com/api/projects/status/7fj30xjlesja0vbr/branch/master?svg=true", "https://codecov.io/github/reconhub/epicontacts/coverage.svg?branch=master", "http://www.r-pkg.org/badges/version/epicontacts",
 "https://cranlogs.r-pkg.org/badges/epicontacts"]

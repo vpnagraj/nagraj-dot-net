@@ -224,11 +224,6 @@ defaultContentLanguageInSubdir = false
     link = "mailto:nagraj@nagraj.net"
 
   [[params.social]]
-    icon = "twitter"
-    icon_pack = "fa"
-    link = "//twitter.com/vpnagraj"
-
-  [[params.social]]
     icon = "github"
     icon_pack = "fa"
     link = "//github.com/vpnagraj"

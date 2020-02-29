@@ -33,19 +33,19 @@ filter_default = 0
   tag = "*"
 
 [[filter]]
-  name = "R Packages"
-  tag = ".r-packages"
+  name = "Bioinformatics"
+  tag = ".bioinformatics"
   
 [[filter]]
-  name = "Affiliations"
-  tag = ".affiliations"
+  name = "Biostatistics"
+  tag = ".biostats"
+  
+[[filter]]
+  name = "Software"
+  tag = ".sw-dev"
   
 [[filter]]
   name = "Teaching"
   tag = ".teaching"
-  
-[[filter]]
-  name = "Other"
-  tag = ".other"
   
 +++

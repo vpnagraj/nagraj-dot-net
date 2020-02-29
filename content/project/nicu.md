@@ -1,22 +1,23 @@
 +++
 # Date this page was created.
-date = "2018-04-02"
+date = "2020-02-29"
 
 # Project title.
-title = "UVa R Users Group"
+title = "NICU Data Analysis"
 
 # Project summary to display on homepage.
-summary = "Charlottesville / University of Virginia R Users Group Meetup"
+summary = "I have provided biostatistical support for a number of clinical research projects in the Neonatal Intensive Care Unit (NICU)."
 
 # Optional image to display on homepage (relative to `static/img/` folder).
-image_preview = "rug.png"
+image_preview = "code.png"
 
 # Tags: can be used for filtering projects.
 # Example: `tags = ["machine-learning", "deep-learning"]`
-tags = ["affiliations"]
+tags = ["biostats"]
 
+# badges = []
 # Optional external URL for project (replaces project detail page).
-external_link = "https://www.meetup.com/UVa-R-Users-Group/"
+external_link = ""
 
 # Does the project detail page use math formatting?
 math = false
@@ -27,4 +28,3 @@ math = false
 # caption = "My caption :smile:"
 
 +++
-
