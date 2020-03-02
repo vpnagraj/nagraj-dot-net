@@ -38,7 +38,7 @@
 
 &lt;p&gt;&lt;code&gt;bcftools&lt;/code&gt; provides utilities for working with data in variant calling (&lt;code&gt;.vcf&lt;/code&gt;) format. The &lt;a href=&#34;https://samtools.github.io/bcftools/bcftools.html&#34;&gt;manual&lt;/a&gt; fully documents the arguments and features, and the developers have written their own &lt;a href=&#34;https://samtools.github.io/bcftools/howtos/index.html&#34;&gt;“HowTo” page&lt;/a&gt;. The goal of this post is to walk through some scenarios with a reproducible dataset to showcase the &lt;code&gt;bcftools&lt;/code&gt; functionality I use regularly.&lt;/p&gt;
 &lt;p&gt;Note that this will &lt;em&gt;not&lt;/em&gt; be an exhaustive demonstration of all &lt;code&gt;bcftools&lt;/code&gt; features, nor will it include other &lt;code&gt;.vcf&lt;/code&gt; parsing/manipulation tools or linux utilities (i.e. &lt;code&gt;awk&lt;/code&gt;, &lt;code&gt;sed&lt;/code&gt;) that can be handy for working with variant calling data.&lt;/p&gt;
-&lt;p&gt;The examples should be reproducible given setup described below. However, the output at the command line will look slightly different than the inline output in this post. For legibility, I’ve run each of the commands, exluded the header, and read the results back in as a text file. The inline output in this post will show a max of 6 rows with a final placeholder row (&lt;code&gt;. . . . . . . . . . .&lt;/code&gt;) if necessary.&lt;/p&gt;
+&lt;p&gt;The examples should be reproducible given setup described below. However, the output at the command line will look slightly different than the inline output in this post. For legibility, I’ve run each of the commands, excluded the header, and read the results back in as a text file. The inline output in this post will show a max of 6 rows with a final placeholder row (&lt;code&gt;. . . . . . . . . . .&lt;/code&gt;) if necessary.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#concat&#34;&gt;How do I concatenate multiple vcf files?&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#samplename&#34;&gt;How do I subset for individual samples by name?&lt;/a&gt;&lt;/li&gt;
@@ -89,7 +89,7 @@ There is NO WARRANTY, to the extent permitted by law.&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Scenarios&lt;/h2&gt;
 &lt;div id=&#34;concatenate-multiple-files-together&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;&lt;a name=&#34;concat&#34;&gt;&lt;/a&gt;Concatenate multiple files together&lt;/h3&gt;
-&lt;p&gt;If we wanted to concatenate (i.e. “stack”) mutliple &lt;code&gt;.vcf&lt;/code&gt; files together we can use &lt;code&gt;bcftools concat&lt;/code&gt;, so long as the input files share the same fields. In this example, we’ll combine all of the chromosomes (1-22) into a single file.&lt;/p&gt;
+&lt;p&gt;If we wanted to concatenate (i.e. “stack”) multiple &lt;code&gt;.vcf&lt;/code&gt; files together we can use &lt;code&gt;bcftools concat&lt;/code&gt;, so long as the input files share the same fields. In this example, we’ll combine all of the chromosomes (1-22) into a single file.&lt;/p&gt;
 &lt;p&gt;The &lt;code&gt;--output-type z&lt;/code&gt; argument specifies that the output will be compressed, and the &lt;code&gt;--output&lt;/code&gt; flag allows us to explicitly name the resulting file:&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;bcftools concat ALL.chr*.clinvar.vcf.gz --output-type z --output all.clinvar.vcf.gz&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;strong&gt;NOTE&lt;/strong&gt;: &lt;code&gt;bcftools concat&lt;/code&gt; is &lt;em&gt;not&lt;/em&gt; equivalent &lt;code&gt;bcftools merge&lt;/code&gt;. For an example of the latter &lt;a href=&#34;#merge&#34;&gt;see below&lt;/a&gt;.&lt;/p&gt;
@@ -423,7 +423,7 @@ rs374704178&lt;/code&gt;&lt;/pre&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;And if we were interested in a speficic region (let’s say chromosome 10, anywhere between positions 800000:900000):&lt;/p&gt;
+&lt;p&gt;And if we were interested in a specific region (let’s say chromosome 10, anywhere between positions 800000:900000):&lt;/p&gt;
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;bcftools view --regions 10:800000-900000 NA20536.clinvar.vcf.gz&lt;/code&gt;&lt;/pre&gt;
 &lt;table&gt;
 &lt;thead&gt;

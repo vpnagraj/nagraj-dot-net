@@ -41,7 +41,7 @@ header_cols <- str_split(header_cols, "\\t", simplify = TRUE)[1,]
 
 Note that this will *not* be an exhaustive demonstration of all `bcftools` features, nor will it include other `.vcf` parsing/manipulation tools or linux utilities (i.e. `awk`, `sed`) that can be handy for working with variant calling data. 
 
-The examples should be reproducible given setup described below. However, the output at the command line will look slightly different than the inline output in this post. For legibility, I've run each of the commands, exluded the header, and read the results back in as a text file. The inline output in this post will show a max of 6 rows with a final placeholder row (`. . . . . . . . . . .`) if necessary.
+The examples should be reproducible given setup described below. However, the output at the command line will look slightly different than the inline output in this post. For legibility, I've run each of the commands, excluded the header, and read the results back in as a text file. The inline output in this post will show a max of 6 rows with a final placeholder row (`. . . . . . . . . . .`) if necessary.
 
 
 - [How do I concatenate multiple vcf files?](#concat)
@@ -106,7 +106,7 @@ There is NO WARRANTY, to the extent permitted by law.
 
 ### <a name="concat"></a>Concatenate multiple files together
 
-If we wanted to concatenate (i.e. "stack") mutliple `.vcf` files together we can use `bcftools concat`, so long as the input files share the same fields. In this example, we'll combine all of the chromosomes (1-22) into a single file. 
+If we wanted to concatenate (i.e. "stack") multiple `.vcf` files together we can use `bcftools concat`, so long as the input files share the same fields. In this example, we'll combine all of the chromosomes (1-22) into a single file. 
 
 The `--output-type z` argument specifies that the output will be compressed, and the `--output` flag allows us to explicitly name the resulting file:
 
@@ -200,7 +200,7 @@ read_tsv("data/bcftools/chr5.out",
   kable(.)
 ```
 
-And if we were interested in a speficic region (let's say chromosome 10, anywhere between positions 800000:900000):
+And if we were interested in a specific region (let's say chromosome 10, anywhere between positions 800000:900000):
 
 ```{bash}
 bcftools view --regions 10:800000-900000 NA20536.clinvar.vcf.gz
