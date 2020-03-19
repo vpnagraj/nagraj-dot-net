@@ -1,0 +1,94 @@
+---
+title: "iqr4tab and prop4tab"
+date: 2020-03-18T17:14:59+00:00
+categories: ["notes"]
+tags: ["R"]
+summary: "helpers for summary statistics"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+Below are a couple of functions I use for summarizing variables. These are useful for evaluating characteristics in different strata.
+
+## `iqr4tab()`
+
+This function calculates the median and 25th, 75th quartile (IQR) and formats the output for a table:
+
+```{r}
+iqr4tab <- function(x, digits = 2, na.rm = TRUE) {
+  
+  nums <- fivenum(x, na.rm = na.rm)[2:4]
+  nums <- round(nums, digits)
+  paste0(nums[2], " (", nums[1], ",", nums[3], ")")
+  
+}
+```
+
+## `prop4tab()`
+
+This function will calculate count and proportion for both levels of a binary variable and format for a table:
+
+```{r}
+prop4tab <- function(x, level = "1", digits = 1) {
+  
+  x <- as.factor(x)
+  n_total <- length(x)
+  
+  if (is.na(level) | level == "NA") {
+    
+    level <- "NA"
+    n_level1 <- length(x[x==level])
+    
+  } else {
+    
+    n_level1 <- length(x[x==level & !is.na(x)])
+    
+  }
+
+  prop <- n_level1/n_total
+  paste0(n_level1, " (", round(prop*100,digits),")")
+
+}
+```
+
+## Example
+
+The following example uses data from the `AmesHousing` package:
+
+```{r}
+library(AmesHousing)
+library(dplyr)
+library(tidyr)
+
+ames <- make_ames()
+```
+
+```{r}
+ames %>%
+  mutate(House_Style = ifelse(House_Style == "One_Story","single story", "multi story")) %>%
+  group_by(House_Style) %>%
+  summarise(Price = iqr4tab(Sale_Price))
+```
+
+```{r}
+ames %>%
+  mutate(House_Style = ifelse(House_Style == "One_Story","single story", "multi story")) %>%
+  group_by(House_Style) %>%
+  summarise(Central_Air = prop4tab(Central_Air, level = "Y"))
+```
+
+```{r}
+ames %>%
+  mutate(House_Style = ifelse(House_Style == "One_Story", "single story", "multi story"),
+         Fireplace = ifelse(Fireplaces == 0, 0, 1)) %>%
+  group_by(House_Style) %>%
+  summarise(Price = iqr4tab(Sale_Price),
+            Rooms = iqr4tab(TotRms_AbvGrd),
+            AC = prop4tab(Central_Air, level = "Y"),
+            Fireplace = prop4tab(Fireplace)) %>%
+  gather(variable, summary, -House_Style) %>%
+  spread(House_Style, summary)
+```
+

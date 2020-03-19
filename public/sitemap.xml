@@ -43,6 +43,55 @@
     
     <url>
     
+      <loc>/categories/</loc>
+      <lastmod>2020-03-18T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/r/</loc>
+      <lastmod>2020-03-18T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/</loc>
+      <lastmod>2020-03-18T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/notes/summary-functions/</loc>
+      <lastmod>2020-03-18T17:14:59+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/notes/</loc>
+      <lastmod>2020-03-18T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/project/nicu/</loc>
       <lastmod>2020-02-29T00:00:00+00:00</lastmod>
     </url>
@@ -62,28 +111,8 @@
     
     <url>
     
-      <loc>/tags/</loc>
-      <lastmod>2020-02-29T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/tags/biostats/</loc>
       <lastmod>2020-02-29T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/categories/</loc>
-      <lastmod>2020-02-28T18:14:59+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -102,16 +131,6 @@
     <url>
     
       <loc>/tags/bioinformatics/</loc>
-      <lastmod>2020-02-28T18:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/categories/notes/</loc>
       <lastmod>2020-02-28T18:14:59+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -142,16 +161,6 @@
     
       <loc>/notes/tmux-basics/</loc>
       <lastmod>2020-02-11T08:38:31-04:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/r/</loc>
-      <lastmod>2020-01-31T17:14:59+00:00</lastmod>
-      <priority>0</priority>
     </url>
     
   
@@ -685,7 +694,7 @@
     
     <url>
     
-      <loc>/tags/javascript/</loc>
+      <loc>/tags/gis/</loc>
       <lastmod>2016-07-25T09:16:04-04:00</lastmod>
       <priority>0</priority>
     </url>
@@ -695,7 +704,7 @@
     
     <url>
     
-      <loc>/tags/gis/</loc>
+      <loc>/tags/javascript/</loc>
       <lastmod>2016-07-25T09:16:04-04:00</lastmod>
       <priority>0</priority>
     </url>

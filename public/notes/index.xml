@@ -13,6 +13,15 @@
     
     
     <item>
+      <title>iqr4tab and prop4tab</title>
+      <link>/notes/summary-functions/</link>
+      <pubDate>Wed, 18 Mar 2020 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/summary-functions/</guid>
+      <description>helpers for summary statistics</description>
+    </item>
+    
+    <item>
       <title>bcftools Primer</title>
       <link>/notes/bcftools/</link>
       <pubDate>Fri, 28 Feb 2020 18:14:59 +0000</pubDate>

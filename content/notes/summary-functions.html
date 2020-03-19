@@ -1,0 +1,90 @@
+---
+title: "iqr4tab and prop4tab"
+date: 2020-03-18T17:14:59+00:00
+categories: ["notes"]
+tags: ["R"]
+summary: "helpers for summary statistics"
+---
+
+
+
+<p>Below are a couple of functions I use for summarizing variables. These are useful for evaluating characteristics in different strata.</p>
+<div id="iqr4tab" class="section level2">
+<h2><code>iqr4tab()</code></h2>
+<p>This function calculates the median and 25th, 75th quartile (IQR) and formats the output for a table:</p>
+<pre class="r"><code>iqr4tab &lt;- function(x, digits = 2, na.rm = TRUE) {
+  
+  nums &lt;- fivenum(x, na.rm = na.rm)[2:4]
+  nums &lt;- round(nums, digits)
+  paste0(nums[2], &quot; (&quot;, nums[1], &quot;,&quot;, nums[3], &quot;)&quot;)
+  
+}</code></pre>
+</div>
+<div id="prop4tab" class="section level2">
+<h2><code>prop4tab()</code></h2>
+<p>This function will calculate count and proportion for both levels of a binary variable and format for a table:</p>
+<pre class="r"><code>prop4tab &lt;- function(x, level = &quot;1&quot;, digits = 1) {
+  
+  x &lt;- as.factor(x)
+  n_total &lt;- length(x)
+  
+  if (is.na(level) | level == &quot;NA&quot;) {
+    
+    level &lt;- &quot;NA&quot;
+    n_level1 &lt;- length(x[x==level])
+    
+  } else {
+    
+    n_level1 &lt;- length(x[x==level &amp; !is.na(x)])
+    
+  }
+
+  prop &lt;- n_level1/n_total
+  paste0(n_level1, &quot; (&quot;, round(prop*100,digits),&quot;)&quot;)
+
+}</code></pre>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>The following example uses data from the <code>AmesHousing</code> package:</p>
+<pre class="r"><code>library(AmesHousing)
+library(dplyr)
+library(tidyr)
+
+ames &lt;- make_ames()</code></pre>
+<pre class="r"><code>ames %&gt;%
+  mutate(House_Style = ifelse(House_Style == &quot;One_Story&quot;,&quot;single story&quot;, &quot;multi story&quot;)) %&gt;%
+  group_by(House_Style) %&gt;%
+  summarise(Price = iqr4tab(Sale_Price))</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   House_Style  Price                 
+##   &lt;chr&gt;        &lt;chr&gt;                 
+## 1 multi story  167500 (132000,213000)
+## 2 single story 155000 (127000,213750)</code></pre>
+<pre class="r"><code>ames %&gt;%
+  mutate(House_Style = ifelse(House_Style == &quot;One_Story&quot;,&quot;single story&quot;, &quot;multi story&quot;)) %&gt;%
+  group_by(House_Style) %&gt;%
+  summarise(Central_Air = prop4tab(Central_Air, level = &quot;Y&quot;))</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   House_Style  Central_Air
+##   &lt;chr&gt;        &lt;chr&gt;      
+## 1 multi story  1344 (92.8)
+## 2 single story 1390 (93.9)</code></pre>
+<pre class="r"><code>ames %&gt;%
+  mutate(House_Style = ifelse(House_Style == &quot;One_Story&quot;, &quot;single story&quot;, &quot;multi story&quot;),
+         Fireplace = ifelse(Fireplaces == 0, 0, 1)) %&gt;%
+  group_by(House_Style) %&gt;%
+  summarise(Price = iqr4tab(Sale_Price),
+            Rooms = iqr4tab(TotRms_AbvGrd),
+            AC = prop4tab(Central_Air, level = &quot;Y&quot;),
+            Fireplace = prop4tab(Fireplace)) %&gt;%
+  gather(variable, summary, -House_Style) %&gt;%
+  spread(House_Style, summary)</code></pre>
+<pre><code>## # A tibble: 4 x 3
+##   variable  `multi story`          `single story`        
+##   &lt;chr&gt;     &lt;chr&gt;                  &lt;chr&gt;                 
+## 1 AC        1344 (92.8)            1390 (93.9)           
+## 2 Fireplace 801 (55.3)             707 (47.7)            
+## 3 Price     167500 (132000,213000) 155000 (127000,213750)
+## 4 Rooms     7 (6,8)                6 (5,7)</code></pre>
+</div>

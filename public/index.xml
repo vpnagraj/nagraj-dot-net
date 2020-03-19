@@ -19,6 +19,98 @@
     </item>
     
     <item>
+      <title>iqr4tab and prop4tab</title>
+      <link>/notes/summary-functions/</link>
+      <pubDate>Wed, 18 Mar 2020 17:14:59 +0000</pubDate>
+      
+      <guid>/notes/summary-functions/</guid>
+      <description>
+
+
+&lt;p&gt;Below are a couple of functions I use for summarizing variables. These are useful for evaluating characteristics in different strata.&lt;/p&gt;
+&lt;div id=&#34;iqr4tab&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;code&gt;iqr4tab()&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;This function calculates the median and 25th, 75th quartile (IQR) and formats the output for a table:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;iqr4tab &amp;lt;- function(x, digits = 2, na.rm = TRUE) {
+  
+  nums &amp;lt;- fivenum(x, na.rm = na.rm)[2:4]
+  nums &amp;lt;- round(nums, digits)
+  paste0(nums[2], &amp;quot; (&amp;quot;, nums[1], &amp;quot;,&amp;quot;, nums[3], &amp;quot;)&amp;quot;)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;prop4tab&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;code&gt;prop4tab()&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;This function will calculate count and proportion for both levels of a binary variable and format for a table:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;prop4tab &amp;lt;- function(x, level = &amp;quot;1&amp;quot;, digits = 1) {
+  
+  x &amp;lt;- as.factor(x)
+  n_total &amp;lt;- length(x)
+  
+  if (is.na(level) | level == &amp;quot;NA&amp;quot;) {
+    
+    level &amp;lt;- &amp;quot;NA&amp;quot;
+    n_level1 &amp;lt;- length(x[x==level])
+    
+  } else {
+    
+    n_level1 &amp;lt;- length(x[x==level &amp;amp; !is.na(x)])
+    
+  }
+
+  prop &amp;lt;- n_level1/n_total
+  paste0(n_level1, &amp;quot; (&amp;quot;, round(prop*100,digits),&amp;quot;)&amp;quot;)
+
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;example&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Example&lt;/h2&gt;
+&lt;p&gt;The following example uses data from the &lt;code&gt;AmesHousing&lt;/code&gt; package:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(AmesHousing)
+library(dplyr)
+library(tidyr)
+
+ames &amp;lt;- make_ames()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ames %&amp;gt;%
+  mutate(House_Style = ifelse(House_Style == &amp;quot;One_Story&amp;quot;,&amp;quot;single story&amp;quot;, &amp;quot;multi story&amp;quot;)) %&amp;gt;%
+  group_by(House_Style) %&amp;gt;%
+  summarise(Price = iqr4tab(Sale_Price))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 2
+##   House_Style  Price                 
+##   &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;                 
+## 1 multi story  167500 (132000,213000)
+## 2 single story 155000 (127000,213750)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ames %&amp;gt;%
+  mutate(House_Style = ifelse(House_Style == &amp;quot;One_Story&amp;quot;,&amp;quot;single story&amp;quot;, &amp;quot;multi story&amp;quot;)) %&amp;gt;%
+  group_by(House_Style) %&amp;gt;%
+  summarise(Central_Air = prop4tab(Central_Air, level = &amp;quot;Y&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 2
+##   House_Style  Central_Air
+##   &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;      
+## 1 multi story  1344 (92.8)
+## 2 single story 1390 (93.9)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ames %&amp;gt;%
+  mutate(House_Style = ifelse(House_Style == &amp;quot;One_Story&amp;quot;, &amp;quot;single story&amp;quot;, &amp;quot;multi story&amp;quot;),
+         Fireplace = ifelse(Fireplaces == 0, 0, 1)) %&amp;gt;%
+  group_by(House_Style) %&amp;gt;%
+  summarise(Price = iqr4tab(Sale_Price),
+            Rooms = iqr4tab(TotRms_AbvGrd),
+            AC = prop4tab(Central_Air, level = &amp;quot;Y&amp;quot;),
+            Fireplace = prop4tab(Fireplace)) %&amp;gt;%
+  gather(variable, summary, -House_Style) %&amp;gt;%
+  spread(House_Style, summary)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 4 x 3
+##   variable  `multi story`          `single story`        
+##   &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;                  &amp;lt;chr&amp;gt;                 
+## 1 AC        1344 (92.8)            1390 (93.9)           
+## 2 Fireplace 801 (55.3)             707 (47.7)            
+## 3 Price     167500 (132000,213000) 155000 (127000,213750)
+## 4 Rooms     7 (6,8)                6 (5,7)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>NICU Data Analysis</title>
       <link>/project/nicu/</link>
       <pubDate>Sat, 29 Feb 2020 00:00:00 +0000</pubDate>
@@ -1974,87 +2066,6 @@ rbind(df1,df2) %&amp;gt;%
 &lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;From &lt;a href=&#34;https://en.wikipedia.org/wiki/Receiver_operating_characteristic&#34;&gt;Receiver operating characteristic&lt;/a&gt; by &lt;a href=&#34;https://en.wikipedia.org/&#34;&gt;Wikipedia&lt;/a&gt; licensed under &lt;a href=&#34;https://creativecommons.org/licenses/by-sa/3.0/us/&#34;&gt;CC BY-SA 3.0&lt;/a&gt;.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Looping Across Files</title>
-      <link>/notes/file-manipulation-loops/</link>
-      <pubDate>Sat, 29 Jun 2019 17:14:59 +0000</pubDate>
-      
-      <guid>/notes/file-manipulation-loops/</guid>
-      <description>
-
-
-&lt;p&gt;When performing repetitive file manipulation operations, it can be useful to write a loop.&lt;/p&gt;
-&lt;p&gt;Let’s assume you have a file structure organized as follows:&lt;/p&gt;
-&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;.
-+-- loop.sh
-+-- loop.R
-+-- raw
-|   +-- sample1.bed
-|   +-- sample2.bed
-|   +-- sample3.bed
-|   +-- sample4.bed
-|   +-- sample5.bed
-+-- processed
-|   +-- &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;You’d like to loop through all of the &lt;code&gt;.bed&lt;/code&gt; files in the &lt;code&gt;raw/&lt;/code&gt; directory, and output the first and last columns in a &lt;code&gt;.csv&lt;/code&gt; file in the &lt;code&gt;processed/&lt;/code&gt; directory that shares the same file prefix (i.e. “sample1”) as the given input.&lt;/p&gt;
-&lt;p&gt;To do so you could write a bash script that is in a file called &lt;code&gt;loop.sh&lt;/code&gt;:&lt;/p&gt;
-&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;#!/bin/bash
-
-# loop through all .bed files in the raw dir
-FILES=raw/*.bed
-
-for f in $FILES
-
-do
-  # message
-  printf &amp;quot;\n%s\n%s\n&amp;quot; &amp;quot;processing $f ...&amp;quot; &amp;quot;------------------------------&amp;quot;
-
-  # get input file name ...
-  # ... and create output file based on that
-  in_fn=$(basename -- &amp;quot;$f&amp;quot;)
-  out_fn=&amp;quot;${in_fn%.*}&amp;quot;
-
-  # use awk to get first and last columns  ...
-  # ... pipe output to csv format
-  awk &amp;#39;BEGIN{FS=&amp;quot;\t&amp;quot;;OFS=&amp;quot;,&amp;quot;}{print $1, $NF}&amp;#39; $f &amp;gt; processed/&amp;quot;$out_fn&amp;quot;.csv
-
-done&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;And in &lt;code&gt;loop.R&lt;/code&gt; you could write something like this:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;files &amp;lt;- list.files(&amp;quot;raw&amp;quot;, full.names = TRUE)
-
-for (f in files) {
-  
-  bed &amp;lt;- read.delim(f, sep = &amp;quot;\t&amp;quot;)
-  
-  out_fp &amp;lt;- paste0(&amp;quot;processed/&amp;quot;, 
-                   tools::file_path_sans_ext(basename(f)),
-                   &amp;quot;.csv&amp;quot;)
-  
-  write.csv(bed[,c(1,ncol(bed))], row.names = FALSE, file = out_fp)
-  
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Both of the above should work and yield the following:&lt;/p&gt;
-&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;.
-+-- loop.sh
-+-- loop.R
-+-- raw
-|   +-- sample1.bed
-|   +-- sample2.bed
-|   +-- sample3.bed
-|   +-- sample4.bed
-|   +-- sample5.bed
-+-- processed
-|   +-- sample1.csv
-|   +-- sample2.csv
-|   +-- sample3.csv
-|   +-- sample4.csv
-|   +-- sample5.csv&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;However, your choice of method could have serious performance implications.&lt;/p&gt;
-&lt;p&gt;I tested this on dummy files that were roughly 100MB each (~ 2.5 million rows, 4 columns).&lt;/p&gt;
-&lt;p&gt;The R method took ~ 90 seconds … the bash script finished in 30 seconds.&lt;/p&gt;
 </description>
     </item>
     
