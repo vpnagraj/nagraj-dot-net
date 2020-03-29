@@ -1,0 +1,204 @@
+---
+title: "visNetwork"
+date: 2020-03-28T17:14:59+00:00
+categories: ["notes"]
+tags: ["R", "network analysis", "JavaScript"]
+summary: "example demonstrating the visNetwork R package"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+[`visNetwork`](https://datastorm-open.github.io/visNetwork/) provides a collection of functions that deliver [`vis.js`](https://visjs.org/) functionality in R. In particular, the package can be used to create interactive network visualizations rendered in HTML. 
+
+The code that follows will walk through an example of how to create and customize a plot using `visNetwork`.
+
+## Data Preparation
+
+As with other network visualization frameworks, the input must include data organized as a collection of *nodes* and *edges* (connections between the nodes). For `visNetwork`, this data should be tabular (i.e. a `data.frame` in R).
+
+The minimal example from the `visNetwork()` help file:
+
+```{r}
+nodes <- data.frame(id = 1:3)
+edges <- data.frame(from = c(1,2), to = c(1,3))
+
+nodes
+edges
+```
+
+Note the column names. Those names are strictly required when defining nodes/edges. The edge identifiers ("from" and "to" columns) must contain values that also appear in the identifiers in nodes ("id" column). 
+
+Demonstrating the features of the package is difficult with such a minimal dataset. The code below will prepare some simulated data to be visualized. The example will involve nodes with alphanumeric identifiers (e.g. "U89"), edges that represent connection between some (but not all) of the nodes, as well as a categorization of the degree of that connection (here stored in the "feeling" column). The code is further documented inline:
+
+```{r}
+## load packages
+library(tidyverse)
+library(visNetwork)
+
+## make sure to set seed for reproducibility
+set.seed(20200329)
+
+## write a function to create simulated identifiers
+gen_id <- function() {
+  
+  ## create a random alphanumeric combination
+  paste0(sample(LETTERS, size = 1),
+         sample(10:99, size = 1),
+         collapse = "") 
+}
+
+## create a vector of identifiers using the function defined above
+samples <- sapply(1:20, function(x) gen_id())
+
+## double check that these are all unique
+samples <- unique(samples)
+
+## create a tibble with color palette corresponding to a category
+pal <- 
+  tibble(feeling = c("love","hate","meh"),
+         color = c("lightblue","firebrick","goldenrod"))
+
+## create tibble for the nodes
+## id column will have sample ids
+nodes <- tibble(id = samples)
+
+## create tibble for edges
+edges <- 
+  ## define all possible combinations of sample ids
+  combn(samples, 2) %>%
+  ## transpose
+  t(.) %>%
+  ## coerce the matrix to a tibble
+  as_tibble(.) %>%
+  ## set the column names
+  set_names(c("from","to")) %>%
+  ## create new column that qualifies the nature of the connection
+  ## here we're calling this "feeling"
+  ## if it is NA the connection does not exist
+  mutate(feeling = sample(c("love","hate","meh", NA), 
+                          size = nrow(.),
+                          prob = c(0.2,0.2,0.2,0.5),
+                          replace = TRUE
+                          )) %>%
+  ## if the feeling is NA then the connection does not exist ... filter out
+  filter(!is.na(feeling)) %>%
+  ## make sure the same ID doesn't appear in from AND to
+  filter(from != to) %>%
+  ## join in the palette tibble defined above
+  left_join(pal)
+```
+
+```{r}
+## take a look at the simulated nodes
+head(nodes)
+```
+
+```{r}
+## take a look at the simulated edges
+head(edges)
+```
+
+## Creating the visNetwork plot
+
+With data prepared accordingly, creating the default plot is as simple as calling the `visNetwork()` function:
+
+```{r}
+visNetwork(nodes,edges)
+```
+
+## Labeling nodes and edges
+
+The nodes and edges displayed above can be labelled ... so long as the corresponding data frames include "label" columns:
+
+```{r}
+## for this example use the id as label for nodes
+nodes <-
+  nodes %>%
+  mutate(label = samples)
+
+## create a new column that qualifies one of the "feeling" levels
+edges <-
+  edges %>%
+  ## add another column to further qualify one of the "feeling" levels
+  mutate(label = ifelse(feeling == "meh", 
+                          sample(c("+","-")),
+                          NA))
+
+visNetwork(nodes,edges)
+```
+
+## Additional options and layout
+
+The initial plot can be further customized by subsequent functions. Using the `%>%` operator can help with the legibility of the code. 
+
+`visOptions()` has arguments for the height and width of plot, as well as miscellaneous features to configure behavior when clicking and interacting:
+
+```{r}
+visNetwork(nodes, edges) %>%
+  visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE)
+```
+
+The default layout settings will randomly configure nodes each time the plot is generated. The randomSeed argument to `visLayout()` allows the coordinates to be fixed:
+
+```{r}
+visNetwork(nodes, edges) %>%
+  visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
+  visLayout(randomSeed = 1999)
+```
+
+The layout of the nodes can be customized beyond the default. For example, the network can be arranged in a hierarchy (like a tree) or in a circular format (the default to `visIgraphLayout()` is "layout_nicely"):
+
+```{r}
+visNetwork(nodes, edges) %>%
+  visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
+  visLayout(randomSeed = 1999) %>%
+  visIgraphLayout()
+```
+
+## Including a legend for edges
+
+Either nodes or edges can be annotated and represented in a legend with `visLegend()`. In this example, the edges will be annotated with the "feeling" column:
+
+```{r}
+edges_legend <- 
+  pal %>%
+  rename(label = feeling)
+
+visNetwork(nodes, edges) %>%
+  visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
+  visLayout(randomSeed = 1999) %>%
+  visIgraphLayout() %>%
+  visLegend(addEdges = edges_legend)
+```
+
+While the legend in the plot corresponds to the colors of the edges, there are arrows even though the network is *not* directed. To fix this the `data.frame` for the edges legend needs to include a list column with instructions to disable the arrows:
+
+```{r}
+edges_legend <- 
+  pal %>%
+  rename(label = feeling) %>%
+  mutate(arrows = list(to = list(enable = FALSE)))
+
+visNetwork(nodes, edges) %>%
+  visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
+  visLayout(randomSeed = 1999) %>%
+  visIgraphLayout() %>%
+  visLegend(addEdges = edges_legend)
+```
+
+## Using icons for node shapes
+
+`visNetwork` incorporates icons from [Font Awesome](https://fontawesome.com/icons?d=gallery) for styling nodes. To implement, call the `addFontAwesome()` function and then modify the shape and icon arguments to `visNodes()`:
+
+```{r}
+visNetwork(nodes, edges) %>%
+  visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
+  visLayout(randomSeed = 1999) %>%
+  visIgraphLayout() %>%
+  visLegend(addEdges = edges_legend) %>%
+  addFontAwesome(name = "font-awesome") %>%
+  visNodes(shape = "icon", icon = list(code = "f007", color = "black"))
+```
+

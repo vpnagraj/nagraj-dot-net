@@ -44,7 +44,17 @@
     <url>
     
       <loc>/categories/</loc>
-      <lastmod>2020-03-18T17:14:59+00:00</lastmod>
+      <lastmod>2020-03-28T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/javascript/</loc>
+      <lastmod>2020-03-28T17:14:59+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -54,7 +64,7 @@
     <url>
     
       <loc>/tags/r/</loc>
-      <lastmod>2020-03-18T17:14:59+00:00</lastmod>
+      <lastmod>2020-03-28T17:14:59+00:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -64,8 +74,37 @@
     <url>
     
       <loc>/tags/</loc>
-      <lastmod>2020-03-18T17:14:59+00:00</lastmod>
+      <lastmod>2020-03-28T17:14:59+00:00</lastmod>
       <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/network-analysis/</loc>
+      <lastmod>2020-03-28T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/notes/</loc>
+      <lastmod>2020-03-28T17:14:59+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/notes/visnetwork/</loc>
+      <lastmod>2020-03-28T17:14:59+00:00</lastmod>
     </url>
     
   
@@ -75,16 +114,6 @@
     
       <loc>/notes/summary-functions/</loc>
       <lastmod>2020-03-18T17:14:59+00:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/categories/notes/</loc>
-      <lastmod>2020-03-18T17:14:59+00:00</lastmod>
-      <priority>0</priority>
     </url>
     
   
@@ -694,16 +723,6 @@
     
     <url>
     
-      <loc>/tags/javascript/</loc>
-      <lastmod>2016-07-25T09:16:04-04:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/tags/gis/</loc>
       <lastmod>2016-07-25T09:16:04-04:00</lastmod>
       <priority>0</priority>
@@ -916,16 +935,6 @@
     <url>
     
       <loc>/tags/d3/</loc>
-      <lastmod>2016-01-06T13:18:39-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/network-analysis/</loc>
       <lastmod>2016-01-06T13:18:39-05:00</lastmod>
       <priority>0</priority>
     </url>
