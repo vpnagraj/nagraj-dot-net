@@ -19,6 +19,74 @@
     </item>
     
     <item>
+      <title>Include Images in R Markdown PowerPoint</title>
+      <link>/notes/plots-rmd-ppt/</link>
+      <pubDate>Sun, 03 May 2020 12:19:11 -0400</pubDate>
+      
+      <guid>/notes/plots-rmd-ppt/</guid>
+      <description>
+
+
+&lt;p&gt;I learned about the R Markdown &lt;code&gt;powerpoint_presentation&lt;/code&gt; output format at &lt;a href=&#34;http://www.nagraj.net/notes/rstudioconf2019/#rmdpp&#34;&gt;rstudio::conf 2019&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Recently I used the feature to organize a set of previously generated plots (saved as &lt;code&gt;.png&lt;/code&gt; files) into a single PowerPoint, which was the output format of choice for one collaborator.&lt;/p&gt;
+&lt;p&gt;Including a single image file in an R Markdown &lt;code&gt;powerpoint_presentation&lt;/code&gt; is the same as any other Markdown document:&lt;/p&gt;
+&lt;pre class=&#34;md&#34;&gt;&lt;code&gt;![alt_text](path_to_image.extension)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;However, including many image files (in my case dozens) would involve tediously repeating that pattern. This post details how to create a loop that generates the code to render every image in a given directory as its own slide in a PowerPoint presentation.&lt;/p&gt;
+&lt;div id=&#34;example&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Example&lt;/h2&gt;
+&lt;p&gt;First we will create example images. This demo uses the &lt;code&gt;msleep&lt;/code&gt; dataset from &lt;strong&gt;ggplot2&lt;/strong&gt;. Here we are generating the images in a separate R script and then writing them to &lt;code&gt;.png&lt;/code&gt; files to be rendered together in a single output document via R Markdown.&lt;/p&gt;
+&lt;p&gt;Note that this is a contrived example. If we were truly starting from scratch, we could use the code below to render the plots directly in R Markdown without saving them as &lt;code&gt;.png&lt;/code&gt; files at all. However, for my original use-case I already had the image files generated.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+
+## create a list of msleep tibbles split by vore
+by_vore &amp;lt;- group_split(msleep, vore)
+
+## make a dir to write the plots
+vp_dir &amp;lt;- &amp;quot;vore-plots&amp;quot;
+if(!dir.exists(vp_dir)) dir.create(vp_dir)
+
+## loop over each vore and plot the sleep total by bodywt
+for(vore in by_vore) {
+  
+  vore_name &amp;lt;- unique(vore$vore)
+  
+  ## create the ggplot2 object
+  p &amp;lt;-
+    ggplot(vore, aes(sleep_total, bodywt)) +
+    geom_point() +
+    scale_y_log10() +
+    ggtitle(label = sprintf(&amp;quot;Sleep by body weight (%s-vore)&amp;quot;, vore_name)) +
+    theme_bw()
+  
+  print(p)
+  
+  ## save the plot to a disk
+  ggsave(p, filename = sprintf(&amp;quot;%s/%s.png&amp;quot;, vp_dir, vore_name))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now that we have the plots saved to disk, we can create the R Markdown document. This file (here named &lt;code&gt;vore_plots.Rmd&lt;/code&gt;) will use the &lt;code&gt;output: powerpoint_presentation&lt;/code&gt; option in the YAML frontmatter. In the body of the &lt;code&gt;.Rmd&lt;/code&gt; we need a code chunk to generate the raw Markdown text for adding each image to its own slide. This chunk needs to have the &lt;code&gt;results=&#39;asis&#39;&lt;/code&gt; option set for the text issued from &lt;code&gt;cat()&lt;/code&gt; to render correctly:&lt;/p&gt;
+&lt;pre class=&#34;text&#34;&gt;&lt;code&gt;    ---
+    title: &amp;#39;vore plots&amp;#39;
+    output: powerpoint_presentation
+    ---
+    
+    ```{r results=&amp;#39;asis&amp;#39;}
+    vps &amp;lt;- list.files(&amp;#39;vore-plots&amp;#39;, full.names = TRUE)
+    
+    for(vp in vps) {
+      cat(&amp;#39;##&amp;#39;)
+      cat(&amp;#39;\n&amp;#39;)
+      cat(paste0(&amp;#39;![](&amp;#39;, vp, &amp;#39;)&amp;#39;))
+      cat(&amp;#39;\n&amp;#39;)
+      cat(&amp;#39;\n&amp;#39;)
+    }
+    ```&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To generate to the &lt;code&gt;.pptx&lt;/code&gt; output use the &lt;em&gt;Knit&lt;/em&gt; button in the RStudio IDE or call &lt;code&gt;rmarkdown::render()&lt;/code&gt; at the console:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rmarkown::render(&amp;quot;vore_ppt.Rmd&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>visNetwork</title>
       <link>/notes/visnetwork/</link>
       <pubDate>Sat, 28 Mar 2020 17:14:59 +0000</pubDate>
@@ -2096,15 +2164,6 @@ DESCRIPTION
 &lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;basename -s .blue prince/computer.blue&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## computer&lt;/code&gt;&lt;/pre&gt;
 </description>
-    </item>
-    
-    <item>
-      <title>Recovery from bradycardia and desaturation events at 32 weeks corrected age and NICU length of stay: an indicator of physiologic resilience?</title>
-      <link>/publication/late-bd/</link>
-      <pubDate>Thu, 04 Jul 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/publication/late-bd/</guid>
-      <description></description>
     </item>
     
   </channel>

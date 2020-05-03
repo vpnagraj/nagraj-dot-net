@@ -13,6 +13,15 @@
     
     
     <item>
+      <title>Include Images in R Markdown PowerPoint</title>
+      <link>/notes/plots-rmd-ppt/</link>
+      <pubDate>Sun, 03 May 2020 12:19:11 -0400</pubDate>
+      
+      <guid>/notes/plots-rmd-ppt/</guid>
+      <description>render an entire directory of image files in rmarkdown powerpoint output</description>
+    </item>
+    
+    <item>
       <title>visNetwork</title>
       <link>/notes/visnetwork/</link>
       <pubDate>Sat, 28 Mar 2020 17:14:59 +0000</pubDate>

@@ -44,7 +44,56 @@
     <url>
     
       <loc>/categories/</loc>
-      <lastmod>2020-03-28T17:14:59+00:00</lastmod>
+      <lastmod>2020-05-03T12:19:11-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/notes/plots-rmd-ppt/</loc>
+      <lastmod>2020-05-03T12:19:11-04:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/r/</loc>
+      <lastmod>2020-05-03T12:19:11-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/r-markdown/</loc>
+      <lastmod>2020-05-03T12:19:11-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/tags/</loc>
+      <lastmod>2020-05-03T12:19:11-04:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/categories/notes/</loc>
+      <lastmod>2020-05-03T12:19:11-04:00</lastmod>
       <priority>0</priority>
     </url>
     
@@ -63,37 +112,7 @@
     
     <url>
     
-      <loc>/tags/r/</loc>
-      <lastmod>2020-03-28T17:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/tags/</loc>
-      <lastmod>2020-03-28T17:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/tags/network-analysis/</loc>
-      <lastmod>2020-03-28T17:14:59+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/categories/notes/</loc>
       <lastmod>2020-03-28T17:14:59+00:00</lastmod>
       <priority>0</priority>
     </url>
@@ -752,16 +771,6 @@
     
     <url>
     
-      <loc>/tags/r-markdown/</loc>
-      <lastmod>2016-07-21T08:38:31-04:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
       <loc>/notes/chunking/</loc>
       <lastmod>2016-07-11T15:24:47-04:00</lastmod>
     </url>
@@ -771,7 +780,7 @@
     
     <url>
     
-      <loc>/tags/chunking/</loc>
+      <loc>/tags/pubmed/</loc>
       <lastmod>2016-07-11T15:24:47-04:00</lastmod>
       <priority>0</priority>
     </url>
@@ -781,7 +790,7 @@
     
     <url>
     
-      <loc>/tags/pubmed/</loc>
+      <loc>/tags/chunking/</loc>
       <lastmod>2016-07-11T15:24:47-04:00</lastmod>
       <priority>0</priority>
     </url>

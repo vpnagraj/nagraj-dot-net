@@ -1,0 +1,66 @@
+---
+title: "Include Images in R Markdown PowerPoint"
+date: 2020-05-03T12:19:11-04:00
+categories: ["notes"]
+tags: ["R Markdown", "R"]
+summary: "render an entire directory of image files in rmarkdown powerpoint output"
+---
+
+
+
+<p>I learned about the R Markdown <code>powerpoint_presentation</code> output format at <a href="http://www.nagraj.net/notes/rstudioconf2019/#rmdpp">rstudio::conf 2019</a>.</p>
+<p>Recently I used the feature to organize a set of previously generated plots (saved as <code>.png</code> files) into a single PowerPoint, which was the output format of choice for one collaborator.</p>
+<p>Including a single image file in an R Markdown <code>powerpoint_presentation</code> is the same as any other Markdown document:</p>
+<pre class="md"><code>![alt_text](path_to_image.extension)</code></pre>
+<p>However, including many image files (in my case dozens) would involve tediously repeating that pattern. This post details how to create a loop that generates the code to render every image in a given directory as its own slide in a PowerPoint presentation.</p>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>First we will create example images. This demo uses the <code>msleep</code> dataset from <strong>ggplot2</strong>. Here we are generating the images in a separate R script and then writing them to <code>.png</code> files to be rendered together in a single output document via R Markdown.</p>
+<p>Note that this is a contrived example. If we were truly starting from scratch, we could use the code below to render the plots directly in R Markdown without saving them as <code>.png</code> files at all. However, for my original use-case I already had the image files generated.</p>
+<pre class="r"><code>library(tidyverse)
+
+## create a list of msleep tibbles split by vore
+by_vore &lt;- group_split(msleep, vore)
+
+## make a dir to write the plots
+vp_dir &lt;- &quot;vore-plots&quot;
+if(!dir.exists(vp_dir)) dir.create(vp_dir)
+
+## loop over each vore and plot the sleep total by bodywt
+for(vore in by_vore) {
+  
+  vore_name &lt;- unique(vore$vore)
+  
+  ## create the ggplot2 object
+  p &lt;-
+    ggplot(vore, aes(sleep_total, bodywt)) +
+    geom_point() +
+    scale_y_log10() +
+    ggtitle(label = sprintf(&quot;Sleep by body weight (%s-vore)&quot;, vore_name)) +
+    theme_bw()
+  
+  print(p)
+  
+  ## save the plot to a disk
+  ggsave(p, filename = sprintf(&quot;%s/%s.png&quot;, vp_dir, vore_name))
+}</code></pre>
+<p>Now that we have the plots saved to disk, we can create the R Markdown document. This file (here named <code>vore_plots.Rmd</code>) will use the <code>output: powerpoint_presentation</code> option in the YAML frontmatter. In the body of the <code>.Rmd</code> we need a code chunk to generate the raw Markdown text for adding each image to its own slide. This chunk needs to have the <code>results='asis'</code> option set for the text issued from <code>cat()</code> to render correctly:</p>
+<pre class="text"><code>    ---
+    title: &#39;vore plots&#39;
+    output: powerpoint_presentation
+    ---
+    
+    ```{r results=&#39;asis&#39;}
+    vps &lt;- list.files(&#39;vore-plots&#39;, full.names = TRUE)
+    
+    for(vp in vps) {
+      cat(&#39;##&#39;)
+      cat(&#39;\n&#39;)
+      cat(paste0(&#39;![](&#39;, vp, &#39;)&#39;))
+      cat(&#39;\n&#39;)
+      cat(&#39;\n&#39;)
+    }
+    ```</code></pre>
+<p>To generate to the <code>.pptx</code> output use the <em>Knit</em> button in the RStudio IDE or call <code>rmarkdown::render()</code> at the console:</p>
+<pre class="r"><code>rmarkown::render(&quot;vore_ppt.Rmd&quot;)</code></pre>
+</div>
