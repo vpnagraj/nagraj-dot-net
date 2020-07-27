@@ -19,6 +19,141 @@
     </item>
     
     <item>
+      <title>read_repo()</title>
+      <link>/notes/read-repo/</link>
+      <pubDate>Sun, 26 Jul 2020 11:10:14 -0500</pubDate>
+      
+      <guid>/notes/read-repo/</guid>
+      <description>
+
+
+&lt;p&gt;Data hosted on GitHub can be retrieved through the web interface or by cloning a repo to a local machine. Files can also be read directly from &lt;a href=&#34;https://stackoverflow.com/questions/39065921/what-do-raw-githubusercontent-com-urls-represent&#34;&gt;“raw” links&lt;/a&gt;. For example, in &lt;a href=&#34;https://github.com/rudeboybert/fivethirtyeight/&#34;&gt;&lt;code&gt;rudeboybert/fivethirty&lt;/code&gt;&lt;/a&gt; you can could use the following R code to read in one of the &lt;code&gt;.csv&lt;/code&gt; files in the repo:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(tidyverse)
+read_csv(&amp;quot;https://raw.githubusercontent.com/rudeboybert/fivethirtyeight/master/data-raw/antiquities-act/actions_under_antiquities_act.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 344 x 9
+##    current_name states original_name current_agency action date   year
+##    &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 Devils Towe… Wyomi… &amp;lt;NA&amp;gt;          NPS            Estab… 9/24…  1906
+##  2 El Morro Na… New M… &amp;lt;NA&amp;gt;          NPS            Estab… 12/8…  1906
+##  3 El Morro Na… New M… &amp;lt;NA&amp;gt;          NPS            Enlar… 6/18…  1917
+##  4 Montezuma C… Arizo… &amp;lt;NA&amp;gt;          NPS            Estab… 12/8…  1906
+##  5 Montezuma C… Arizo… &amp;lt;NA&amp;gt;          NPS            Enlar… 2/23…  1937
+##  6 Montezuma C… Arizo… &amp;lt;NA&amp;gt;          NPS            Enlar… 11/1…  1978
+##  7 Montezuma C… Arizo… &amp;lt;NA&amp;gt;          NPS            Delet… 11/1…  1978
+##  8 Petrified F… Arizo… Petrified Fo… NPS            Estab… 12/8…  1906
+##  9 Petrified F… Arizo… Petrified Fo… NPS            Dimin… 7/31…  1911
+## 10 Petrified F… Arizo… Petrified Fo… NPS            Enlar… 11/1…  1930
+## # … with 334 more rows, and 2 more variables: pres_or_congress &amp;lt;chr&amp;gt;,
+## #   acres_affected &amp;lt;chr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Reading files directly from GitHub requires a network connection. However, one of the advantages of doing so is that you don’t have to download a local copy of the data (i.e. with &lt;code&gt;git clone&lt;/code&gt;). And if the data in the repository is subject to change, then you don’t have to manage keeping a local copy in sync.&lt;/p&gt;
+&lt;p&gt;As shown above, reading in a single file hosted on GitHub from its raw content URL is relatively straightforward. Reading multiple files and including pattern matching rules (via regular expressions) gets more complicated …&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;read_repo()&lt;/code&gt; function described below is a convenient wrapper to do exactly that in R. This post will explain how the function works and will include an example of how it can be used in practice.&lt;/p&gt;
+&lt;div id=&#34;read_repo&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;code&gt;read_repo()&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;Generally speaking, to read in files from a repository you would have to do the following:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Get paths to all files&lt;/li&gt;
+&lt;li&gt;Subset paths to just those for files of interest&lt;/li&gt;
+&lt;li&gt;Build paths to raw content for files of interest&lt;/li&gt;
+&lt;li&gt;Read in files&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;code&gt;read_repo()&lt;/code&gt; internally performs each step. In order to establish paths to the files, the function first constructs a request to the GitHub API. The GET request to the API (implemented with &lt;code&gt;httr::GET()&lt;/code&gt;) is based on the “repo” argument passed to &lt;code&gt;read_repo()&lt;/code&gt;. Next, the function parses the “path” from the API request response (via &lt;code&gt;httr::content()&lt;/code&gt;). After parsing &lt;em&gt;all&lt;/em&gt; paths in the repository, the list of paths can be reduced to those that match the “pattern” argument to &lt;code&gt;read_repo()&lt;/code&gt;. The pattern can be a regular expression, which allows for more granular identification of files to read. With the list of paths, the function configures the raw content URLs. Finally, &lt;code&gt;read_repo()&lt;/code&gt; maps a function (specified in “.f”) to these URLs. If the “to_tibble” argument is set to &lt;code&gt;TRUE&lt;/code&gt; then this function will try to return a &lt;code&gt;tibble&lt;/code&gt;, otherwise it will return a &lt;code&gt;list&lt;/code&gt;. Any additional arguments passed to the read function can be included via the “…” parameter.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;read_repo &amp;lt;- function(repo, branch = &amp;quot;master&amp;quot;, pattern = NULL, to_tibble = TRUE, .f = read_csv, ...) {
+  
+  ## construct GET request from the repo and branch
+  api_request &amp;lt;- httr::GET(paste0(&amp;quot;https://api.github.com/repos/&amp;quot;, 
+                                  repo, 
+                                  &amp;quot;/git/trees/&amp;quot;,
+                                  branch,
+                                  &amp;quot;?recursive=1&amp;quot;))
+  
+  ## extract path element from the API response
+  repo_files &amp;lt;- purrr::map_chr(httr::content(api_request)$tree, &amp;quot;path&amp;quot;)
+  
+  ## if a pattern is passed use it to parse files of interest
+  if(!is.null(pattern)) {
+    repo_files &amp;lt;- repo_files[grepl(pattern, repo_files)]
+  }
+  
+  ## construct raw content URLs to files of interest
+  repo_files &amp;lt;- file.path(&amp;quot;https://raw.githubusercontent.com&amp;quot;,
+                          repo,
+                          branch,
+                          repo_files)
+  
+  ## check that the value passed to .f is a function available in the environment
+  .f &amp;lt;- match.fun(.f)
+  
+  ## if to_tibble then use map_df() to compile results as a tibble
+  ## otherwise return a list via map()
+  if(to_tibble) {
+    purrr::map_df(repo_files, .f = .f, ...)
+  } else {
+    purrr::map(repo_files, .f = .f, ...)
+  }
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;example-cdc-state-flusight-forecast-repository&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;EXAMPLE: CDC State FluSight forecast repository&lt;/h3&gt;
+&lt;p&gt;The data hosted on the &lt;a href=&#34;https://github.com/cdcepi/State_FluSight_Forecasts&#34;&gt;CDC State FluSight GitHub repository&lt;/a&gt; will be used to help demonstrate the usage of &lt;code&gt;read_repo()&lt;/code&gt;. The State FluSight competition invites teams to submit predictive forecasts of influenza-like illness (ILI) across the United States and select territories. The CDC makes forecast submissions available in the repository.&lt;/p&gt;
+&lt;p&gt;To see &lt;code&gt;read_repo()&lt;/code&gt; in action, the code that follows will read all of the forecast submissions for the 2017-2018 season. In this case, the read function will be a custom wrapper around &lt;code&gt;readr::read_csv()&lt;/code&gt; called &lt;code&gt;read_forecast()&lt;/code&gt;. After defining that read function, it will be passed into &lt;code&gt;read_repo()&lt;/code&gt; along with the pattern for selecting all &lt;code&gt;.csv&lt;/code&gt; files in subdirectories of the &lt;code&gt;2017-2018/&lt;/code&gt; directory in the repo. These subdirectories are named by team. The nice thing is that the pattern will match any team name so its not necessary to know what the team names are ahead of time. Last of all, the code will generate a plot of the average forecasted probability that each week will be the peak by state/territory.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## define a custom read function (read_forecast())
+## wraps readr::read_csv()
+## uses tryCatch in case there is a problem with one of the files
+## also passes in &amp;quot;col_types = readr::cols()&amp;quot; to suppress messages
+read_forecast &amp;lt;- function(file) {
+  tryCatch({ 
+    message(sprintf(&amp;quot;Reading file: %s&amp;quot;, file))
+    readr::read_csv(file, col_types = readr::cols()) 
+      },
+    error = function(e) {
+             message(sprintf(&amp;quot;Unable to read file: %s&amp;quot;, file)) 
+             }
+  )
+}
+
+## lots of files ... this will take a while
+stateflu17_18 &amp;lt;- read_repo(repo = &amp;quot;cdcepi/State_FluSight_Forecasts&amp;quot;,
+                           pattern = &amp;quot;^2017-2018/.*/*.csv&amp;quot;,
+                           to_tibble = TRUE,
+                          .f = read_forecast)
+
+## did it work?
+stateflu17_18 %&amp;gt;%
+  select(location:value) %&amp;gt;%
+  glimpse()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 13,120,512
+## Columns: 7
+## $ location        &amp;lt;chr&amp;gt; &amp;quot;Alabama&amp;quot;, &amp;quot;Alabama&amp;quot;, &amp;quot;Alabama&amp;quot;, &amp;quot;Alabama&amp;quot;, &amp;quot;Alabama&amp;quot;…
+## $ target          &amp;lt;chr&amp;gt; &amp;quot;Season peak week&amp;quot;, &amp;quot;Season peak week&amp;quot;, &amp;quot;Season peak …
+## $ unit            &amp;lt;chr&amp;gt; &amp;quot;week&amp;quot;, &amp;quot;week&amp;quot;, &amp;quot;week&amp;quot;, &amp;quot;week&amp;quot;, &amp;quot;week&amp;quot;, &amp;quot;week&amp;quot;, &amp;quot;week…
+## $ type            &amp;lt;chr&amp;gt; &amp;quot;Bin&amp;quot;, &amp;quot;Bin&amp;quot;, &amp;quot;Bin&amp;quot;, &amp;quot;Bin&amp;quot;, &amp;quot;Bin&amp;quot;, &amp;quot;Bin&amp;quot;, &amp;quot;Bin&amp;quot;, &amp;quot;Bin…
+## $ bin_start_incl  &amp;lt;dbl&amp;gt; 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 1…
+## $ bin_end_notincl &amp;lt;dbl&amp;gt; 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 2…
+## $ value           &amp;lt;dbl&amp;gt; 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000…&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;stateflu17_18 %&amp;gt;%
+  select(location:value) %&amp;gt;%
+  filter(target == &amp;quot;Season peak week&amp;quot; &amp;amp; type == &amp;quot;Bin&amp;quot;) %&amp;gt;% 
+  group_by(location, bin_start_incl) %&amp;gt;%
+  summarise(value = mean(value), .groups = &amp;quot;drop&amp;quot;) %&amp;gt;%
+  mutate(week = factor(as.character(bin_start_incl), levels = c(as.character(40:52), as.character(1:20)))) %&amp;gt;%
+  rename(Probability = value) %&amp;gt;%
+  ggplot(aes(week, location)) +
+  geom_tile(aes(fill = Probability)) +
+  scale_fill_distiller(palette = &amp;quot;Spectral&amp;quot;) +
+  theme_minimal() +
+  labs(x = &amp;quot;Week&amp;quot;,
+       y = &amp;quot;State/Territory&amp;quot;,
+       title = &amp;quot;Average Forecast Probability for Peak Week of ILI Activity&amp;quot;,
+       subtitle = &amp;quot;2017-2018 Flu Season&amp;quot;,
+       caption = &amp;quot;Data Source: https://github.com/cdcepi/State_FluSight_Forecasts&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/notes/read-repo_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Central Apnea of Prematurity: Does Sex Matter?</title>
       <link>/publication/apnea-by-sex/</link>
       <pubDate>Thu, 18 Jun 2020 00:00:00 +0000</pubDate>
@@ -2060,15 +2195,6 @@ anim_save(&amp;quot;tx-sales-gganimate.gif&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Sat, 16 Nov 2019 00:00:00 +0000</pubDate>
       
       <guid>/publication/bpranges/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Evidence from a Multistate Cohort: Enrollment in Affordable Care Act Qualified Health Plans Results in Viral Suppression</title>
-      <link>/publication/adap-qhp-idweek/</link>
-      <pubDate>Thu, 03 Oct 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/publication/adap-qhp-idweek/</guid>
       <description></description>
     </item>
     

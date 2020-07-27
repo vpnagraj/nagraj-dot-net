@@ -1,0 +1,121 @@
+---
+title: "read_repo()"
+date: 2020-07-26T11:10:14-05:00
+categories: ["notes"]
+tags: ["r"]
+summary: "read lists of files directly from github"
+---
+
+Data hosted on GitHub can be retrieved through the web interface or by cloning a repo to a local machine. Files can also be read directly from ["raw" links](https://stackoverflow.com/questions/39065921/what-do-raw-githubusercontent-com-urls-represent). For example, in [`rudeboybert/fivethirty`](https://github.com/rudeboybert/fivethirtyeight/) you can could use the following R code to read in one of the `.csv` files in the repo:
+
+```{r, warning=FALSE, message=FALSE, echo=TRUE}
+library(tidyverse)
+read_csv("https://raw.githubusercontent.com/rudeboybert/fivethirtyeight/master/data-raw/antiquities-act/actions_under_antiquities_act.csv")
+```
+
+Reading files directly from GitHub requires a network connection. However, one of the advantages of doing so is that you don't have to download a local copy of the data (i.e. with `git clone`). And if the data in the repository is subject to change, then you don't have to manage keeping a local copy in sync. 
+
+As shown above, reading in a single file hosted on GitHub from its raw content URL is relatively straightforward. Reading multiple files and including pattern matching rules (via regular expressions) gets more complicated ...
+
+The `read_repo()` function described below is a convenient wrapper to do exactly that in R. This post will explain how the function works and will include an example of how it can be used in practice.
+
+### `read_repo()`
+
+Generally speaking, to read in files from a repository you would have to do the following:
+
+1. Get paths to all files
+2. Subset paths to just those for files of interest
+3. Build paths to raw content for files of interest
+4. Read in files
+
+`read_repo()` internally performs each step. In order to establish paths to the files, the function first constructs a request to the GitHub API. The GET request to the API (implemented with `httr::GET()`) is based on the "repo" argument passed to `read_repo()`. Next, the function parses the "path" from the API request response (via `httr::content()`). After parsing *all* paths in the repository, the list of paths can be reduced to those that match the "pattern" argument to `read_repo()`. The pattern can be a regular expression, which allows for more granular identification of files to read. With the list of paths, the function configures the raw content URLs. Finally, `read_repo()` maps a function (specified in ".f") to these URLs. If the "to_tibble" argument is set to `TRUE` then this function will try to return a `tibble`, otherwise it will return a `list`. Any additional arguments passed to the read function can be included via the "..." parameter.
+
+```{r, echo=TRUE, warning=FALSE, message=FALSE}
+read_repo <- function(repo, branch = "master", pattern = NULL, to_tibble = TRUE, .f = read_csv, ...) {
+  
+  ## construct GET request from the repo and branch
+  api_request <- httr::GET(paste0("https://api.github.com/repos/", 
+                                  repo, 
+                                  "/git/trees/",
+                                  branch,
+                                  "?recursive=1"))
+  
+  ## extract path element from the API response
+  repo_files <- purrr::map_chr(httr::content(api_request)$tree, "path")
+  
+  ## if a pattern is passed use it to parse files of interest
+  if(!is.null(pattern)) {
+    repo_files <- repo_files[grepl(pattern, repo_files)]
+  }
+  
+  ## construct raw content URLs to files of interest
+  repo_files <- file.path("https://raw.githubusercontent.com",
+                          repo,
+                          branch,
+                          repo_files)
+  
+  ## check that the value passed to .f is a function available in the environment
+  .f <- match.fun(.f)
+  
+  ## if to_tibble then use map_df() to compile results as a tibble
+  ## otherwise return a list via map()
+  if(to_tibble) {
+    purrr::map_df(repo_files, .f = .f, ...)
+  } else {
+    purrr::map(repo_files, .f = .f, ...)
+  }
+  
+}
+```
+
+
+### EXAMPLE: CDC State FluSight forecast repository
+
+The data hosted on the [CDC State FluSight GitHub repository](https://github.com/cdcepi/State_FluSight_Forecasts) will be used to help demonstrate the usage of `read_repo()`. The State FluSight competition invites teams to submit predictive forecasts of influenza-like illness (ILI) across the United States and select territories. The CDC makes forecast submissions available in the repository. 
+
+To see `read_repo()` in action, the code that follows will read all of the forecast submissions for the 2017-2018 season. In this case, the read function will be a custom wrapper around `readr::read_csv()` called `read_forecast()`. After defining that read function, it will be passed into `read_repo()` along with the pattern for selecting all `.csv` files in subdirectories of the `2017-2018/` directory in the repo. These subdirectories are named by team. The nice thing is that the pattern will match any team name so its not necessary to know what the team names are ahead of time. Last of all, the code will generate a plot of the average forecasted probability that each week will be the peak by state/territory.
+
+```{r, message=FALSE, warning=FALSE, echo=TRUE, fig.height=10, fig.width=8}
+## define a custom read function (read_forecast())
+## wraps readr::read_csv()
+## uses tryCatch in case there is a problem with one of the files
+## also passes in "col_types = readr::cols()" to suppress messages
+read_forecast <- function(file) {
+  tryCatch({ 
+    message(sprintf("Reading file: %s", file))
+    readr::read_csv(file, col_types = readr::cols()) 
+      },
+    error = function(e) {
+             message(sprintf("Unable to read file: %s", file)) 
+             }
+  )
+}
+
+## lots of files ... this will take a while
+stateflu17_18 <- read_repo(repo = "cdcepi/State_FluSight_Forecasts",
+                           pattern = "^2017-2018/.*/*.csv",
+                           to_tibble = TRUE,
+                          .f = read_forecast)
+
+## did it work?
+stateflu17_18 %>%
+  select(location:value) %>%
+  glimpse()
+
+stateflu17_18 %>%
+  select(location:value) %>%
+  filter(target == "Season peak week" & type == "Bin") %>% 
+  group_by(location, bin_start_incl) %>%
+  summarise(value = mean(value), .groups = "drop") %>%
+  mutate(week = factor(as.character(bin_start_incl), levels = c(as.character(40:52), as.character(1:20)))) %>%
+  rename(Probability = value) %>%
+  ggplot(aes(week, location)) +
+  geom_tile(aes(fill = Probability)) +
+  scale_fill_distiller(palette = "Spectral") +
+  theme_minimal() +
+  labs(x = "Week",
+       y = "State/Territory",
+       title = "Average Forecast Probability for Peak Week of ILI Activity",
+       subtitle = "2017-2018 Flu Season",
+       caption = "Data Source: https://github.com/cdcepi/State_FluSight_Forecasts")
+```

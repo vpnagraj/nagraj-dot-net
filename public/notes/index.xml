@@ -13,6 +13,15 @@
     
     
     <item>
+      <title>read_repo()</title>
+      <link>/notes/read-repo/</link>
+      <pubDate>Sun, 26 Jul 2020 11:10:14 -0500</pubDate>
+      
+      <guid>/notes/read-repo/</guid>
+      <description>read lists of files directly from github</description>
+    </item>
+    
+    <item>
       <title>Include Images in R Markdown PowerPoint</title>
       <link>/notes/plots-rmd-ppt/</link>
       <pubDate>Sun, 03 May 2020 12:19:11 -0400</pubDate>

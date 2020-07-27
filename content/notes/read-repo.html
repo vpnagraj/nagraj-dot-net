@@ -1,0 +1,133 @@
+---
+title: "read_repo()"
+date: 2020-07-26T11:10:14-05:00
+categories: ["notes"]
+tags: ["r"]
+summary: "read lists of files directly from github"
+---
+
+
+
+<p>Data hosted on GitHub can be retrieved through the web interface or by cloning a repo to a local machine. Files can also be read directly from <a href="https://stackoverflow.com/questions/39065921/what-do-raw-githubusercontent-com-urls-represent">“raw” links</a>. For example, in <a href="https://github.com/rudeboybert/fivethirtyeight/"><code>rudeboybert/fivethirty</code></a> you can could use the following R code to read in one of the <code>.csv</code> files in the repo:</p>
+<pre class="r"><code>library(tidyverse)
+read_csv(&quot;https://raw.githubusercontent.com/rudeboybert/fivethirtyeight/master/data-raw/antiquities-act/actions_under_antiquities_act.csv&quot;)</code></pre>
+<pre><code>## # A tibble: 344 x 9
+##    current_name states original_name current_agency action date   year
+##    &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;         &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;
+##  1 Devils Towe… Wyomi… &lt;NA&gt;          NPS            Estab… 9/24…  1906
+##  2 El Morro Na… New M… &lt;NA&gt;          NPS            Estab… 12/8…  1906
+##  3 El Morro Na… New M… &lt;NA&gt;          NPS            Enlar… 6/18…  1917
+##  4 Montezuma C… Arizo… &lt;NA&gt;          NPS            Estab… 12/8…  1906
+##  5 Montezuma C… Arizo… &lt;NA&gt;          NPS            Enlar… 2/23…  1937
+##  6 Montezuma C… Arizo… &lt;NA&gt;          NPS            Enlar… 11/1…  1978
+##  7 Montezuma C… Arizo… &lt;NA&gt;          NPS            Delet… 11/1…  1978
+##  8 Petrified F… Arizo… Petrified Fo… NPS            Estab… 12/8…  1906
+##  9 Petrified F… Arizo… Petrified Fo… NPS            Dimin… 7/31…  1911
+## 10 Petrified F… Arizo… Petrified Fo… NPS            Enlar… 11/1…  1930
+## # … with 334 more rows, and 2 more variables: pres_or_congress &lt;chr&gt;,
+## #   acres_affected &lt;chr&gt;</code></pre>
+<p>Reading files directly from GitHub requires a network connection. However, one of the advantages of doing so is that you don’t have to download a local copy of the data (i.e. with <code>git clone</code>). And if the data in the repository is subject to change, then you don’t have to manage keeping a local copy in sync.</p>
+<p>As shown above, reading in a single file hosted on GitHub from its raw content URL is relatively straightforward. Reading multiple files and including pattern matching rules (via regular expressions) gets more complicated …</p>
+<p>The <code>read_repo()</code> function described below is a convenient wrapper to do exactly that in R. This post will explain how the function works and will include an example of how it can be used in practice.</p>
+<div id="read_repo" class="section level3">
+<h3><code>read_repo()</code></h3>
+<p>Generally speaking, to read in files from a repository you would have to do the following:</p>
+<ol style="list-style-type: decimal">
+<li>Get paths to all files</li>
+<li>Subset paths to just those for files of interest</li>
+<li>Build paths to raw content for files of interest</li>
+<li>Read in files</li>
+</ol>
+<p><code>read_repo()</code> internally performs each step. In order to establish paths to the files, the function first constructs a request to the GitHub API. The GET request to the API (implemented with <code>httr::GET()</code>) is based on the “repo” argument passed to <code>read_repo()</code>. Next, the function parses the “path” from the API request response (via <code>httr::content()</code>). After parsing <em>all</em> paths in the repository, the list of paths can be reduced to those that match the “pattern” argument to <code>read_repo()</code>. The pattern can be a regular expression, which allows for more granular identification of files to read. With the list of paths, the function configures the raw content URLs. Finally, <code>read_repo()</code> maps a function (specified in “.f”) to these URLs. If the “to_tibble” argument is set to <code>TRUE</code> then this function will try to return a <code>tibble</code>, otherwise it will return a <code>list</code>. Any additional arguments passed to the read function can be included via the “…” parameter.</p>
+<pre class="r"><code>read_repo &lt;- function(repo, branch = &quot;master&quot;, pattern = NULL, to_tibble = TRUE, .f = read_csv, ...) {
+  
+  ## construct GET request from the repo and branch
+  api_request &lt;- httr::GET(paste0(&quot;https://api.github.com/repos/&quot;, 
+                                  repo, 
+                                  &quot;/git/trees/&quot;,
+                                  branch,
+                                  &quot;?recursive=1&quot;))
+  
+  ## extract path element from the API response
+  repo_files &lt;- purrr::map_chr(httr::content(api_request)$tree, &quot;path&quot;)
+  
+  ## if a pattern is passed use it to parse files of interest
+  if(!is.null(pattern)) {
+    repo_files &lt;- repo_files[grepl(pattern, repo_files)]
+  }
+  
+  ## construct raw content URLs to files of interest
+  repo_files &lt;- file.path(&quot;https://raw.githubusercontent.com&quot;,
+                          repo,
+                          branch,
+                          repo_files)
+  
+  ## check that the value passed to .f is a function available in the environment
+  .f &lt;- match.fun(.f)
+  
+  ## if to_tibble then use map_df() to compile results as a tibble
+  ## otherwise return a list via map()
+  if(to_tibble) {
+    purrr::map_df(repo_files, .f = .f, ...)
+  } else {
+    purrr::map(repo_files, .f = .f, ...)
+  }
+  
+}</code></pre>
+</div>
+<div id="example-cdc-state-flusight-forecast-repository" class="section level3">
+<h3>EXAMPLE: CDC State FluSight forecast repository</h3>
+<p>The data hosted on the <a href="https://github.com/cdcepi/State_FluSight_Forecasts">CDC State FluSight GitHub repository</a> will be used to help demonstrate the usage of <code>read_repo()</code>. The State FluSight competition invites teams to submit predictive forecasts of influenza-like illness (ILI) across the United States and select territories. The CDC makes forecast submissions available in the repository.</p>
+<p>To see <code>read_repo()</code> in action, the code that follows will read all of the forecast submissions for the 2017-2018 season. In this case, the read function will be a custom wrapper around <code>readr::read_csv()</code> called <code>read_forecast()</code>. After defining that read function, it will be passed into <code>read_repo()</code> along with the pattern for selecting all <code>.csv</code> files in subdirectories of the <code>2017-2018/</code> directory in the repo. These subdirectories are named by team. The nice thing is that the pattern will match any team name so its not necessary to know what the team names are ahead of time. Last of all, the code will generate a plot of the average forecasted probability that each week will be the peak by state/territory.</p>
+<pre class="r"><code>## define a custom read function (read_forecast())
+## wraps readr::read_csv()
+## uses tryCatch in case there is a problem with one of the files
+## also passes in &quot;col_types = readr::cols()&quot; to suppress messages
+read_forecast &lt;- function(file) {
+  tryCatch({ 
+    message(sprintf(&quot;Reading file: %s&quot;, file))
+    readr::read_csv(file, col_types = readr::cols()) 
+      },
+    error = function(e) {
+             message(sprintf(&quot;Unable to read file: %s&quot;, file)) 
+             }
+  )
+}
+
+## lots of files ... this will take a while
+stateflu17_18 &lt;- read_repo(repo = &quot;cdcepi/State_FluSight_Forecasts&quot;,
+                           pattern = &quot;^2017-2018/.*/*.csv&quot;,
+                           to_tibble = TRUE,
+                          .f = read_forecast)
+
+## did it work?
+stateflu17_18 %&gt;%
+  select(location:value) %&gt;%
+  glimpse()</code></pre>
+<pre><code>## Rows: 13,120,512
+## Columns: 7
+## $ location        &lt;chr&gt; &quot;Alabama&quot;, &quot;Alabama&quot;, &quot;Alabama&quot;, &quot;Alabama&quot;, &quot;Alabama&quot;…
+## $ target          &lt;chr&gt; &quot;Season peak week&quot;, &quot;Season peak week&quot;, &quot;Season peak …
+## $ unit            &lt;chr&gt; &quot;week&quot;, &quot;week&quot;, &quot;week&quot;, &quot;week&quot;, &quot;week&quot;, &quot;week&quot;, &quot;week…
+## $ type            &lt;chr&gt; &quot;Bin&quot;, &quot;Bin&quot;, &quot;Bin&quot;, &quot;Bin&quot;, &quot;Bin&quot;, &quot;Bin&quot;, &quot;Bin&quot;, &quot;Bin…
+## $ bin_start_incl  &lt;dbl&gt; 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 1…
+## $ bin_end_notincl &lt;dbl&gt; 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 2…
+## $ value           &lt;dbl&gt; 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000…</code></pre>
+<pre class="r"><code>stateflu17_18 %&gt;%
+  select(location:value) %&gt;%
+  filter(target == &quot;Season peak week&quot; &amp; type == &quot;Bin&quot;) %&gt;% 
+  group_by(location, bin_start_incl) %&gt;%
+  summarise(value = mean(value), .groups = &quot;drop&quot;) %&gt;%
+  mutate(week = factor(as.character(bin_start_incl), levels = c(as.character(40:52), as.character(1:20)))) %&gt;%
+  rename(Probability = value) %&gt;%
+  ggplot(aes(week, location)) +
+  geom_tile(aes(fill = Probability)) +
+  scale_fill_distiller(palette = &quot;Spectral&quot;) +
+  theme_minimal() +
+  labs(x = &quot;Week&quot;,
+       y = &quot;State/Territory&quot;,
+       title = &quot;Average Forecast Probability for Peak Week of ILI Activity&quot;,
+       subtitle = &quot;2017-2018 Flu Season&quot;,
+       caption = &quot;Data Source: https://github.com/cdcepi/State_FluSight_Forecasts&quot;)</code></pre>
+<p><img src="/notes/read-repo_files/figure-html/unnamed-chunk-3-1.png" width="768" /></p>
+</div>
