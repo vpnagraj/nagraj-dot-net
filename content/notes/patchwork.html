@@ -1,0 +1,81 @@
+---
+title: "patchwork"
+date: 2020-08-03T17:14:59+00:00
+categories: ["notes"]
+tags: ["R", "ggplot2"]
+summary: "basic usage of patchwork package for arranging plots"
+---
+
+
+
+<p>A colleague recently introduced me to the <a href="https://github.com/thomasp85/patchwork/"><code>patchwork</code> package</a>, which is a set of tools for combining multiple <code>ggplot2</code> plots into a single figure. I’ve used the <code>plot_grid()</code> function from the <a href="https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html"><code>cowplot</code> package</a> to do this sort of thing in the past. What follows will be a demo showing the basics of arranging plots with <code>patchwork</code>.</p>
+<p>The example figure will use <a href="https://github.com/fivethirtyeight/nba-player-advanced-metrics">historical NBA data from FiveThirtyEight</a>. The data includes statistics (three point percentage, blocks per game, offensive efficiency rating, etc) by player for every season from 1977-2020. In total there are 20059 observations of 40 features. For simplicity, we’ll only look at data since 2010. The data is also restricted to only include statistics from players who played in at least 10 games with at least 10 minutes per game.</p>
+<pre class="r"><code>library(tidyverse)
+library(patchwork)
+
+nba_adv &lt;-
+  read_csv(&quot;https://raw.githubusercontent.com/fivethirtyeight/nba-player-advanced-metrics/master/nba-data-historical.csv&quot;) %&gt;%
+  filter(year_id &gt;= 2010) %&gt;%
+  filter(G &gt;= 10 &amp; MPG &gt;= 10)</code></pre>
+<p>Component plots of this data will explore various questions about free throw percentage.</p>
+<p>The first plot summarizes the average free throw percentage by team:</p>
+<pre class="r"><code>ft_team &lt;-
+  nba_adv %&gt;%
+  group_by(team_id) %&gt;%
+  summarise(`FT%` = mean(`FT%`, na.rm = TRUE), .groups = &quot;drop&quot;) %&gt;%
+  ggplot(aes(reorder(team_id, `FT%`), `FT%`)) +
+  geom_col() +
+  coord_flip() +
+  labs(x = NULL) +
+  theme_minimal()
+
+ft_team</code></pre>
+<p><img src="/notes/patchwork_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>The second “plot” will be actually a table showing the data at the individual level. Players who have at least 5 seasons of data are sorted by free throw percentage, with the top 10 shown in the table:</p>
+<pre class="r"><code>ft_player_table &lt;-
+  nba_adv %&gt;%
+  group_by(name_common) %&gt;%
+  summarise(
+    pct = paste0(`FT%`, collapse = &quot;;&quot;),
+    n = n(),
+    se = sd(`FT%`, na.rm = TRUE)/sqrt(n),
+    mean = mean(`FT%`, na.rm = TRUE),
+    mean = round(mean, digits = 2),
+    .groups = &quot;drop&quot;) %&gt;%
+  filter(n &gt;= 5) %&gt;%
+  arrange(desc(mean)) %&gt;%
+  head(10) %&gt;%
+  select(Name = name_common, `FT%` = mean) %&gt;%
+  gridExtra::tableGrob(., rows = NULL)
+
+gridExtra::grid.arrange(ft_player_table)</code></pre>
+<p><img src="/notes/patchwork_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>The last plot will look at the distributions of free throw percentage by position:</p>
+<pre class="r"><code>ft_dist &lt;-
+  nba_adv %&gt;%
+  ggplot(aes(`FT%`)) +
+  geom_density(aes(fill = pos, col = pos)) +
+  theme_minimal() +
+  labs(y = &quot;Density&quot;) +
+  theme(legend.title = element_blank(),
+        legend.position = &quot;bottom&quot;)
+
+ft_dist</code></pre>
+<p><img src="/notes/patchwork_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>OK back to <code>patchwork</code> … we have individual plot objects created. Now to combine them together. We can try several different layouts.</p>
+<pre class="r"><code>ft_team / ft_player_table / ft_dist</code></pre>
+<p><img src="/notes/patchwork_files/figure-html/unnamed-chunk-5-1.png" width="1152" /></p>
+<pre class="r"><code>ft_team + ft_player_table + ft_dist</code></pre>
+<p><img src="/notes/patchwork_files/figure-html/unnamed-chunk-6-1.png" width="1536" /></p>
+<pre class="r"><code>(ft_team + ft_player_table) / ft_dist </code></pre>
+<p><img src="/notes/patchwork_files/figure-html/unnamed-chunk-7-1.png" width="1344" /></p>
+<p>Assuming we like the last one the best, let’s use it again but this time add an annotation to the plot. The <code>plot_annotation()</code> function allows for iterative tags with the “tag_levels” argument. You can also add a title, subtitle, and/or a caption to the figure:</p>
+<pre class="r"><code>(ft_team + ft_player_table) / ft_dist + 
+  plot_annotation(tag_levels = c(&quot;A&quot;),
+                  tag_suffix = &quot;)&quot;,
+                  caption = &quot;Exploration of free throw shooting percentage in the NBA from 2010 to 2020.\nPanel A includes average free throw percentage by team. Franchises that have moved locations in the time frame (i.e. the New Orleans/Charlotte Hornets) are represented twice.\nPanel B features the top 10 players by percentage. Players had to have at least 10 games played, with 10 minutes per game and 5 seasons in the time frame to be included.\nPanel C shows the distribution of free throw percentage by position.\nData source: https://github.com/fivethirtyeight/nba-player-advanced-metrics&quot;,
+                  title = &quot;NBA Free Throw Shooting %&quot;,
+                  subtitle = &quot;2010-2020&quot;,
+                  theme = theme(plot.caption = element_text(hjust = 0)))</code></pre>
+<p><img src="/notes/patchwork_files/figure-html/unnamed-chunk-8-1.png" width="1344" /></p>
+<p><code>patchwork</code> has a lot of other features for making compelling arrangments of graphics. The <a href="https://patchwork.data-imaginist.com/index.html">package vignettes</a> are great resources for learning more.</p>
