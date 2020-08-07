@@ -1,0 +1,153 @@
+---
+title: "gg_zoom()"
+date: 2020-08-06T11:10:14-05:00
+categories: ["notes"]
+tags: ["r", "ggplot2"]
+summary: "function to 'zoom in' with ggplot2"
+---
+
+
+
+<p>While writing a <a href="/notes/patchwork/">recent post about the <code>patchwork</code> package</a> it occurred to me that one use case for arranging plots would be to situate a plot next to a “zoomed in” version of itself. The following walks through an approach to do this using a new function called <code>gg_zoom()</code>. The function definition takes advantage of tidyeval to provide a simple API.</p>
+<p>Given a <code>ggplot2</code> object and a “zoom” command (same syntax as <code>dplyr::filter()</code> statement), <code>gg_zoom()</code> will internally filter the original plot data and then re-issue the initial plot call on the subset. The function includes an option to add a label to points (via <code>ggrepel</code>) if applicable, as well as an option to draw a box around the “zoom” data in the original plot. The original plot and its zoomed version will be returned in a <code>patchwork</code> layout, which can be customized using the same syntax as documented in the package’s <a href="https://patchwork.data-imaginist.com/articles/guides/layout.html">“Controlling Layouts” vignette</a>.</p>
+<p>The examples in the post use <a href="https://github.com/fivethirtyeight/nba-player-advanced-metrics">historical NBA data from FiveThirtyEight</a>. The data includes statistics (three point percentage, blocks per game, offensive efficiency rating, etc) by player for every season from 1977-2020. In total there are 20059 observations of 40 features. For simplicity, we’ll only look at data since 2010. The data is also restricted to only include statistics from players who played in at least 10 games with at least 10 minutes per game.</p>
+<p>To begin we need to read in the data:</p>
+<pre class="r"><code>library(tidyverse)
+library(patchwork)
+
+nba_adv &lt;-
+  readr::read_csv(&quot;https://raw.githubusercontent.com/fivethirtyeight/nba-player-advanced-metrics/master/nba-data-historical.csv&quot;) %&gt;%
+  filter(year_id &gt;= 2010) %&gt;%
+  filter(G &gt;= 10 &amp; MPG &gt;= 10)</code></pre>
+<p>Next, we’ll define the <code>gg_zoom()</code>. Note comments inline describing the function guts:</p>
+<pre class="r"><code>gg_zoom &lt;- function(.plot, zoom_cmd, draw_box = TRUE, box_nudge = 1, to_label = FALSE, label) {
+  
+  ## use enquo for tidyeval syntax
+  zoom_cmd &lt;- dplyr::enquo(zoom_cmd)
+  
+  ## subset data to zoom in on
+  zoom_data &lt;-
+    .plot$data %&gt;%
+    dplyr::filter(!!zoom_cmd) 
+  
+  ## build the &quot;zoom plot&quot; based on the original ggplot object
+  zoom_plot &lt;- .plot
+  ## coerce the data element to be the filtered data
+  zoom_plot$data &lt;- zoom_data
+  
+  ## if label  arg then add a repel text label
+  if(to_label) {
+    
+    ## tidyeval syntax allows for a bare column name to be supplied
+    label &lt;- dplyr::enquo(label)
+    
+    zoom_plot &lt;-
+      zoom_plot +
+      ggrepel::geom_text_repel(aes(label = !!label))
+  }
+  
+  ## if draw box then add a box around data used in zoom
+  if(draw_box) {
+    
+    ## need to get x and y variables (stored as quosures) from ggplot2 object
+    x &lt;- .plot$mapping$x
+    y &lt;- .plot$mapping$y
+    
+    ## create min/max x and y values for box around full plot
+    box_data &lt;- 
+      zoom_data %&gt;%
+      dplyr::summarise(
+        xmin = min(!!x, na.rm = TRUE),
+        xmax = max(!!x, na.rm = TRUE),
+        ymin = min(!!y, na.rm = TRUE),
+        ymax = max(!!y, na.rm = TRUE)) %&gt;%
+    ## add to min and max so that the box sits just outside point
+    dplyr::mutate(
+      xmin = xmin -  box_nudge,
+      xmax = xmax + box_nudge,
+      ymin = ymin -  box_nudge,
+      ymax = ymax +  box_nudge)
+    
+    ## use geom_rect to add to the plot
+    .plot &lt;-
+      .plot +
+      ggplot2::geom_rect(
+        ggplot2::aes(xmin = box_data$xmin, 
+                     xmax = box_data$xmax, 
+                     ymin = box_data$ymin, 
+                     ymax = box_data$ymax), 
+        fill = NA, 
+        col = &quot;grey&quot;, 
+        lty = &quot;dotted&quot;)
+    
+  }
+  
+  ## return in a basic patchwork layout
+  .plot + zoom_plot
+  
+}</code></pre>
+<p>The first example of <code>gg_zoom()</code> will start with a scatter plot of three point percentage by free throw percentage:</p>
+<pre class="r"><code>## scatter plot of 3P% by FT%
+p1 &lt;-
+  nba_adv %&gt;%
+  ## add a column with the player name followed by year in ()
+  ## used for label in plot
+  mutate(name_year = paste0(name_common, &quot; (&quot;, year_id, &quot;)&quot;)) %&gt;%
+  ## remove incontrovertible outliers
+  filter(`3P%` &lt; 100 &amp; `3P%` &gt; 0 &amp; `FT%` &lt; 100 &amp; `FT%` &gt; 0) %&gt;%
+  ggplot(aes(`3P%`, `FT%`)) +
+  geom_point() +
+  ## add a trend line
+  geom_smooth(method = &quot;lm&quot;, se = FALSE, col = &quot;firebrick&quot;) +
+  theme_minimal()
+
+p1</code></pre>
+<p><img src="/notes/gg-zoom_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Now we’ll zoom in on players with seasons that featured particularly good free throw shooting (&gt; 90%) but bad three point percentage (&lt; 20%):</p>
+<pre class="r"><code>gg_zoom(.plot = p1,
+        zoom_cmd = `3P%` &lt; 20 &amp; `FT%` &gt; 90,
+        to_label = TRUE, 
+        label = name_year)</code></pre>
+<p><img src="/notes/gg-zoom_files/figure-html/unnamed-chunk-4-1.png" width="960" /></p>
+<p>As mentioned above, the function returns a <code>patchwork</code> layout, which can be customized:</p>
+<pre class="r"><code>gg_zoom(p1, 
+        zoom_cmd = `3P%` &lt; 20 &amp; `FT%` &gt; 90,
+        to_label = TRUE,
+        label = name_year) +
+  plot_layout(widths = c(3,1))</code></pre>
+<p><img src="/notes/gg-zoom_files/figure-html/unnamed-chunk-5-1.png" width="1344" /></p>
+<pre class="r"><code>layout &lt;- c(
+  area(t = 1, l = 1, b = 5, r = 3),
+  area(t = 1, l = 4, b = 2, r = 5)
+)
+
+gg_zoom(p1, 
+        zoom_cmd = `3P%` &lt; 20 &amp; `FT%` &gt; 90,
+        to_label = TRUE,
+        label = name_year) +
+  plot_layout(design = layout)</code></pre>
+<p><img src="/notes/gg-zoom_files/figure-html/unnamed-chunk-6-1.png" width="960" /></p>
+<p>The second example will be based around a line plot of the average three point percentage by season across the entire NBA (for players who played in at least 10 games with at least 10 minutes per game):</p>
+<pre class="r"><code>## line plot of average 3P% by season
+p2 &lt;-
+  nba_adv %&gt;%
+  ## get average three point percentage by year
+  group_by(year_id) %&gt;%
+  summarise(`3P%` = mean(`3P%`, na.rm = TRUE),
+            .groups = &quot;drop&quot;) %&gt;%
+  ggplot(aes(year_id, `3P%`)) +
+  geom_point(size = 2, col = &quot;royalblue3&quot;) +
+  geom_line(lwd = 1.5, col = &quot;royalblue4&quot;) +
+  scale_x_continuous(breaks = seq(2010,2020, by = 1)) +
+  labs(x = &quot;Year&quot;) +
+  theme_minimal()
+
+p2</code></pre>
+<p><img src="/notes/gg-zoom_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>gg_zoom(p2, 
+        zoom_cmd = year_id &gt; 2012 &amp; year_id &lt; 2017,
+        to_label = FALSE,
+        draw_box = TRUE,
+        box_nudge = 0.025) +
+  plot_layout(ncol = 1)</code></pre>
+<p><img src="/notes/gg-zoom_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
