@@ -1,0 +1,184 @@
+---
+title: "threejs and covid-19"
+date: 2020-08-08T11:10:14-05:00
+categories: ["notes"]
+tags: ["r", "JavaScript"]
+summary: "visualizing the pandemic in three dimensions"
+---
+
+There are many efforts in place to collect, curate, and distribute data about the COVID-19 pandemic. As a result, many folks have contributed methods to visually and statistically understand the spread of the disease. This post will walk through code to use the [`threejs` R package](https://cran.r-project.org/web/packages/threejs/index.html) to look at cases globally as well by state for the United States.
+
+```{r, setup, include = FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+First, a little bit about `threejs`. The package is an interface for the [`three.js` JavaScript library](https://threejs.org/). The `globejs()` function in the package allows users to render an interactive, three dimensional globe.
+
+A minimal example:
+
+```{r}
+library(threejs)
+
+globejs(bg = "firebrick")
+```
+
+We'll use `globejs()` to create an interactive visualization of COVID-19 cases around the world. To do so, we need data describing the pandemic. [Our World In Data (OWID)](https://ourworldindata.org/coronavirus) makes all visualizations and databases publicly available[^owid-license]. The OWID coronavirus dataset includes a number of variables, including country name, date, and total number of COVID-19 cases. However, this data does not include the latitude and longitude of each country. [Google's Dataset Publishing Language project](https://github.com/google/dspl) makes coordinate data publicly available[^dspl-license].
+
+For the visualization, we'll look at a scaled version of the total number of cases in each country as of August 6, 2020.
+
+[^owid-license]: From the [OWID FAQ](https://ourworldindata.org/faqs#can-i-use-your-data-and-visualizations-in-my-article-blog-book-presentations): "Visualizations and text are licensed under [Creative Commons BY-SA](https://creativecommons.org/licenses/by-sa/3.0/au/) and may be freely used for any purpose. The data in all interactive charts is available for download – you can find it under the Data tab at the bottom of the visualisation." No changes were made to the original content as it is used here.
+[^dspl-license]: Per the [DSPL countries.csv page](https://developers.google.com/public-data/docs/canonical/countries_csv), this dataset is licensed under the [Creative Commons Attribution 4.0 License](https://creativecommons.org/licenses/by/4.0/). No changes were made to the original content as it is used here.
+
+```{r}
+library(tidyverse)
+
+## data prep
+lat_lon <- 
+  ## read file with country lat/lon directly from DSPL github
+  read_csv("https://raw.githubusercontent.com/google/dspl/master/samples/google/canonical/countries.csv") %>%
+  ## rename the column with country name for joining
+  rename(location = name)
+
+covid_world <-
+  ## read in owid covid data
+  read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv") %>%
+  ## subset to august 6, 2020
+  filter(date == as.Date("2020-08-06", format = "%Y-%m-%d")) %>%
+  ## join to lat lon for coordinates
+  left_join(lat_lon) %>%
+  filter(location != "World") %>%
+  ## create scaled version of case counts for plot
+  mutate(scaled = 1000 * total_cases / max(total_cases))
+```
+
+```{r}
+## render the globe
+## NOTE: the "value" corresponds to height of bar
+globejs(lat = covid_world$latitude, 
+        lon = covid_world$longitude,
+        color = "firebrick",
+        value = covid_world$scaled)
+```
+
+Next we can make a similar visualization for the distribution of cases in the United States across states and territories. The data for this will come from the [COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19)[^jhu-license]
+
+[^jhu-license]: From the [CSSE GitHub repository](https://github.com/CSSEGISandData/COVID-19) terms of use: "This data set is licensed under the [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) by the Johns Hopkins University on behalf of its Center for Systems Science in Engineering. Copyright Johns Hopkins University 2020." No changes were made to the original content as it is used here.
+
+To retrieve the data, we'll need to define a couple of helper functions. The `read_repo()` function (more details in a [previous post](/notes/read-repo/)) compiles all `.csv` files in the JHU CSSE COVID-19 repository. Each of these has daily case counts by state, along with latitude and longitude coordinates. The second helper function (`read_counts()`) is a modified version of `read_csv()` that adds a column for the date of each file. 
+
+```{r}
+read_repo <- function(repo, branch = "master", pattern = NULL, to_tibble = TRUE, .f = read_csv, ...) {
+  
+  ## construct GET request from the repo and branch
+  api_request <- httr::GET(paste0("https://api.github.com/repos/", 
+                                  repo, 
+                                  "/git/trees/",
+                                  branch,
+                                  "?recursive=1"))
+  
+  ## extract path element from the API response
+  repo_files <- purrr::map_chr(httr::content(api_request)$tree, "path")
+  
+  ## if a pattern is passed use it to parse files of interest
+  if(!is.null(pattern)) {
+    repo_files <- repo_files[grepl(pattern, repo_files)]
+  }
+  
+  ## construct raw content URLs to files of interest
+  repo_files <- file.path("https://raw.githubusercontent.com",
+                          repo,
+                          branch,
+                          repo_files)
+  
+  message(repo_files)
+  
+  ## check that the value passed to .f is a function available in the environment
+  .f <- match.fun(.f)
+  
+  ## if to_tibble then use map_df() to compile results as a tibble
+  ## otherwise return a list via map()
+  if(to_tibble) {
+    purrr::map_df(repo_files, .f = .f, ...)
+  } else {
+    purrr::map(repo_files, .f = .f, ...)
+  }
+  
+}
+
+read_counts <- function(file) {
+  
+  message(sprintf("Reading file: %s", file))
+  tmp <- readr::read_csv(file, col_types = readr::cols())
+  tmp$date <- tools::file_path_sans_ext(basename(file))
+  
+  tmp
+  
+}
+```
+
+```{r}
+covid_usa <- 
+  read_repo(repo = "CSSEGISandData/COVID-19",
+            pattern = "csse_covid_19_data/csse_covid_19_daily_reports_us/.*.csv$",
+            to_tibble = TRUE,
+            .f = read_counts)
+```
+
+With the data compiled we can put counts on the globe. We'll look at a single date (August 6, 2020). Again, we'll scale the total confirmed cases that will be passed to the "value" argument. The initial rotation coordinates are set with "rotationlong" and "rotationlat" and the zoom level is defined with the "fov" argument. Note that the scale sets each state's value relative to the maximum of all states. In other words, the height of the bars should not be compared to the height of bars in the first plot of cases across the world.
+
+```{r}
+latest <- 
+  covid_usa %>% 
+  filter(date == "08-06-2020")
+
+globejs(lat = latest$Lat, 
+        lon = latest$Long_,
+        color = "firebrick",
+        ## scale value
+        value = 100 * (latest$Confirmed / max(latest$Confirmed)),
+        ## set the starting zoom
+        fov = 20,
+        ## set the starting rotation coordinates
+        rotationlong = 49.8,
+        rotationlat = -49.8)
+```
+
+Last of all, the code below (not run) will loop over a sequence of dates (one week increments) regenerating the globe at each iteration. The visualizations will effectively animate the evolution of the outbreak by state.
+
+```{r, eval = FALSE}
+## get dates
+dates <- sort(unique(covid_usa$date))
+## get dates in one week increments
+weeks <- dates[seq(1, length(dates), 7)]
+
+## loop over each date 
+for(d in weeks) {
+  ## subset the date for the given date
+  tmp <- filter(covid_usa, date == d)
+  ## message with the date
+  message(d)
+  ## have to include print() inside for loop
+  print(
+    globejs(lat = tmp$Lat,
+            lon = tmp$Long_,
+            ## color of bars
+            color = "firebrick",
+            ## scale value
+            value = 100 * (tmp$Confirmed / max(tmp$Confirmed)),
+            ## set the starting zoom
+            fov = 20,
+            ## set the starting rotation coordinates
+            rotationlong = 49.8,
+            rotationlat = -49.8,
+            ## use a white background
+            bg = "white")
+    )
+    
+  ## pause for 1 second between plots
+  Sys.sleep(1)
+}
+```
+

@@ -13,6 +13,15 @@
     
     
     <item>
+      <title>threejs and covid-19</title>
+      <link>/notes/threejs-covid/</link>
+      <pubDate>Sat, 08 Aug 2020 11:10:14 -0500</pubDate>
+      
+      <guid>/notes/threejs-covid/</guid>
+      <description>visualizing the pandemic in three dimensions</description>
+    </item>
+    
+    <item>
       <title>gg_zoom()</title>
       <link>/notes/gg-zoom/</link>
       <pubDate>Thu, 06 Aug 2020 11:10:14 -0500</pubDate>
