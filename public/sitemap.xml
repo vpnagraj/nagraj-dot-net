@@ -4,6 +4,45 @@
     
     <url>
     
+      <loc>/publication_types/2/</loc>
+      <lastmod>2020-10-12T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication/smc-ms/</loc>
+      <lastmod>2020-10-12T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/publication_types/</loc>
+      <lastmod>2020-10-12T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
+      <loc>/</loc>
+      <lastmod>2020-10-12T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    
+    <url>
+    
       <loc>/categories/</loc>
       <lastmod>2020-08-08T11:10:14-05:00</lastmod>
       <priority>0</priority>
@@ -35,16 +74,6 @@
     <url>
     
       <loc>/tags/</loc>
-      <lastmod>2020-08-08T11:10:14-05:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/</loc>
       <lastmod>2020-08-08T11:10:14-05:00</lastmod>
       <priority>0</priority>
     </url>
@@ -94,26 +123,6 @@
     
       <loc>/notes/patchwork/</loc>
       <lastmod>2020-08-03T17:14:59+00:00</lastmod>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/publication_types/2/</loc>
-      <lastmod>2020-08-01T00:00:00+00:00</lastmod>
-      <priority>0</priority>
-    </url>
-    
-  
-    
-    
-    <url>
-    
-      <loc>/publication_types/</loc>
-      <lastmod>2020-08-01T00:00:00+00:00</lastmod>
-      <priority>0</priority>
     </url>
     
   
