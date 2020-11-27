@@ -1,0 +1,136 @@
+---
+title: "Modeling in Groups Using the dplyr group_modify Function"
+date: 2020-11-27T11:10:14-05:00
+categories: ["notes"]
+tags: ["r", "dplyr"]
+summary: "models with dplyr::group_modify()"
+---
+
+
+```{r, setup, include = FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+The `group_by()` function in **dplyr** adds a "groups" attribute to a `tibble`:
+
+```{r}
+library(tidyverse)
+
+msleep
+
+grpd_msleep <-
+  msleep %>%
+  group_by(vore)
+
+grpd_msleep
+
+attributes(grpd_msleep)$groups
+```
+
+You can compute summary measures like `mean()` and `sd()` of values in other columns in the `tibble` within groups. Another use-case would be to run statistical tests or models within each grouping. The `group_modify()` function in **dplyr** makes it relatively easy to do that.
+
+The following will use the `Titanic` data set to demonstrate how to run a logistic regression model with `group_modify()`.
+
+First, the `Titanic` data needs to be converted from a `table` object to a `tibble`.
+
+```{r}
+Titanic %>%
+  ## convert to tibble
+  as_tibble()
+```
+
+Next, we need to convert the data from a summary of counts per group to one row per observation. Here we'll use `uncount()` from the **tidyr** package, using the variable "n" as the weight (i.e. number of times to repeat each row).
+
+```{r}
+Titanic %>%
+  ## convert to tibble
+  as_tibble() %>%
+  ## expand counts
+  uncount(n)
+```
+
+For this example we will run logistic regression to ascertain odds of survival by sex, stratified by passenger class. In order to make sure we're interpreting the output correctly, we coerce the "Survived" and "Sex" columns to factors and explicitly define the reference levels. 
+
+Note that this code uses `as_factor()` and `fct_relevel()` from **forcats**.
+
+```{r}
+Titanic %>%
+  ## convert to tibble
+  as_tibble() %>%
+  ## expand counts
+  uncount(n) %>%
+  ## convert 'Survived' column to factor and relevel
+  ## same for `Sex`
+  mutate(Survived = as_factor(Survived),
+         Survived = fct_relevel(Survived, c("Yes","No")),
+         Sex = as_factor(Sex),
+         Sex = fct_relevel(Sex, c("Female", "Male")))
+```
+
+Next we'll group by the "Class" variable. The logistic regression to follow will be performed independently on each group of the data.
+
+```{r}
+Titanic %>%
+  ## convert to tibble
+  as_tibble() %>%
+  ## expand counts
+  uncount(n) %>%
+  ## convert 'Survived' column to factor and relevel
+  ## same for `Sex`
+  mutate(Survived = as_factor(Survived),
+         Survived = fct_relevel(Survived, c("Yes","No")),
+         Sex = as_factor(Sex),
+         Sex = fct_relevel(Sex, c("Female", "Male"))) %>%
+  ## group by 'Class'
+  group_by(Class)
+```
+
+With the grouping in place we can run the logistic regression with `glm(..., family = binomial)`. The "Survived" variable is the response and "Sex" is the predictor. Again, this will operate independently on each group (passenger class) in the data. The `.f` argument to `group_modify()` can accept either a function or formula notation. In this case we use the formula (with `~`) because that allows us to refer to the subset of the rows in each "Class" group.
+
+There are four levels of the "Class" variable, and therefore the output of the `glm()` will be four different model objects. When wrapped around this output, the `tidy()` function from **broom** stacks the summary of coefficients from each of these models on top of one another in a `tibble`.
+
+```{r}
+Titanic %>%
+  ## convert to tibble
+  as_tibble() %>%
+  ## expand counts
+  uncount(n) %>%
+  ## convert 'Survived' column to factor and relevel
+  ## same for `Sex`
+  mutate(Survived = as_factor(Survived),
+         Survived = fct_relevel(Survived, c("Yes","No")),
+         Sex = as_factor(Sex),
+         Sex = fct_relevel(Sex, c("Female", "Male"))) %>%
+  ## group by 'Class'
+  group_by(Class) %>%
+  ## run logistic regression for survival status by sex within classes
+  group_modify(.f = ~ broom::tidy(glm(Survived ~ Sex, data = .x, family = binomial)))
+```
+
+Finally we'll exponentiate the beta coefficients to get the odds ratio. Then do a little bit of clean up to filter out the estimates for the intercept terms and only select the "Class" and odds ratio ("OR") columns.
+
+```{r}
+Titanic %>%
+  ## convert to tibble
+  as_tibble() %>%
+  ## expand counts
+  uncount(n) %>%
+  ## convert 'Survived' column to factor and relevel
+  ## same for `Sex`
+  mutate(Survived = as_factor(Survived),
+         Survived = fct_relevel(Survived, c("Yes","No")),
+         Sex = as_factor(Sex),
+         Sex = fct_relevel(Sex, c("Female", "Male"))) %>%
+  ## group by 'Class'
+  group_by(Class) %>%
+  ## run logistic regression for survival status by sex within classes
+  group_modify(~ broom::tidy(glm(Survived ~ Sex, data = .x, family = binomial))) %>%
+  ## exponentiate beta coefficient to get odds ratio
+  mutate(OR = exp(estimate)) %>%
+  ## clean up
+  filter(term != "(Intercept)") %>%
+  select(Class, OR)
+```
