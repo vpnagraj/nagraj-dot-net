@@ -1,9 +1,9 @@
 +++
-title = "Analyzing Library Services Using Customer Relationship Managment Data and R Programming "
-date = "2015-09-01"
+title = "Predicting 'Sepsis Ruled In' in Very Low Birth Weight NICU patients: A 3-NICU collaboration"
+date = "2019-04-24"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["**VP Nagraj**", "MS Nunemaker"]
+authors = ["BA Sullivan", "**VP Nagraj**", "KL Berry", "R Kumar",  "N Fleiss", "A Wallman-Stokes", "A Rambhia", "Z Vesoulis","R Sahni", "A Mathur","JR Moorman", "DE Lake", "KD Fairchild"]
 
 # Publication type.
 # Legend:
@@ -14,11 +14,10 @@ authors = ["**VP Nagraj**", "MS Nunemaker"]
 # 4 = Technical report
 # 5 = Book
 # 6 = Book chapter
-publication_types = ["2"]
+publication_types = ["1"]
 
 # Publication name and optional abbreviated version.
-publication = "Journal of the Medical Library Association"
-# publication_short = "In *ICMEW*"
+publication = "Poster presented at Pediatric Academic Sciences Meeting, Baltimore"
 
 # Abstract and optional shortened version.
 abstract = ""
@@ -32,7 +31,7 @@ selected = true
 # Projects (optional).
 #   Associate this publication with one or more of your projects.
 #   Simply enter the filename (excluding '.md') of your project file in `content/project/`.
-# projects = ["example-external-project"]
+projects = ["nicu"]
 
 # Links (optional).
 url_pdf = ""
@@ -47,7 +46,7 @@ url_source = ""
 
 # Custom links (optional).
 #   Uncomment line below to enable. For multiple links, use the form `[{...}, {...}, {...}]`.
-url_custom = [{name = "doi.org/10.3163/1536-5050.103.4.015", url = "http://doi.org/10.3163/1536-5050.103.4.015"}]
+# url_custom = [{name = "doi.org/10.21105/joss.00463", url = "http://doi.org/10.21105/joss.00463"}]
 
 # Does the content use math formatting?
 math = true
