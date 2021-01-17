@@ -6,6 +6,8 @@ categories: ["notes"]
 summary: 'how to make animated GIF images using the magick R package'
 ---
 
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <p>With R you can turn a collection of images into an animated GIF. That can be useful for animating plots or for converting a series of arbitrary image files (not created in R) into an animation. The following will include examples of both use-cases, with a reproducible demo of the former.</p>
@@ -90,7 +92,7 @@ img_animated
 image_write(image = img_animated,
             path = &quot;tx-sales.gif&quot;)</code></pre>
 <p><img src="/img/tx-sales.gif" /></p>
-<p>To be clear … the example above is contrived to reproducibly demonstrate the <code>magick</code> functionse.</p>
+<p>To be clear … the example above is contrived to reproducibly demonstrate the <code>magick</code> functions.</p>
 <p>Another (maybe more straightforward) approach to the example outlined above would be to use <code>gganimate</code>:</p>
 <pre class="r"><code>library(gganimate)
 

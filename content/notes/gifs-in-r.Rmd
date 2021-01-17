@@ -100,7 +100,7 @@ image_write(image = img_animated,
 
 ![](/img/tx-sales.gif)
 
-To be clear ... the example above is contrived to reproducibly demonstrate the `magick` functionse. 
+To be clear ... the example above is contrived to reproducibly demonstrate the `magick` functions. 
 
 Another (maybe more straightforward) approach to the example outlined above would be to use `gganimate`:
 
