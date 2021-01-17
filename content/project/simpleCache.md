@@ -15,7 +15,7 @@ image_preview = "code.png"
 # Example: `tags = ["machine-learning", "deep-learning"]`
 tags = ["sw-dev"]
 
-badges = ["https://travis-ci.org/databio/simpleCache.svg?branch=master", "https://cran.r-project.org/package=simpleCache"]
+badges = ["https://travis-ci.org/databio/simpleCache.svg?branch=master","http://www.r-pkg.org/badges/version/simpleCache"]
 
 # Optional external URL for project (replaces project detail page).
 external_link = ""
