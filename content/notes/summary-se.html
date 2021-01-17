@@ -6,6 +6,8 @@ tags: ["dplyr", "R"]
 summary: "explorations with tidyeval"
 ---
 
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <p>I’ve found myself on Winston Chang’s <a href="http://www.cookbook-r.com/">cookbook-r website</a> a number of times before. My most recent visit was to refresh my memory on the strategy for plotting means with error bars with <code>ggplot2</code>:</p>
@@ -16,7 +18,7 @@ summary: "explorations with tidyeval"
 <pre class="r"><code>## Summarizes data.
 ## Gives count, mean, standard deviation, standard error of the mean, and confidence interval (default 95%).
 ##   data: a data frame.
-##   measurevar: the name of a column that contains the variable to be summariezed
+##   measurevar: the name of a column that contains the variable to be summarized
 ##   groupvars: a vector containing names of columns that contain grouping variables
 ##   na.rm: a boolean that indicates whether to ignore NA&#39;s
 ##   conf.interval: the percent range of the confidence interval (default is 95%)
@@ -76,11 +78,11 @@ summarySE &lt;- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 ## 6   VC  2.0 10 26.14 4.797731 1.5171757 2.781154</code></pre>
 <div id="tidyeval-approach" class="section level3">
 <h3><code>tidyeval</code> approach</h3>
-<p>The cookbook-r site includes several solutions to the “Summary SE” problem. The <code>summarySE()</code> function (above) works well, and includes comments explaining each parameter. However, given my inexperience with <code>plyr</code> I find the code a little hard to understand … or at least harder than if it were written with <code>dplyr</code>. I decided to try to translate <code>summarySE()</code> into a syntax that I could use in a pipline with <code>%&gt;%</code>. To do so, I needed to learn a little about the <a href="https://tidyeval.tidyverse.org/"><code>tidyeval</code> framework</a> and its programming paradigm.</p>
+<p>The cookbook-r site includes several solutions to the “Summary SE” problem. The <code>summarySE()</code> function (above) works well, and includes comments explaining each parameter. However, given my inexperience with <code>plyr</code> I find the code a little hard to understand … or at least harder than if it were written with <code>dplyr</code>. I decided to try to translate <code>summarySE()</code> into a syntax that I could use in a pipeline with <code>%&gt;%</code>. To do so, I needed to learn a little about the <a href="https://tidyeval.tidyverse.org/"><code>tidyeval</code> framework</a> and its programming paradigm.</p>
 <p>The code for the new function (<code>summary_se()</code>) is below, along with the same ToothGrowth example as above.</p>
 <p>A few notes from my exploration:</p>
 <ul>
-<li><code>enquo()</code> caputures the bare variable name, and <code>!!</code> in a subsequent <code>dplyr</code> call will reference that variable</li>
+<li><code>enquo()</code> captures the bare variable name, and <code>!!</code> in a subsequent <code>dplyr</code> call will reference that variable</li>
 <li><code>enquos()</code> and <code>!!!</code> work in a similar matter but can capture multiple variable names passed in via <code>...</code></li>
 <li>It’s good practice to prefix argument names with <code>.</code> when writing functions that use <code>tidyeval</code> … the reason being that it is not likely that a user would have an existing column name that starts with <code>.</code></li>
 </ul>

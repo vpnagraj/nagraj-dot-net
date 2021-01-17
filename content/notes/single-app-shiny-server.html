@@ -6,13 +6,15 @@ tags: ["R", "Shiny"]
 summary: "shiny server for a single app"
 ---
 
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <p>If you’ve written a Shiny app and have reached a point where you would like to share it with others … you have a few options:</p>
 <p><a href="https://shiny.rstudio.com/deploy/" class="uri">https://shiny.rstudio.com/deploy/</a></p>
 <p>Given that you have hardware (or a cloud setup) to install a server, <a href="https://www.rstudio.com/products/shiny/download-server/">Shiny Server Open Source</a> may be a good solution.</p>
 <p>I’ve deployed dozens of apps on different Shiny servers. In some cases, I may need a single server that hosts an entire directory of apps. With this configuration (the default for Shiny Server Open Source) each app is available at {url}/{app-name}.</p>
-<p>However, I occassionally want a server to host a single application that will be available at {url}. In this case, I just need to adjust a few parameters in server configuration. Below is an example <code>shiny-server.conf</code> file for an app called “prod” that lives in <code>/srv/shiny-server/prod</code> on the host machine:</p>
+<p>However, I occasionally want a server to host a single application that will be available at {url}. In this case, I just need to adjust a few parameters in server configuration. Below is an example <code>shiny-server.conf</code> file for an app called “prod” that lives in <code>/srv/shiny-server/prod</code> on the host machine:</p>
 <pre><code># Define the user we should use when spawning R Shiny processes
 run_as shiny;
 
@@ -41,7 +43,7 @@ server {
 }</code></pre>
 <p>Note that the parameters of interest for this post are:</p>
 <ul>
-<li><code>listen</code> … explicitly tell the server to <code>listen 80</code> so that apps are served at port 80 … otherwise you’ll need to specify the port number after the url (i.e. {url}:3737)</li>
+<li><code>listen</code> … explicitly tell the server to <code>listen 80</code> so that apps are served at port 80 … otherwise you’ll need to specify the port number after the url (i.e. {url}:3737)</li>
 <li><code>location</code> … we don’t want to pass any special location to the base URL since we’re defining an <code>app_dir</code> (see below) … so <code>location /</code> should work fine</li>
 <li><code>app_dir</code> … rather than serving up an entire directory of apps, we just have one … make sure the <code>app_dir</code> specifies the directory where the app is on the host machine (usually <code>/srv/shiny-server/{app-name}</code>)</li>
 </ul>

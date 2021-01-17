@@ -24,7 +24,7 @@ Below is the code for the function, along with a working example of how to use i
 ## Summarizes data.
 ## Gives count, mean, standard deviation, standard error of the mean, and confidence interval (default 95%).
 ##   data: a data frame.
-##   measurevar: the name of a column that contains the variable to be summariezed
+##   measurevar: the name of a column that contains the variable to be summarized
 ##   groupvars: a vector containing names of columns that contain grouping variables
 ##   na.rm: a boolean that indicates whether to ignore NA's
 ##   conf.interval: the percent range of the confidence interval (default is 95%)
@@ -81,13 +81,13 @@ detach("package:plyr", unload = TRUE)
 
 ### `tidyeval` approach
 
-The cookbook-r site includes several solutions to the "Summary SE" problem. The `summarySE()` function (above) works well, and includes comments explaining each parameter. However, given my inexperience with `plyr` I find the code a little hard to understand ... or at least harder than if it were written with `dplyr`. I decided to try to translate `summarySE()` into a syntax that I could use in a pipline with `%>%`. To do so, I needed to learn a little about the [`tidyeval` framework](https://tidyeval.tidyverse.org/) and its programming paradigm.
+The cookbook-r site includes several solutions to the "Summary SE" problem. The `summarySE()` function (above) works well, and includes comments explaining each parameter. However, given my inexperience with `plyr` I find the code a little hard to understand ... or at least harder than if it were written with `dplyr`. I decided to try to translate `summarySE()` into a syntax that I could use in a pipeline with `%>%`. To do so, I needed to learn a little about the [`tidyeval` framework](https://tidyeval.tidyverse.org/) and its programming paradigm.
 
 The code for the new function (`summary_se()`) is below, along with the same ToothGrowth example as above.
 
 A few notes from my exploration:
 
-- `enquo()` caputures the bare variable name, and `!!` in a subsequent `dplyr` call will reference that variable
+- `enquo()` captures the bare variable name, and `!!` in a subsequent `dplyr` call will reference that variable
 - `enquos()` and `!!!` work in a similar matter but can capture multiple variable names passed in via `...`
 - It's good practice to prefix argument names with `.` when writing functions that use `tidyeval` ... the reason being that it is not likely that a user would have an existing column name that starts with `.`
 

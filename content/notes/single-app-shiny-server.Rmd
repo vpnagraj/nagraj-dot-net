@@ -14,7 +14,7 @@ Given that you have hardware (or a cloud setup) to install a server, [Shiny Serv
 
 I've deployed dozens of apps on different Shiny servers. In some cases, I may need a single server that hosts an entire directory of apps. With this configuration (the default for Shiny Server Open Source) each app is available at {url}/{app-name}. 
 
-However, I occassionally want a server to host a single application that will be available at {url}. In this case, I just need to adjust a few parameters in server configuration. Below is an example `shiny-server.conf` file for an app called "prod" that lives in `/srv/shiny-server/prod` on the host machine:
+However, I occasionally want a server to host a single application that will be available at {url}. In this case, I just need to adjust a few parameters in server configuration. Below is an example `shiny-server.conf` file for an app called "prod" that lives in `/srv/shiny-server/prod` on the host machine:
 
 ```
 # Define the user we should use when spawning R Shiny processes

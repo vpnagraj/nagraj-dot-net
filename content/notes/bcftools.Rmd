@@ -255,7 +255,7 @@ read_tsv("data/bcftools/merged.out",
 
 ### <a name="parsemulti"></a>Parse genotypes for multiple samples
 
-Given that you have a mutli-sample `.vcf` you can parse genotypes for each individual: 
+Given that you have a multi-sample `.vcf` you can parse genotypes for each individual: 
 
 ```{bash}
 bcftools query -f '[%CHROM\t%POS\t%SAMPLE\t%TGT\n]' NA20536.HG03718.clinvar.vcf.gz

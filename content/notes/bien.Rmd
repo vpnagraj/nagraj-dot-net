@@ -34,10 +34,10 @@ library(knitr)
 
 ## Occurrence
 
-BIEN includes occurence data on the species level. The code below queries the database for Western Sumac (*Rhus copallanium*) and returns an interactive map with markers for all of the places where the species has been documented.
+BIEN includes occurrence data on the species level. The code below queries the database for Western Sumac (*Rhus copallanium*) and returns an interactive map with markers for all of the places where the species has been documented.
 
 ```{r, eval = FALSE}
-# retrieve occurrenc data for western sumac
+# retrieve occurrence data for western sumac
 wsumac <- BIEN_occurrence_species(species = "Rhus copallinum")
 
 # plot points on map
