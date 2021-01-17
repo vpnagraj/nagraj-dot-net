@@ -1,0 +1,71 @@
+---
+title: "color_loop()"
+date: 2021-01-17T17:14:59+00:00
+categories: ["notes"]
+tags: ["R", "ggplot2"]
+summary: "iteratively visualizing color scales"
+---
+
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+
+<p>The <code>color_loop()</code> function described below will iterate over a vector of color names and display each color. The function creates an empty <code>ggplot2</code> plot that has its background sequentially filled with the given colors. Optionally, the name or hex value for the color will be shown in the plot as well. The delay between each color and the number of iterations are also parameters.</p>
+<pre class="r"><code>#&#39; Color loop
+#&#39;
+#&#39; @param colors Vector of colors over which to loop
+#&#39; @param loop Number of iterations; default is `10`
+#&#39; @param delay Delay in seconds between each color; default is `0.5`
+#&#39; @param label Logical to show the hex value or name for the color; default is `FALSE`
+#&#39; @param label_color Character vector to specify the color of the label text if applicable; default is `&#39;black&#39;`
+#&#39; @param boomerang Logical as to whether or not to reverse loop in each iteration; default is `FALSE`
+
+color_loop &lt;- function(colors =  c(&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;yellow&quot;, &quot;violet&quot;),
+                       loop = 10,
+                       delay = 0.5,
+                       label = FALSE,
+                       label_color = &quot;black&quot;,
+                       boomerang = FALSE) {
+  
+  clock &lt;- 1
+  runtime &lt;- loop * (length(colors) * delay)
+  message(sprintf(&quot;EXPECTED RUNTIME: %#.1f SECONDS&quot;, round(runtime, 2)))
+  while(clock &lt; loop) {
+    
+    for(color in seq_along(colors)) {
+      
+      if(label) {
+        p &lt;-
+          ggplot2::ggplot() +
+          ggplot2::geom_text(ggplot2::aes(x = 1,
+                                          y = 1,
+                                          label = colors[color]),
+                             size = 40,
+                             color = label_color) +
+          ggplot2::theme_void() +
+          ggplot2::theme(panel.background = ggplot2::element_rect(fill = colors[color]))
+      } else {
+             p &lt;-
+               ggplot2::ggplot() +
+               ggplot2::theme(panel.background = ggplot2::element_rect(fill = colors[color]))
+      }
+      print(p)
+      Sys.sleep(delay)
+    }
+    
+    if(boomerang) {
+      colors &lt;- rev(colors)
+    }
+    clock &lt;- clock + 1
+    
+  }
+  
+}</code></pre>
+<p>The examples below show the function in action with different color scales.</p>
+<p>Note that the images in this post are .gif files captured for demonstration purposes and will continuously loop. If used interactively, the function will iterate a fixed number of times as specified by “loop” argument (default 10).</p>
+<pre class="r"><code>rgbyv &lt;- c(&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;yellow&quot;, &quot;violet&quot;)
+color_loop(colors = rgbyv, label = TRUE, delay = 1)</code></pre>
+<p><img src="/img/rgbyv.gif" /></p>
+<pre class="r"><code>cms &lt;- cm.colors(20)
+color_loop(colors = cms, delay = 0.1, boomerang = TRUE)</code></pre>
+<p><img src="/img/cms.gif" /></p>
