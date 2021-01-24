@@ -1,0 +1,253 @@
+---
+title: "expand and complete with tidyr"
+date: 2021-01-24T17:14:59+00:00
+categories: ["notes"]
+tags: ["R", "dplyr"]
+summary: "demonstration of tidyr::expand() and tidyr::complete() with helpers"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+The `tidyr` package features some of the most useful data manipulation utilities in R. This post demonstrates `expand()` and `complete()`, which can be used to create data frames based on combinations of variables.
+
+## Data prep
+
+First, we'll prep some data for the example. The code below creates a `tibble` with the records for the UVA and Gonzaga men's basketball programs for two recent seasons. Gonzaga has data for the 2016-2017 and 2017-2018 seasons and UVA has data for the 2017-2018 and 2018-2019. Each row includes wins and losses for the given team and season, aggregated to the opponent conference:
+
+```{r}
+library(tidyr)
+library(dplyr)
+
+mcbb_teams <-
+  tribble(~ team, ~ opp_conf, ~ season, ~ wins, ~ losses,
+          "UVA", "ACC", "2018-2019", 17, 3,
+          "UVA", "Colonial", "2018-2019", 2, 0,
+          "UVA", "Atlantic 10", "2018-2019", 3, 0,
+          "UVA", "MEAC", "2018-2019", 2, 0,
+          "UVA", "Conference USA", "2018-2019", 2, 0,
+          "UVA", "Big Ten", "2018-2019", 3, 0,
+          "UVA", "SEC", "2018-2019", 2, 0,
+          "UVA", "Big South", "2018-2019", 1, 0,
+          "UVA", "Big 12", "2018-2019", 2, 0,
+          "UVA", "Pac-12", "2018-2019", 1, 0,
+          "UVA", "ACC", "2017-2018", 20, 1,
+          "UVA", "Big 12", "2017-2018", 0, 1,
+          "UVA", "Southern", "2017-2018", 1, 0,
+          "UVA", "Ohio Valley", "2017-2018", 1, 0,
+          "UVA", "MAAC", "2017-2018", 1, 0,
+          "UVA", "MEAC", "2017-2018", 2, 0,
+          "UVA", "American East", "2017-2018", 0, 1,
+          "UVA", "Atlantic 10", "2017-2018", 3, 0,
+          "UVA", "Patriot League", "2017-2018", 1, 0,
+          "UVA", "SEC", "2017-2018", 1, 0,
+          "UVA", "Big Ten", "2017-2018", 1, 0,
+          "Gonzaga", "WCC", "2017-2018", 20, 1,
+          "Gonzaga", "Southern", "2017-2018", 1, 0,
+          "Gonzaga", "ACC", "2017-2018", 0, 1,
+          "Gonzaga", "Big Ten", "2017-2018", 2, 0,
+          "Gonzaga", "Mountain West", "2017-2018", 1, 1,
+          "Gonzaga", "Big East", "2017-2018", 1, 1,
+          "Gonzaga", "SWAC", "2017-2018", 1, 0,
+          "Gonzaga", "MEAC", "2017-2018", 1, 0,
+          "Gonzaga", "SEC", "2017-2018", 0, 1,
+          "Gonzaga", "Big 12", "2017-2018", 1, 0,
+          "Gonzaga", "Pac-12", "2017-2018", 1, 0,
+          "Gonzaga", "Big Sky", "2017-2018", 1, 0,
+          "Gonzaga", "Horizon", "2017-2018", 1, 0,
+          "Gonzaga", "Southland", "2017-2018", 1, 0,
+          "Gonzaga", "WCC", "2016-2017", 20, 1,
+          "Gonzaga", "WAC", "2016-2017", 1, 0,
+          "Gonzaga", "Mountain West", "2016-2017", 1, 0,
+          "Gonzaga", "Northeast", "2016-2017", 1, 0,
+          "Gonzaga", "MAAC", "2016-2017", 1, 0,
+          "Gonzaga", "SWAC", "2016-2017", 1, 0,
+          "Gonzaga", "SEC", "2016-2017", 3, 0,
+          "Gonzaga", "Big 12", "2016-2017", 2, 0,
+          "Gonzaga", "Pac-12", "2016-2017", 2, 0,
+          "Gonzaga", "Mid-American Conference", "2016-2017", 1, 0,
+          "Gonzaga", "Summit League", "2016-2017", 2, 0,
+          "Gonzaga", "Big Ten", "2016-2017", 1, 0,
+          "Gonzaga", "Big East", "2016-2017", 1, 0,
+          "Gonzaga", "ACC", "2016-2017", 0, 1)
+          
+mcbb_teams
+```
+
+Summarizing the records overall:
+
+```{r}
+mcbb_teams %>%
+  group_by(team, season) %>%
+  summarise(wins = sum(wins),
+            losses = sum(losses),
+            .groups = "drop")
+```
+
+## `expand()`
+
+The `expand()` function creates a `tibble` from combinations of input values.
+
+In a simple incantation, we can expand on a single variable:
+
+```{r}
+mcbb_teams %>%
+  expand(team)
+```
+
+The "combinations" above are just unique values for the single column specified. A more useful scenario might be to specify multiple variables. By default the function will return all unique combinations of the values in those columns. We know there are `r n_seasons <- length(unique(mcbb_teams$season)); n_seasons` unique seasons and `r n_teams <- length(unique(mcbb_teams$team)); n_teams` unique teams in the example data, so we would expect `r n_teams * n_seasons` rows in the expanded data frame:
+
+```{r}
+mcbb_teams %>%
+  expand(team, season)
+```
+
+Note that the two teams did not have data from the same seasons. UVA was missing data from 2016-2017 and Gonzaga was missing data from 2018-2019. 
+
+By default the `expand()` will create all possible combinations whether or not the combinations already appear in the data. To modify this behavior, you can use the `nesting()`[^nesting-vs-nest] helper to create *only* the combinations that are present:
+
+```{r}
+mcbb_teams %>%
+  expand(nesting(team, season))
+```
+
+[^nesting-vs-nest]: Although they share similar names, the concept behind `tidyr::nesting()` is **not** the same as `tidyr::nest()`.
+
+`crossing()` is another helper. In this case, when used like `nesting()` above it will generate the same output as the original call to `expand()`:
+
+```{r}
+mcbb_teams %>%
+  expand(crossing(team, season))
+```
+
+The utility of `crossing()` is more obvious when used on its own:
+
+```{r}
+tibble(team = c("UVA","UVA","Gonzaga")) %>%
+  crossing(season = c("2016-2017","2017-2018"))
+```
+
+The `?tidyr::crossing` help documentation notes that:
+
+> crossing() is a wrapper around expand_grid() that de-duplicates and sorts its inputs
+
+So using `expand_grid()` with the same example above will produce all combinations *with* duplicates:
+
+```{r}
+tibble(team = c("UVA","UVA","Gonzaga")) %>%
+  expand_grid(season = c("2016-2017","2017-2018"))
+```
+
+
+Notably `nesting()` does not have an equivalent API when used outside of `expand()`:
+
+```{r, error = TRUE}
+tibble(team = c("UVA","UVA","Gonzaga")) %>%
+  nesting(season = c("2016-2017","2017-2018"))
+```
+
+When used inside `expand()`, the nesting and crossing behavior can be operate in conjunction with one another.
+
+To demonstrate we'll first expand on team, season, and opponent conference, nesting all columns:
+
+```{r}
+mcbb_teams %>%
+  expand(nesting(team, season, opp_conf))
+```
+
+The original data was organized with one row per team, season, and opponent conference. So the result of the above should yield the same number of rows.
+
+```{r}
+nrow(mcbb_teams)
+```
+
+Alternatively we can be selective with how we implement nesting. For example, if we wanted all combinations of team and season that were recorded but with the opponent conferences that either team *could have played*:
+
+```{r}
+mcbb_teams %>%
+  expand(nesting(team, season), opp_conf)
+```
+
+And if we wanted all unique combinations of team, season, and opponent conference:
+
+```{r}
+mcbb_teams %>%
+  expand(team, season, opp_conf)
+```
+
+The expand operation can also accept vectors passed on-the-fly. For example, if we wanted all combinations of team and opponent conferences observed, along with an arbitrary range of seasons:
+
+```{r}
+seasons <- c("2015-2016","2016-2017","2017-2018", "2018-2019", "2019-2020")
+
+mcbb_teams %>%
+  expand(nesting(team, opp_conf), season = seasons)
+```
+
+## `complete()`
+
+When expanding a data frame to all combinations, we lost the values that might have been of interest. In the example above, that would be wins and losses. We could retrieve those values by joining the original data to the expanded. But a much easier method is to use `complete()`:
+
+```{r}
+mcbb_teams %>%
+  complete(team, season, opp_conf)
+```
+
+By default combinations that don't appear in the original data will have `NA` values populated in the corresponding columns. You can customize this behavior with the "fill" argument, which accepts a named list containing the value to fill for each given column:
+
+```{r}
+mcbb_teams %>%
+  complete(team, season, opp_conf, fill=list(wins = "No wins recorded", 
+                                             losses = "No losses recorded"))
+```
+
+`complete()` also leverages the nesting and crossing helpers:
+
+```{r}
+mcbb_teams %>%
+  complete(nesting(team, season), opp_conf)
+```
+
+## Example
+
+We can build on the demonstration above for a simple analysis. Let's assume we want to compare the performance of the UVA and Gonzaga programs against their own conferences and the "Power 5" schools in the seasons observed:
+
+```{r}
+## what are the power five conferences?
+power_five <- c("ACC","Big Ten","Big 12","Pac-12","SEC")
+
+mcbb_teams %>%
+  ## create all combinations of team, season and opponent conference
+  ## but only combinations of team/season that were observed
+  complete(nesting(team,season), opp_conf) %>%
+  ## need to separate season into year1,year2 for formatting team name
+  separate(season, into = c("year1","year2"), sep = "-") %>%
+  group_by(team) %>%
+  ## format the team name with seasons observed
+  mutate(team = paste0(team, " (", min(year1), "-", max(year2), ")")) %>%
+  ## clean up
+  select(-year1,-year2) %>%
+  ## add up the number of wins/losses against each conference
+  ## combining seasons observed
+  group_by(team,opp_conf) %>%
+  summarise(wins = sum(wins, na.rm = TRUE),
+            losses = sum(losses, na.rm = TRUE),
+            .groups = "drop") %>%
+  ## format the 'record'
+  mutate(record = paste0(wins, "-", losses)) %>%
+  select(-wins,-losses) %>%
+  ## restrict to power five AND Gonzaga's WCC
+  filter(opp_conf %in% c(power_five,"WCC")) %>%
+  ## reshape the data to wide format
+  spread(opp_conf, record) %>%
+  ## reorder columns
+  select(team, ACC, WCC, everything()) %>%
+  ## make pretty for html :)
+  knitr::kable()
+
+```
+
+
+
+

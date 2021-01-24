@@ -1,0 +1,383 @@
+---
+title: "expand and complete with tidyr"
+date: 2021-01-24T17:14:59+00:00
+categories: ["notes"]
+tags: ["R", "dplyr"]
+summary: "demonstration of tidyr::expand() and tidyr::complete() with helpers"
+---
+
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+
+<p>The <code>tidyr</code> package features some of the most useful data manipulation utilities in R. This post demonstrates <code>expand()</code> and <code>complete()</code>, which can be used to create data frames based on combinations of variables.</p>
+<div id="data-prep" class="section level2">
+<h2>Data prep</h2>
+<p>First, we’ll prep some data for the example. The code below creates a <code>tibble</code> with the records for the UVA and Gonzaga men’s basketball programs for two recent seasons. Gonzaga has data for the 2016-2017 and 2017-2018 seasons and UVA has data for the 2017-2018 and 2018-2019. Each row includes wins and losses for the given team and season, aggregated to the opponent conference:</p>
+<pre class="r"><code>library(tidyr)
+library(dplyr)
+
+mcbb_teams &lt;-
+  tribble(~ team, ~ opp_conf, ~ season, ~ wins, ~ losses,
+          &quot;UVA&quot;, &quot;ACC&quot;, &quot;2018-2019&quot;, 17, 3,
+          &quot;UVA&quot;, &quot;Colonial&quot;, &quot;2018-2019&quot;, 2, 0,
+          &quot;UVA&quot;, &quot;Atlantic 10&quot;, &quot;2018-2019&quot;, 3, 0,
+          &quot;UVA&quot;, &quot;MEAC&quot;, &quot;2018-2019&quot;, 2, 0,
+          &quot;UVA&quot;, &quot;Conference USA&quot;, &quot;2018-2019&quot;, 2, 0,
+          &quot;UVA&quot;, &quot;Big Ten&quot;, &quot;2018-2019&quot;, 3, 0,
+          &quot;UVA&quot;, &quot;SEC&quot;, &quot;2018-2019&quot;, 2, 0,
+          &quot;UVA&quot;, &quot;Big South&quot;, &quot;2018-2019&quot;, 1, 0,
+          &quot;UVA&quot;, &quot;Big 12&quot;, &quot;2018-2019&quot;, 2, 0,
+          &quot;UVA&quot;, &quot;Pac-12&quot;, &quot;2018-2019&quot;, 1, 0,
+          &quot;UVA&quot;, &quot;ACC&quot;, &quot;2017-2018&quot;, 20, 1,
+          &quot;UVA&quot;, &quot;Big 12&quot;, &quot;2017-2018&quot;, 0, 1,
+          &quot;UVA&quot;, &quot;Southern&quot;, &quot;2017-2018&quot;, 1, 0,
+          &quot;UVA&quot;, &quot;Ohio Valley&quot;, &quot;2017-2018&quot;, 1, 0,
+          &quot;UVA&quot;, &quot;MAAC&quot;, &quot;2017-2018&quot;, 1, 0,
+          &quot;UVA&quot;, &quot;MEAC&quot;, &quot;2017-2018&quot;, 2, 0,
+          &quot;UVA&quot;, &quot;American East&quot;, &quot;2017-2018&quot;, 0, 1,
+          &quot;UVA&quot;, &quot;Atlantic 10&quot;, &quot;2017-2018&quot;, 3, 0,
+          &quot;UVA&quot;, &quot;Patriot League&quot;, &quot;2017-2018&quot;, 1, 0,
+          &quot;UVA&quot;, &quot;SEC&quot;, &quot;2017-2018&quot;, 1, 0,
+          &quot;UVA&quot;, &quot;Big Ten&quot;, &quot;2017-2018&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;WCC&quot;, &quot;2017-2018&quot;, 20, 1,
+          &quot;Gonzaga&quot;, &quot;Southern&quot;, &quot;2017-2018&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;ACC&quot;, &quot;2017-2018&quot;, 0, 1,
+          &quot;Gonzaga&quot;, &quot;Big Ten&quot;, &quot;2017-2018&quot;, 2, 0,
+          &quot;Gonzaga&quot;, &quot;Mountain West&quot;, &quot;2017-2018&quot;, 1, 1,
+          &quot;Gonzaga&quot;, &quot;Big East&quot;, &quot;2017-2018&quot;, 1, 1,
+          &quot;Gonzaga&quot;, &quot;SWAC&quot;, &quot;2017-2018&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;MEAC&quot;, &quot;2017-2018&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;SEC&quot;, &quot;2017-2018&quot;, 0, 1,
+          &quot;Gonzaga&quot;, &quot;Big 12&quot;, &quot;2017-2018&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;Pac-12&quot;, &quot;2017-2018&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;Big Sky&quot;, &quot;2017-2018&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;Horizon&quot;, &quot;2017-2018&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;Southland&quot;, &quot;2017-2018&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;WCC&quot;, &quot;2016-2017&quot;, 20, 1,
+          &quot;Gonzaga&quot;, &quot;WAC&quot;, &quot;2016-2017&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;Mountain West&quot;, &quot;2016-2017&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;Northeast&quot;, &quot;2016-2017&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;MAAC&quot;, &quot;2016-2017&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;SWAC&quot;, &quot;2016-2017&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;SEC&quot;, &quot;2016-2017&quot;, 3, 0,
+          &quot;Gonzaga&quot;, &quot;Big 12&quot;, &quot;2016-2017&quot;, 2, 0,
+          &quot;Gonzaga&quot;, &quot;Pac-12&quot;, &quot;2016-2017&quot;, 2, 0,
+          &quot;Gonzaga&quot;, &quot;Mid-American Conference&quot;, &quot;2016-2017&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;Summit League&quot;, &quot;2016-2017&quot;, 2, 0,
+          &quot;Gonzaga&quot;, &quot;Big Ten&quot;, &quot;2016-2017&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;Big East&quot;, &quot;2016-2017&quot;, 1, 0,
+          &quot;Gonzaga&quot;, &quot;ACC&quot;, &quot;2016-2017&quot;, 0, 1)
+          
+mcbb_teams</code></pre>
+<pre><code>## # A tibble: 49 x 5
+##    team  opp_conf       season     wins losses
+##    &lt;chr&gt; &lt;chr&gt;          &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+##  1 UVA   ACC            2018-2019    17      3
+##  2 UVA   Colonial       2018-2019     2      0
+##  3 UVA   Atlantic 10    2018-2019     3      0
+##  4 UVA   MEAC           2018-2019     2      0
+##  5 UVA   Conference USA 2018-2019     2      0
+##  6 UVA   Big Ten        2018-2019     3      0
+##  7 UVA   SEC            2018-2019     2      0
+##  8 UVA   Big South      2018-2019     1      0
+##  9 UVA   Big 12         2018-2019     2      0
+## 10 UVA   Pac-12         2018-2019     1      0
+## # … with 39 more rows</code></pre>
+<p>Summarizing the records overall:</p>
+<pre class="r"><code>mcbb_teams %&gt;%
+  group_by(team, season) %&gt;%
+  summarise(wins = sum(wins),
+            losses = sum(losses),
+            .groups = &quot;drop&quot;)</code></pre>
+<pre><code>## # A tibble: 4 x 4
+##   team    season     wins losses
+##   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+## 1 Gonzaga 2016-2017    37      2
+## 2 Gonzaga 2017-2018    32      5
+## 3 UVA     2017-2018    31      3
+## 4 UVA     2018-2019    35      3</code></pre>
+</div>
+<div id="expand" class="section level2">
+<h2><code>expand()</code></h2>
+<p>The <code>expand()</code> function creates a <code>tibble</code> from combinations of input values.</p>
+<p>In a simple incantation, we can expand on a single variable:</p>
+<pre class="r"><code>mcbb_teams %&gt;%
+  expand(team)</code></pre>
+<pre><code>## # A tibble: 2 x 1
+##   team   
+##   &lt;chr&gt;  
+## 1 Gonzaga
+## 2 UVA</code></pre>
+<p>The “combinations” above are just unique values for the single column specified. A more useful scenario might be to specify multiple variables. By default the function will return all unique combinations of the values in those columns. We know there are 3 unique seasons and 2 unique teams in the example data, so we would expect 6 rows in the expanded data frame:</p>
+<pre class="r"><code>mcbb_teams %&gt;%
+  expand(team, season)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   team    season   
+##   &lt;chr&gt;   &lt;chr&gt;    
+## 1 Gonzaga 2016-2017
+## 2 Gonzaga 2017-2018
+## 3 Gonzaga 2018-2019
+## 4 UVA     2016-2017
+## 5 UVA     2017-2018
+## 6 UVA     2018-2019</code></pre>
+<p>Note that the two teams did not have data from the same seasons. UVA was missing data from 2016-2017 and Gonzaga was missing data from 2018-2019.</p>
+<p>By default the <code>expand()</code> will create all possible combinations whether or not the combinations already appear in the data. To modify this behavior, you can use the <code>nesting()</code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> helper to create <em>only</em> the combinations that are present:</p>
+<pre class="r"><code>mcbb_teams %&gt;%
+  expand(nesting(team, season))</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   team    season   
+##   &lt;chr&gt;   &lt;chr&gt;    
+## 1 Gonzaga 2016-2017
+## 2 Gonzaga 2017-2018
+## 3 UVA     2017-2018
+## 4 UVA     2018-2019</code></pre>
+<p><code>crossing()</code> is another helper. In this case, when used like <code>nesting()</code> above it will generate the same output as the original call to <code>expand()</code>:</p>
+<pre class="r"><code>mcbb_teams %&gt;%
+  expand(crossing(team, season))</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   team    season   
+##   &lt;chr&gt;   &lt;chr&gt;    
+## 1 Gonzaga 2016-2017
+## 2 Gonzaga 2017-2018
+## 3 Gonzaga 2018-2019
+## 4 UVA     2016-2017
+## 5 UVA     2017-2018
+## 6 UVA     2018-2019</code></pre>
+<p>The utility of <code>crossing()</code> is more obvious when used on its own:</p>
+<pre class="r"><code>tibble(team = c(&quot;UVA&quot;,&quot;UVA&quot;,&quot;Gonzaga&quot;)) %&gt;%
+  crossing(season = c(&quot;2016-2017&quot;,&quot;2017-2018&quot;))</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   team    season   
+##   &lt;chr&gt;   &lt;chr&gt;    
+## 1 Gonzaga 2016-2017
+## 2 Gonzaga 2017-2018
+## 3 UVA     2016-2017
+## 4 UVA     2017-2018</code></pre>
+<p>The <code>?tidyr::crossing</code> help documentation notes that:</p>
+<blockquote>
+<p>crossing() is a wrapper around expand_grid() that de-duplicates and sorts its inputs</p>
+</blockquote>
+<p>So using <code>expand_grid()</code> with the same example above will produce all combinations <em>with</em> duplicates:</p>
+<pre class="r"><code>tibble(team = c(&quot;UVA&quot;,&quot;UVA&quot;,&quot;Gonzaga&quot;)) %&gt;%
+  expand_grid(season = c(&quot;2016-2017&quot;,&quot;2017-2018&quot;))</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   team    season   
+##   &lt;chr&gt;   &lt;chr&gt;    
+## 1 UVA     2016-2017
+## 2 UVA     2017-2018
+## 3 UVA     2016-2017
+## 4 UVA     2017-2018
+## 5 Gonzaga 2016-2017
+## 6 Gonzaga 2017-2018</code></pre>
+<p>Notably <code>nesting()</code> does not have an equivalent API when used outside of <code>expand()</code>:</p>
+<pre class="r"><code>tibble(team = c(&quot;UVA&quot;,&quot;UVA&quot;,&quot;Gonzaga&quot;)) %&gt;%
+  nesting(season = c(&quot;2016-2017&quot;,&quot;2017-2018&quot;))</code></pre>
+<pre><code>## Error: Tibble columns must have compatible sizes.
+## * Size 3: Existing data.
+## * Size 2: Column `season`.
+## ℹ Only values of size one are recycled.</code></pre>
+<p>When used inside <code>expand()</code>, the nesting and crossing behavior can be operate in conjunction with one another.</p>
+<p>To demonstrate we’ll first expand on team, season, and opponent conference, nesting all columns:</p>
+<pre class="r"><code>mcbb_teams %&gt;%
+  expand(nesting(team, season, opp_conf))</code></pre>
+<pre><code>## # A tibble: 49 x 3
+##    team    season    opp_conf               
+##    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;                  
+##  1 Gonzaga 2016-2017 ACC                    
+##  2 Gonzaga 2016-2017 Big 12                 
+##  3 Gonzaga 2016-2017 Big East               
+##  4 Gonzaga 2016-2017 Big Ten                
+##  5 Gonzaga 2016-2017 MAAC                   
+##  6 Gonzaga 2016-2017 Mid-American Conference
+##  7 Gonzaga 2016-2017 Mountain West          
+##  8 Gonzaga 2016-2017 Northeast              
+##  9 Gonzaga 2016-2017 Pac-12                 
+## 10 Gonzaga 2016-2017 SEC                    
+## # … with 39 more rows</code></pre>
+<p>The original data was organized with one row per team, season, and opponent conference. So the result of the above should yield the same number of rows.</p>
+<pre class="r"><code>nrow(mcbb_teams)</code></pre>
+<pre><code>## [1] 49</code></pre>
+<p>Alternatively we can be selective with how we implement nesting. For example, if we wanted all combinations of team and season that were recorded but with the opponent conferences that either team <em>could have played</em>:</p>
+<pre class="r"><code>mcbb_teams %&gt;%
+  expand(nesting(team, season), opp_conf)</code></pre>
+<pre><code>## # A tibble: 104 x 3
+##    team    season    opp_conf      
+##    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;         
+##  1 Gonzaga 2016-2017 ACC           
+##  2 Gonzaga 2016-2017 American East 
+##  3 Gonzaga 2016-2017 Atlantic 10   
+##  4 Gonzaga 2016-2017 Big 12        
+##  5 Gonzaga 2016-2017 Big East      
+##  6 Gonzaga 2016-2017 Big Sky       
+##  7 Gonzaga 2016-2017 Big South     
+##  8 Gonzaga 2016-2017 Big Ten       
+##  9 Gonzaga 2016-2017 Colonial      
+## 10 Gonzaga 2016-2017 Conference USA
+## # … with 94 more rows</code></pre>
+<p>And if we wanted all unique combinations of team, season, and opponent conference:</p>
+<pre class="r"><code>mcbb_teams %&gt;%
+  expand(team, season, opp_conf)</code></pre>
+<pre><code>## # A tibble: 156 x 3
+##    team    season    opp_conf      
+##    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;         
+##  1 Gonzaga 2016-2017 ACC           
+##  2 Gonzaga 2016-2017 American East 
+##  3 Gonzaga 2016-2017 Atlantic 10   
+##  4 Gonzaga 2016-2017 Big 12        
+##  5 Gonzaga 2016-2017 Big East      
+##  6 Gonzaga 2016-2017 Big Sky       
+##  7 Gonzaga 2016-2017 Big South     
+##  8 Gonzaga 2016-2017 Big Ten       
+##  9 Gonzaga 2016-2017 Colonial      
+## 10 Gonzaga 2016-2017 Conference USA
+## # … with 146 more rows</code></pre>
+<p>The expand operation can also accept vectors passed on-the-fly. For example, if we wanted all combinations of team and opponent conferences observed, along with an arbitrary range of seasons:</p>
+<pre class="r"><code>seasons &lt;- c(&quot;2015-2016&quot;,&quot;2016-2017&quot;,&quot;2017-2018&quot;, &quot;2018-2019&quot;, &quot;2019-2020&quot;)
+
+mcbb_teams %&gt;%
+  expand(nesting(team, opp_conf), season = seasons)</code></pre>
+<pre><code>## # A tibble: 170 x 3
+##    team    opp_conf season   
+##    &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;    
+##  1 Gonzaga ACC      2015-2016
+##  2 Gonzaga ACC      2016-2017
+##  3 Gonzaga ACC      2017-2018
+##  4 Gonzaga ACC      2018-2019
+##  5 Gonzaga ACC      2019-2020
+##  6 Gonzaga Big 12   2015-2016
+##  7 Gonzaga Big 12   2016-2017
+##  8 Gonzaga Big 12   2017-2018
+##  9 Gonzaga Big 12   2018-2019
+## 10 Gonzaga Big 12   2019-2020
+## # … with 160 more rows</code></pre>
+</div>
+<div id="complete" class="section level2">
+<h2><code>complete()</code></h2>
+<p>When expanding a data frame to all combinations, we lost the values that might have been of interest. In the example above, that would be wins and losses. We could retrieve those values by joining the original data to the expanded. But a much easier method is to use <code>complete()</code>:</p>
+<pre class="r"><code>mcbb_teams %&gt;%
+  complete(team, season, opp_conf)</code></pre>
+<pre><code>## # A tibble: 156 x 5
+##    team    season    opp_conf        wins losses
+##    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;          &lt;dbl&gt;  &lt;dbl&gt;
+##  1 Gonzaga 2016-2017 ACC                0      1
+##  2 Gonzaga 2016-2017 American East     NA     NA
+##  3 Gonzaga 2016-2017 Atlantic 10       NA     NA
+##  4 Gonzaga 2016-2017 Big 12             2      0
+##  5 Gonzaga 2016-2017 Big East           1      0
+##  6 Gonzaga 2016-2017 Big Sky           NA     NA
+##  7 Gonzaga 2016-2017 Big South         NA     NA
+##  8 Gonzaga 2016-2017 Big Ten            1      0
+##  9 Gonzaga 2016-2017 Colonial          NA     NA
+## 10 Gonzaga 2016-2017 Conference USA    NA     NA
+## # … with 146 more rows</code></pre>
+<p>By default combinations that don’t appear in the original data will have <code>NA</code> values populated in the corresponding columns. You can customize this behavior with the “fill” argument, which accepts a named list containing the value to fill for each given column:</p>
+<pre class="r"><code>mcbb_teams %&gt;%
+  complete(team, season, opp_conf, fill=list(wins = &quot;No wins recorded&quot;, 
+                                             losses = &quot;No losses recorded&quot;))</code></pre>
+<pre><code>## # A tibble: 156 x 5
+##    team    season    opp_conf       wins             losses            
+##    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;            &lt;chr&gt;             
+##  1 Gonzaga 2016-2017 ACC            0                1                 
+##  2 Gonzaga 2016-2017 American East  No wins recorded No losses recorded
+##  3 Gonzaga 2016-2017 Atlantic 10    No wins recorded No losses recorded
+##  4 Gonzaga 2016-2017 Big 12         2                0                 
+##  5 Gonzaga 2016-2017 Big East       1                0                 
+##  6 Gonzaga 2016-2017 Big Sky        No wins recorded No losses recorded
+##  7 Gonzaga 2016-2017 Big South      No wins recorded No losses recorded
+##  8 Gonzaga 2016-2017 Big Ten        1                0                 
+##  9 Gonzaga 2016-2017 Colonial       No wins recorded No losses recorded
+## 10 Gonzaga 2016-2017 Conference USA No wins recorded No losses recorded
+## # … with 146 more rows</code></pre>
+<p><code>complete()</code> also leverages the nesting and crossing helpers:</p>
+<pre class="r"><code>mcbb_teams %&gt;%
+  complete(nesting(team, season), opp_conf)</code></pre>
+<pre><code>## # A tibble: 104 x 5
+##    team    season    opp_conf        wins losses
+##    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;          &lt;dbl&gt;  &lt;dbl&gt;
+##  1 Gonzaga 2016-2017 ACC                0      1
+##  2 Gonzaga 2016-2017 American East     NA     NA
+##  3 Gonzaga 2016-2017 Atlantic 10       NA     NA
+##  4 Gonzaga 2016-2017 Big 12             2      0
+##  5 Gonzaga 2016-2017 Big East           1      0
+##  6 Gonzaga 2016-2017 Big Sky           NA     NA
+##  7 Gonzaga 2016-2017 Big South         NA     NA
+##  8 Gonzaga 2016-2017 Big Ten            1      0
+##  9 Gonzaga 2016-2017 Colonial          NA     NA
+## 10 Gonzaga 2016-2017 Conference USA    NA     NA
+## # … with 94 more rows</code></pre>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>We can build on the demonstration above for a simple analysis. Let’s assume we want to compare the performance of the UVA and Gonzaga programs against their own conferences and the “Power 5” schools in the seasons observed:</p>
+<pre class="r"><code>## what are the power five conferences?
+power_five &lt;- c(&quot;ACC&quot;,&quot;Big Ten&quot;,&quot;Big 12&quot;,&quot;Pac-12&quot;,&quot;SEC&quot;)
+
+mcbb_teams %&gt;%
+  ## create all combinations of team, season and opponent conference
+  ## but only combinations of team/season that were observed
+  complete(nesting(team,season), opp_conf) %&gt;%
+  ## need to separate season into year1,year2 for formatting team name
+  separate(season, into = c(&quot;year1&quot;,&quot;year2&quot;), sep = &quot;-&quot;) %&gt;%
+  group_by(team) %&gt;%
+  ## format the team name with seasons observed
+  mutate(team = paste0(team, &quot; (&quot;, min(year1), &quot;-&quot;, max(year2), &quot;)&quot;)) %&gt;%
+  ## clean up
+  select(-year1,-year2) %&gt;%
+  ## add up the number of wins/losses against each conference
+  ## combining seasons observed
+  group_by(team,opp_conf) %&gt;%
+  summarise(wins = sum(wins, na.rm = TRUE),
+            losses = sum(losses, na.rm = TRUE),
+            .groups = &quot;drop&quot;) %&gt;%
+  ## format the &#39;record&#39;
+  mutate(record = paste0(wins, &quot;-&quot;, losses)) %&gt;%
+  select(-wins,-losses) %&gt;%
+  ## restrict to power five AND Gonzaga&#39;s WCC
+  filter(opp_conf %in% c(power_five,&quot;WCC&quot;)) %&gt;%
+  ## reshape the data to wide format
+  spread(opp_conf, record) %&gt;%
+  ## reorder columns
+  select(team, ACC, WCC, everything()) %&gt;%
+  ## make pretty for html :)
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">team</th>
+<th align="left">ACC</th>
+<th align="left">WCC</th>
+<th align="left">Big 12</th>
+<th align="left">Big Ten</th>
+<th align="left">Pac-12</th>
+<th align="left">SEC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Gonzaga (2016-2018)</td>
+<td align="left">0-2</td>
+<td align="left">40-2</td>
+<td align="left">3-0</td>
+<td align="left">3-0</td>
+<td align="left">3-0</td>
+<td align="left">3-1</td>
+</tr>
+<tr class="even">
+<td align="left">UVA (2017-2019)</td>
+<td align="left">37-4</td>
+<td align="left">0-0</td>
+<td align="left">2-1</td>
+<td align="left">4-0</td>
+<td align="left">1-0</td>
+<td align="left">3-0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Although they share similar names, the concept behind <code>tidyr::nesting()</code> is <strong>not</strong> the same as <code>tidyr::nest()</code>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
