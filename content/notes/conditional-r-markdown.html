@@ -1,0 +1,140 @@
+---
+title: "Conditional Chunk Execution in R Markdown"
+date: 2021-01-30T17:14:59+00:00
+categories: ["notes"]
+tags: ["R", "R Markdown"]
+summary: "example of using params to toggle eval chunk option with R Markdown"
+---
+
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+
+<p>When generating documents with R Markdown, it may be useful to conditionally evaluate certain chunks programmatically.</p>
+<p>One way to do so is to use a combination of two <code>knitr</code> and <code>rmarkdown</code> features:</p>
+<ul>
+<li>Parameters<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
+<li>The “eval” chunk option<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></li>
+</ul>
+<p>The <code>rmarkdown::render()</code> function accepts a list of parameters to pass into the document while rendering. When written with consideration, these parameters can toggle conditions to be passed to the “eval” chunk option.</p>
+<p>The example below is a minimal demonstration of the workflow.</p>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>First, we need to write the R Markdown document. In this case, the rendered output will be a PDF conditionally created with the following scenarios:</p>
+<ul>
+<li>Both a plot and a table</li>
+<li>Just a plot</li>
+<li>Just a table</li>
+<li>Neither a plot nor a table</li>
+</ul>
+<p>The parameters passed in will be logicals for “plot” and “table”. These values are used to establish conditions in a chunk near the top of the R Markdown file.</p>
+<p>The full <code>.Rmd</code> file:</p>
+<pre><code> --- 
+ title: &quot;Sleep Summary&quot; 
+ output: pdf_document 
+ params: 
+   plot: TRUE 
+   table: TRUE 
+ --- 
+  
+ ```{r setup, include=FALSE} 
+ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE) 
+ library(tidyverse) 
+  
+ ## establish conditions 
+ eval_plot &lt;- params$plot 
+ eval_table &lt;- params$table 
+ eval_both &lt;- eval_plot &amp; eval_table 
+ eval_one_of &lt;- eval_plot | eval_table 
+ eval_neither &lt;- !eval_one_of 
+ ``` 
+  
+ ```{r, prep, eval=eval_one_of} 
+ knitr::asis_output(&quot;## Summary&quot;) 
+  
+ ## summarize msleep data 
+ msleep_summary &lt;- 
+   msleep %&gt;% 
+   group_by(order) %&gt;% 
+   summarise(sleep = round(mean(sleep_total),2), .groups = &quot;drop&quot;) %&gt;% 
+   arrange(desc(sleep)) 
+ ``` 
+  
+ ```{r, table-heading, eval=eval_table} 
+ knitr::asis_output(&quot;### Table&quot;) 
+ ``` 
+   
+ ```{r, table, eval=eval_table} 
+ knitr::kable(msleep_summary) 
+ ``` 
+  
+ ```{r, plot-heading, eval=eval_plot} 
+ knitr::asis_output(&quot;### Plot&quot;) 
+ ``` 
+  
+ ```{r, plot, eval=eval_plot} 
+ msleep_summary %&gt;% 
+   ggplot(aes(reorder(order,sleep), sleep)) + 
+   geom_col() + 
+   coord_flip() + 
+   labs(x = NULL, y = &quot;Sleep total (Hours)&quot;) + 
+   theme_minimal() 
+ ``` 
+  
+ ```{r, empty-msg, eval=eval_neither} 
+ knitr::asis_output(&quot;## WARNING: Neither plot nor table generated ...&quot;) 
+ ``` 
+  </code></pre>
+<p>Assuming the content above is stored in a file called <code>example.Rmd</code> we can trigger the processing for each condition.</p>
+<p>To generate a PDF with both the plot and the table:</p>
+<pre class="r"><code>rmarkdown::render(&quot;example.Rmd&quot;, 
+                  output_file = &quot;example-both.pdf&quot;, 
+                  params = list(plot = TRUE, table = TRUE))</code></pre>
+<object data="/img/example-both.pdf" type="application/pdf" width="700px" height="700px">
+<embed src="/img/example-both.pdf">
+<p>
+This browser does not support PDFs. Download the PDF to view it: <a href="/img/example-both.pdf">Download PDF</a>.
+</p>
+</embed>
+</object>
+<p>To generate a PDF with just the plot:</p>
+<pre class="r"><code>rmarkdown::render(&quot;example.Rmd&quot;, 
+                  output_file = &quot;example-plot.pdf&quot;, 
+                  params = list(plot = TRUE, table = FALSE))</code></pre>
+<object data="/img/example-plot.pdf" type="application/pdf" width="700px" height="700px">
+<embed src="/img/example-plot.pdf">
+<p>
+This browser does not support PDFs. Download the PDF to view it: <a href="/img/example-plot.pdf">Download PDF</a>.
+</p>
+</embed>
+</object>
+<p>To generate a PDF with just the table:</p>
+<pre class="r"><code>rmarkdown::render(&quot;example.Rmd&quot;, 
+                  output_file = &quot;example-table.pdf&quot;, 
+                  params = list(plot = FALSE, table = TRUE))</code></pre>
+<object data="/img/example-table.pdf" type="application/pdf" width="700px" height="700px">
+<embed src="/img/example-table.pdf">
+<p>
+This browser does not support PDFs. Download the PDF to view it: <a href="/img/example-table.pdf">Download PDF</a>.
+</p>
+</embed>
+</object>
+<p>To generate a PDF with neither:</p>
+<pre class="r"><code>rmarkdown::render(&quot;example.Rmd&quot;, 
+                  output_file = &quot;example-neither.pdf&quot;, 
+                  params = list(plot = FALSE, table = TRUE))</code></pre>
+<object data="/img/example-neither.pdf" type="application/pdf" width="700px" height="700px">
+<embed src="/img/example-neither.pdf">
+<p>
+This browser does not support PDFs. Download the PDF to view it: <a href="/img/example-neither.pdf">Download PDF</a>.
+</p>
+</embed>
+</object>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p><a href="https://rmarkdown.rstudio.com/lesson-6.html" class="uri">https://rmarkdown.rstudio.com/lesson-6.html</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p><a href="https://bookdown.org/yihui/rmarkdown/r-code.html" class="uri">https://bookdown.org/yihui/rmarkdown/r-code.html</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
