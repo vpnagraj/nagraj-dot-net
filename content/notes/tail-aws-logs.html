@@ -1,0 +1,28 @@
+---
+title: "tail AWS Instance Logs"
+date: 2021-02-28T08:38:31-04:00
+tags: ["cloud", "aws", "bash"]
+categories: ["notes"]
+summary: 'use tail to interactively follow logs for AWS EC2 instance'
+---
+
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+
+<p>Amazon Web Services (AWS) Elastic Compute Cloud (EC2)<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> provides a service to launch and resize computing resources at scale. One of the useful features of EC2 is the option to run commands when an instance launches. These commands are passed as <strong>user data</strong><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> via a plain text script or base64 encoded string. The content of the user data instructions is arbitrary … the commands could install software, process data, or run any other programmatic function.</p>
+<p>When launching an instance, the AWS EC2 console will report the status as pending, passed checks, running, etc. However, the status of user data commands is not represented in this status check. If the instance is launched with software installation instructions that take a while to complete, it may not be transparent as to whether or not the instance is actually ready to use.</p>
+<p>If you need to see the status of each of the commands passed in user data, you can directly monitor the logs on the running instance. For an ubuntu image, this can be achieved using the <code>tail</code> command to follow the log file at <code>/var/log/syslog</code>:</p>
+<pre class="bash"><code>tail -f /var/log/syslog</code></pre>
+<p>Note that the above will only work from the shell of the running instance <strong>after</strong> you’ve logged in via <code>ssh</code>.</p>
+<p>One alternative is to run the command over <code>ssh</code> and view the log output locally:</p>
+<pre class="bash"><code>#IP=&quot;public.ip.address.for.running.instance&quot;
+#KEY=&quot;/path/to/.ssh/key.pem&quot;
+ssh -t -i $KEY user@$IP &quot;tail -f /var/log/syslog&quot;</code></pre>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p><a href="https://aws.amazon.com/ec2" class="uri">https://aws.amazon.com/ec2</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html" class="uri">https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>

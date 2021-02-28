@@ -1,0 +1,35 @@
+---
+title: "tail AWS Instance Logs"
+date: 2021-02-28T08:38:31-04:00
+tags: ["cloud", "aws", "bash"]
+categories: ["notes"]
+summary: 'use tail to interactively follow logs for AWS EC2 instance'
+---
+
+```{r, include = FALSE}
+library(knitr)
+opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, eval = FALSE)
+```
+
+Amazon Web Services (AWS) Elastic Compute Cloud (EC2)[^ec2] provides a service to launch and resize computing resources at scale. One of the useful features of EC2 is the option to run commands when an instance launches. These commands are passed as **user data**[^user-data] via a plain text script or base64 encoded string. The content of the user data instructions is arbitrary ... the commands could install software, process data, or run any other programmatic function.
+
+[^ec2]: https://aws.amazon.com/ec2
+[^user-data]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html
+
+When launching an instance, the AWS EC2 console will report the status as pending, passed checks, running, etc. However, the status of user data commands is not represented in this status check. If the instance is launched with software installation instructions that take a while to complete, it may not be transparent as to whether or not the instance is actually ready to use.
+
+If you need to see the status of each of the commands passed in user data, you can directly monitor the logs on the running instance. For an ubuntu image, this can be achieved using the `tail` command to follow the log file at `/var/log/syslog`:
+
+```{bash, eval = FALSE}
+tail -f /var/log/syslog
+```
+
+Note that the above will only work from the shell of the running instance **after** you've logged in via `ssh`.
+
+One alternative is to run the command over `ssh` and view the log output locally:
+
+```{bash, eval = FALSE}
+#IP="public.ip.address.for.running.instance"
+#KEY="/path/to/.ssh/key.pem"
+ssh -t -i $KEY user@$IP "tail -f /var/log/syslog"
+```
