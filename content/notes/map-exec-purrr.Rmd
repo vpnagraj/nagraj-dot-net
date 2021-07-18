@@ -1,0 +1,93 @@
+---
+title: "Mapping and Executing a List of Functions in R"
+date: 2021-07-17T17:14:59+00:00
+categories: ["notes"]
+tags: ["R", "purrr"]
+summary: "example of how to call multiple functions on an object using purrr"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+Calling an arbitrary list of functions on an object can be a useful data analysis pattern. There are a number of ways to do this in R. The demonstration below will walk through a basic scenario using `exec()` and the `map_*` family of functions from the `purrr` package.
+
+The example will use functions from the [`twoxtwo` package](https://cran.r-project.org/package=twoxtwo), which provides an interface for performing epidemiological data analysis with two-by-two tables. 
+
+
+First load `twoxtwo` and `tidyverse` (for `purrr`, `dplyr`, and `tidyr`):
+
+```{r}
+library(twoxtwo)
+library(tidyverse)
+```
+
+Next create a data set to motivate the demonstration. This will be expanded, observation-level data with binary exposure and outcome variables:
+
+```{r}
+dat <-
+  tribble(~exposed, ~diseased,~n,
+          TRUE, TRUE, 250,
+          TRUE, FALSE,250,
+          FALSE, TRUE, 50,
+          FALSE, FALSE, 450) %>%
+  uncount(n)
+
+dat
+```
+
+The `twoxtwo` data structure summarizes binary exposures and outcomes as two-by-two counts:
+
+```{r}
+dat %>%
+  twoxtwo(exposure = exposed, outcome = diseased)
+```
+
+One can then use functions on the object to conduct analyses such as computing measures of effect:
+
+```{r}
+dat %>%
+  twoxtwo(exposure = exposed, outcome = diseased) %>%
+  odds_ratio()
+```
+
+```{r}
+dat %>%
+  twoxtwo(exposure = exposed, outcome = diseased) %>%
+  risk_ratio()
+```
+
+```{r}
+dat %>%
+  twoxtwo(exposure = exposed, outcome = diseased) %>%
+  risk_diff()
+```
+
+Rather than passing each of these functions sequentially, it might be preferrable to pass them as a list to be invoked over the object in one pass.
+
+Note that each of the `twoxtwo` effect measure functions returns a `tibble` with the same column names. The outputs can be stacked on top of one another in a single data frame.
+
+To do so, create a named list of the functions to be passed:
+
+```{r}
+measure_funs <- c(odds_ratio = odds_ratio, 
+                  risk_ratio = risk_ratio, 
+                  risk_diff = risk_diff)
+```
+
+Next coerce the `twoxtwo` to a list:
+
+```{r}
+dat %>%
+  twoxtwo(., exposure = exposed, outcome = diseased ) %>%
+  list(.)
+```
+
+The list can then be passed to a `map_*` function from `purrr`. In this case the desired output is a `tibble`, so it is best to use `map_df()`. The operation to be mapped will be an anonymous function that performs another `map_df()` over the list of analysis functions and calls `exec()` on each one:
+
+```{r}
+dat %>%
+  twoxtwo(., exposure = exposed, outcome = diseased) %>%
+  list(.) %>%
+  map_df(~ measure_funs %>% map_df(exec, .x))
+```

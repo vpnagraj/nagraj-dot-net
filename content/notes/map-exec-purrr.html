@@ -1,0 +1,97 @@
+---
+title: "Mapping and Executing a List of Functions in R"
+date: 2021-07-17T17:14:59+00:00
+categories: ["notes"]
+tags: ["R", "purrr"]
+summary: "example of how to call multiple functions on an object using purrr"
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Calling an arbitrary list of functions on an object can be a useful data analysis pattern. There are a number of ways to do this in R. The demonstration below will walk through a basic scenario using <code>exec()</code> and the <code>map_*</code> family of functions from the <code>purrr</code> package.</p>
+<p>The example will use functions from the <a href="https://cran.r-project.org/package=twoxtwo"><code>twoxtwo</code> package</a>, which provides an interface for performing epidemiological data analysis with two-by-two tables.</p>
+<p>First load <code>twoxtwo</code> and <code>tidyverse</code> (for <code>purrr</code>, <code>dplyr</code>, and <code>tidyr</code>):</p>
+<pre class="r"><code>library(twoxtwo)
+library(tidyverse)</code></pre>
+<p>Next create a data set to motivate the demonstration. This will be expanded, observation-level data with binary exposure and outcome variables:</p>
+<pre class="r"><code>dat &lt;-
+  tribble(~exposed, ~diseased,~n,
+          TRUE, TRUE, 250,
+          TRUE, FALSE,250,
+          FALSE, TRUE, 50,
+          FALSE, FALSE, 450) %&gt;%
+  uncount(n)
+
+dat</code></pre>
+<pre><code>## # A tibble: 1,000 x 2
+##    exposed diseased
+##    &lt;lgl&gt;   &lt;lgl&gt;   
+##  1 TRUE    TRUE    
+##  2 TRUE    TRUE    
+##  3 TRUE    TRUE    
+##  4 TRUE    TRUE    
+##  5 TRUE    TRUE    
+##  6 TRUE    TRUE    
+##  7 TRUE    TRUE    
+##  8 TRUE    TRUE    
+##  9 TRUE    TRUE    
+## 10 TRUE    TRUE    
+## # … with 990 more rows</code></pre>
+<p>The <code>twoxtwo</code> data structure summarizes binary exposures and outcomes as two-by-two counts:</p>
+<pre class="r"><code>dat %&gt;%
+  twoxtwo(exposure = exposed, outcome = diseased)</code></pre>
+<pre><code>## |         |              |OUTCOME       |OUTCOME        |
+## |:--------|:-------------|:-------------|:--------------|
+## |         |              |diseased=TRUE |diseased=FALSE |
+## |EXPOSURE |exposed=TRUE  |250           |250            |
+## |EXPOSURE |exposed=FALSE |50            |450            |</code></pre>
+<p>One can then use functions on the object to conduct analyses such as computing measures of effect:</p>
+<pre class="r"><code>dat %&gt;%
+  twoxtwo(exposure = exposed, outcome = diseased) %&gt;%
+  odds_ratio()</code></pre>
+<pre><code>## # A tibble: 1 x 6
+##   measure    estimate ci_lower ci_upper exposure            outcome             
+##   &lt;chr&gt;         &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;               &lt;chr&gt;               
+## 1 Odds Ratio        9     6.40     12.7 exposed::TRUE/FALSE diseased::TRUE/FALSE</code></pre>
+<pre class="r"><code>dat %&gt;%
+  twoxtwo(exposure = exposed, outcome = diseased) %&gt;%
+  risk_ratio()</code></pre>
+<pre><code>## # A tibble: 1 x 6
+##   measure    estimate ci_lower ci_upper exposure            outcome             
+##   &lt;chr&gt;         &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;               &lt;chr&gt;               
+## 1 Risk Ratio        5     3.79     6.60 exposed::TRUE/FALSE diseased::TRUE/FALSE</code></pre>
+<pre class="r"><code>dat %&gt;%
+  twoxtwo(exposure = exposed, outcome = diseased) %&gt;%
+  risk_diff()</code></pre>
+<pre><code>## # A tibble: 1 x 6
+##   measure        estimate ci_lower ci_upper exposure           outcome          
+##   &lt;chr&gt;             &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;              &lt;chr&gt;            
+## 1 Risk Differen…      0.4    0.349    0.451 exposed::TRUE/FAL… diseased::TRUE/F…</code></pre>
+<p>Rather than passing each of these functions sequentially, it might be preferrable to pass them as a list to be invoked over the object in one pass.</p>
+<p>Note that each of the <code>twoxtwo</code> effect measure functions returns a <code>tibble</code> with the same column names. The outputs can be stacked on top of one another in a single data frame.</p>
+<p>To do so, create a named list of the functions to be passed:</p>
+<pre class="r"><code>measure_funs &lt;- c(odds_ratio = odds_ratio, 
+                  risk_ratio = risk_ratio, 
+                  risk_diff = risk_diff)</code></pre>
+<p>Next coerce the <code>twoxtwo</code> to a list:</p>
+<pre class="r"><code>dat %&gt;%
+  twoxtwo(., exposure = exposed, outcome = diseased ) %&gt;%
+  list(.)</code></pre>
+<pre><code>## [[1]]
+## |         |              |OUTCOME       |OUTCOME        |
+## |:--------|:-------------|:-------------|:--------------|
+## |         |              |diseased=TRUE |diseased=FALSE |
+## |EXPOSURE |exposed=TRUE  |250           |250            |
+## |EXPOSURE |exposed=FALSE |50            |450            |</code></pre>
+<p>The list can then be passed to a <code>map_*</code> function from <code>purrr</code>. In this case the desired output is a <code>tibble</code>, so it is best to use <code>map_df()</code>. The operation to be mapped will be an anonymous function that performs another <code>map_df()</code> over the list of analysis functions and calls <code>exec()</code> on each one:</p>
+<pre class="r"><code>dat %&gt;%
+  twoxtwo(., exposure = exposed, outcome = diseased) %&gt;%
+  list(.) %&gt;%
+  map_df(~ measure_funs %&gt;% map_df(exec, .x))</code></pre>
+<pre><code>## # A tibble: 3 x 6
+##   measure        estimate ci_lower ci_upper exposure           outcome          
+##   &lt;chr&gt;             &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;              &lt;chr&gt;            
+## 1 Odds Ratio          9      6.40    12.7   exposed::TRUE/FAL… diseased::TRUE/F…
+## 2 Risk Ratio          5      3.79     6.60  exposed::TRUE/FAL… diseased::TRUE/F…
+## 3 Risk Differen…      0.4    0.349    0.451 exposed::TRUE/FAL… diseased::TRUE/F…</code></pre>
