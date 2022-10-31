@@ -1,22 +1,21 @@
 +++
 # Date this page was created.
-date = "2021-01-17"
+date = "2022-10-30"
 
 # Project title.
-title = "yawp"
+title = "Statistical genetics"
 
 # Project summary to display on homepage.
-summary = "R package home to miscellanea. Functions included are generic helpers for data manipulation, visualization, and analysis."
+summary = "Bioinformatics support on several studies and software development efforts related to statistical genetics, with a focus on human genomics and relationship inference."
 
 # Optional image to display on homepage (relative to `static/img/` folder).
 image_preview = "code.png"
 
 # Tags: can be used for filtering projects.
 # Example: `tags = ["machine-learning", "deep-learning"]`
-tags = ["sw-dev"]
+tags = ["bioinformatics"]
 
-badges = ["http://www.r-pkg.org/badges/version/yawp"]
-
+# badges = []
 # Optional external URL for project (replaces project detail page).
 external_link = ""
 
@@ -29,5 +28,3 @@ math = false
 # caption = "My caption :smile:"
 
 +++
-
-**Source**: https://github.com/vpnagraj/yawp

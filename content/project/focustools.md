@@ -1,21 +1,21 @@
 +++
 # Date this page was created.
-date = "2021-01-17"
+date = "2022-04-27"
 
 # Project title.
-title = "yawp"
+title = "focustools"
 
 # Project summary to display on homepage.
-summary = "R package home to miscellanea. Functions included are generic helpers for data manipulation, visualization, and analysis."
+summary = "R package with tools to retrieve data, fit time series models, and prepare forecasts of COVID-19 cases and deaths in the United States."
 
 # Optional image to display on homepage (relative to `static/img/` folder).
 image_preview = "code.png"
 
 # Tags: can be used for filtering projects.
 # Example: `tags = ["machine-learning", "deep-learning"]`
-tags = ["sw-dev"]
+tags = ["sw-dev","epidemiology","id-modeling"]
 
-badges = ["http://www.r-pkg.org/badges/version/yawp"]
+badges = []
 
 # Optional external URL for project (replaces project detail page).
 external_link = ""
@@ -30,4 +30,4 @@ math = false
 
 +++
 
-**Source**: https://github.com/vpnagraj/yawp
+**Source**: https://github.com/signaturescience/focustools

@@ -1,9 +1,9 @@
 +++
-title = "Web Application for Designing and Conducting Phase I Drug Combination Studies Using the Partial Order Continual Reassessment Method"
-date = "2020-05-17"
+title = "Automated Infectious Disease Forecasting: Use-cases and Practical Considerations for Pipeline Implementation"
+date = "2022-08-10"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["NA Wages", "**VP Nagraj**"]
+authors = ["**VP Nagraj**", "C Hulme-Lowe", "S Jessa", "SD Turner"]
 
 # Publication type.
 # Legend:
@@ -17,8 +17,7 @@ authors = ["NA Wages", "**VP Nagraj**"]
 publication_types = ["1"]
 
 # Publication name and optional abbreviated version.
-publication = "Presented at Society for Clincial Trials Annual Meeting, Baltimore"
-# publication_short = "In *ICMEW*"
+publication = "Poster presented at epiDAMIK workshop Washington DC"
 
 # Abstract and optional shortened version.
 abstract = ""
@@ -32,7 +31,7 @@ selected = true
 # Projects (optional).
 #   Associate this publication with one or more of your projects.
 #   Simply enter the filename (excluding '.md') of your project file in `content/project/`.
-# projects = ["lolaweb"]
+projects = ["id-modeling"]
 
 # Links (optional).
 url_pdf = ""
@@ -47,7 +46,7 @@ url_source = ""
 
 # Custom links (optional).
 #   Uncomment line below to enable. For multiple links, use the form `[{...}, {...}, {...}]`.
-# url_custom = [{name = "doi.org/10.1093/cid/ciz1123", url = "https://doi.org/10.1093/cid/ciz1123"}]
+# url_custom = [{name = "doi.org/10.21105/joss.00463", url = "http://doi.org/10.21105/joss.00463"}]
 
 # Does the content use math formatting?
 math = true

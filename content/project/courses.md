@@ -6,7 +6,7 @@ date = "2018-04-01"
 title = "Courses"
 
 # Project summary to display on homepage.
-summary = "I have experience teaching several courses at the University of Virginia. These are similar in content to workshops but offered in a for-credit format."
+summary = "Experience teaching several courses at the University of Virginia. These are similar in content to workshops but offered in a for-credit format."
 
 # Optional image to display on homepage (relative to `static/img/` folder).
 image_preview = "code.png"

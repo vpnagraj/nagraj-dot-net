@@ -1,22 +1,21 @@
 +++
 # Date this page was created.
-date = "2021-01-17"
+date = "2022-10-31"
 
 # Project title.
-title = "yawp"
+title = "Infectious Disease Modeling"
 
 # Project summary to display on homepage.
-summary = "R package home to miscellanea. Functions included are generic helpers for data manipulation, visualization, and analysis."
+summary = "Conduct research and develop software in support of infectious disease modeling and operational forecasting initiaves. Principle investigator on several contracts and R&D initiatives to generate near-term forecasts of COVID-19 and influenza targets."
 
 # Optional image to display on homepage (relative to `static/img/` folder).
 image_preview = "code.png"
 
 # Tags: can be used for filtering projects.
 # Example: `tags = ["machine-learning", "deep-learning"]`
-tags = ["sw-dev"]
+tags = ["epidemiology"]
 
-badges = ["http://www.r-pkg.org/badges/version/yawp"]
-
+# badges = []
 # Optional external URL for project (replaces project detail page).
 external_link = ""
 
@@ -29,5 +28,3 @@ math = false
 # caption = "My caption :smile:"
 
 +++
-
-**Source**: https://github.com/vpnagraj/yawp

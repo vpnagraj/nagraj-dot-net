@@ -32,7 +32,7 @@ selected = true
 # Projects (optional).
 #   Associate this publication with one or more of your projects.
 #   Simply enter the filename (excluding '.md') of your project file in `content/project/`.
-projects = ["epicontacts"]
+projects = ["epicontacts","epidemiology","id-modeling"]
 
 # Links (optional).
 url_pdf = "https://f1000researchdata.s3.amazonaws.com/manuscripts/15777/a6415b9b-667a-4c13-a83b-c29716a17f46_14492_-_VP_Nagraj.pdf?doi=10.12688/f1000research.14492.1"    

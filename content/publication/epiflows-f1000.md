@@ -1,9 +1,9 @@
 +++
-title = "Web Application for Designing and Conducting Phase I Drug Combination Studies Using the Partial Order Continual Reassessment Method"
-date = "2020-05-17"
+title = "epiflows: an R package for risk assessment of travel-related spread of disease"
+date = "2019-09-12"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["NA Wages", "**VP Nagraj**"]
+authors = ["P Moraga", "I Dorigatti", "ZN Kamvar", "P Piatkowski", "SE Toikkanen", "**VP Nagraj**", "C Donnelly", "T Jombart"]
 
 # Publication type.
 # Legend:
@@ -14,10 +14,10 @@ authors = ["NA Wages", "**VP Nagraj**"]
 # 4 = Technical report
 # 5 = Book
 # 6 = Book chapter
-publication_types = ["1"]
+publication_types = ["2"]
 
 # Publication name and optional abbreviated version.
-publication = "Presented at Society for Clincial Trials Annual Meeting, Baltimore"
+publication = "F1000 Research"
 # publication_short = "In *ICMEW*"
 
 # Abstract and optional shortened version.
@@ -32,10 +32,10 @@ selected = true
 # Projects (optional).
 #   Associate this publication with one or more of your projects.
 #   Simply enter the filename (excluding '.md') of your project file in `content/project/`.
-# projects = ["lolaweb"]
+projects = ["epidemiology","id-modeling"]
 
 # Links (optional).
-url_pdf = ""
+url_pdf = "https://f1000researchdata.s3.amazonaws.com/manuscripts/22646/a19862dd-a1a1-4705-9787-7b49bf8eacd2_16032_-_paula_moraga_v3.pdf"    
 url_preprint = ""
 url_code = ""
 url_dataset = ""
@@ -47,7 +47,7 @@ url_source = ""
 
 # Custom links (optional).
 #   Uncomment line below to enable. For multiple links, use the form `[{...}, {...}, {...}]`.
-# url_custom = [{name = "doi.org/10.1093/cid/ciz1123", url = "https://doi.org/10.1093/cid/ciz1123"}]
+url_custom = [{name = "doi.org/10.12688/f1000research.16032.3", url = "http://doi.org/10.12688/f1000research.16032.3"}]
 
 # Does the content use math formatting?
 math = true

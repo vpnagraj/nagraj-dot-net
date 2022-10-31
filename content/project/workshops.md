@@ -6,7 +6,7 @@ date = "2018-04-02"
 title = "Workshops"
 
 # Project summary to display on homepage.
-summary = "I have experience teaching a variety of workshop material around basic programming and data analysis techniques. These are typically offered as hands-on sessions that are free for faculty, staff and students."
+summary = "Experience teaching a variety of workshop material around basic programming and data analysis techniques. These are typically offered as hands-on sessions that are free for faculty, staff and students."
 
 # Optional image to display on homepage (relative to `static/img/` folder).
 image_preview = "code.png"

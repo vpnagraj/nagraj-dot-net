@@ -1,9 +1,9 @@
 +++
-title = "Web Application for Designing and Conducting Phase I Drug Combination Studies Using the Partial Order Continual Reassessment Method"
-date = "2020-05-17"
+title = "Relationship Inference with Low-Coverage Whole Genome Sequencing on Forensic Samples"
+date = "2022-09-01"
 
 # Authors. Comma separated list, e.g. `["Bob Smith", "David Jones"]`.
-authors = ["NA Wages", "**VP Nagraj**"]
+authors = ["**VP Nagraj**", "M Scholz", "S Jessa", "J Ge", "M Huang", "A Woerner","D Peters", "B Budowle", "M Coble", "SD Turner"]
 
 # Publication type.
 # Legend:
@@ -14,10 +14,10 @@ authors = ["NA Wages", "**VP Nagraj**"]
 # 4 = Technical report
 # 5 = Book
 # 6 = Book chapter
-publication_types = ["1"]
+publication_types = ["2"]
 
 # Publication name and optional abbreviated version.
-publication = "Presented at Society for Clincial Trials Annual Meeting, Baltimore"
+publication = "Forensic Genomics"
 # publication_short = "In *ICMEW*"
 
 # Abstract and optional shortened version.
@@ -32,10 +32,10 @@ selected = true
 # Projects (optional).
 #   Associate this publication with one or more of your projects.
 #   Simply enter the filename (excluding '.md') of your project file in `content/project/`.
-# projects = ["lolaweb"]
+projects = ["statgen"]
 
 # Links (optional).
-url_pdf = ""
+url_pdf = ""    
 url_preprint = ""
 url_code = ""
 url_dataset = ""
@@ -47,7 +47,7 @@ url_source = ""
 
 # Custom links (optional).
 #   Uncomment line below to enable. For multiple links, use the form `[{...}, {...}, {...}]`.
-# url_custom = [{name = "doi.org/10.1093/cid/ciz1123", url = "https://doi.org/10.1093/cid/ciz1123"}]
+url_custom = [{name = "doi.org/10.1089/forensic.2022.0009", url = "http://dx.doi.org/10.1089/forensic.2022.0009"}]
 
 # Does the content use math formatting?
 math = true

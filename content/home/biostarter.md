@@ -33,12 +33,16 @@ filter_default = 0
   tag = "*"
 
 [[filter]]
-  name = "Bioinformatics"
-  tag = ".bioinformatics"
+  name = "Epidemiology"
+  tag = ".epidemiology"
   
 [[filter]]
   name = "Biostatistics"
   tag = ".biostats"
+
+[[filter]]
+  name = "Bioinformatics"
+  tag = ".bioinformatics"
   
 [[filter]]
   name = "Software"
